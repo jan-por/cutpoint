@@ -8,6 +8,14 @@
 \description{
 One or two cutpoints of a metric variable, such as a biomarker, can be determined in the context of survival analysis. These cutpoints are utilized to create groups with differend survival probabilities.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/jan-por/cutpoint}
+  \item Report bugs at \url{https://github.com/jan-por/cutpoint/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Jan Porthun \email{jan.porthun@ntnu.no}
 

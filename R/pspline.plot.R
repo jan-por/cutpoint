@@ -16,7 +16,9 @@
 #' plot_splines_list <- list(cpdata = datf, nbofcp = 1, cp = 95, dp = 2,
 #'     cpvarname = "Biomarker")
 #' pspline.plot(plot_splines_list)
+#' @import survival
 #' @importFrom survival coxph
+#' @importFrom survival Surv
 #' @import utils
 utils::globalVariables(c("graphics", "abline", "legend", "lines", "mtext"))
 utils::globalVariables(c("stats", "quantile", "termplot", "df"))

@@ -3,6 +3,8 @@
 export(aic.plot)
 export(est.cutpoint)
 export(pspline.plot)
+import(survival)
 import(utils)
 importFrom(graphics,plot)
+importFrom(survival,Surv)
 importFrom(survival,coxph)
