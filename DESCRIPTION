@@ -1,0 +1,22 @@
+Package: cutpoint
+Type: Package
+Title: Estimate cutpoints of metric variables in the context of Cox-regression
+Version: 0.1.0
+Authors@R: c(
+    person(
+      "Jan", "Porthun",
+      email = "jan.porthun@ntnu.no",
+      role = c("aut", "cre")
+    )
+  )
+Description: One or two cutpoints of a metric variable, such as a biomarker, 
+    can be determined in the context of survival analysis. These cutpoints are 
+    utilized to create groups with differend survival probabilities. 
+License: CC BY 4.0 + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports:
+    RcppAlgos,
+    survival
+RoxygenNote: 7.3.2
+Roxygen: list(markdown = TRUE)
