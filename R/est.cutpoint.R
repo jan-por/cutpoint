@@ -10,8 +10,8 @@
 #'     estimated
 #' @param time character, name of the time variable
 #' @param event character, name of the event variable
-#' @param cofactors character, vector with the names of the covariates or/ and
-#'   factors
+#' @param covariates character, vector with the names of the covariates or/ and
+#'   factors; if there are no covariates, covariates = NULL
 #' @param data data.frame, data set with the variables
 #' @param nbofcp numeric, number of cutpoints searching for
 #' @param bandwith numeric, minimum group size in percent of the total sample
@@ -34,7 +34,7 @@ est.cutpoint <-
 function(cpvarname,
          time = "time",
          event = "event",
-         cofactors,
+         covariates = NULL,
          data = data,
          nbofcp = 1,
          bandwith = 0.1,
@@ -44,39 +44,48 @@ function(cpvarname,
          plot_splines = TRUE,
          all_splines = TRUE) {
 
+   #' Check if the input is correct
+   #' -------------------------------------------------------------------------
    if (!is.character(cpvarname)) {
-      stop("time must be a character")
+      stop("cpvarname must be a character")
    }
- # noch kontrollieren
-   #if (length(unique(data$cpvarname)) == 1) {
-   #   stop("cpvarname must have more than one unique value")
-   #}
-   #if (length(unique(data$cpvarname)) < 3) {
-   #   stop("cpvarname must have more than two unique values")
-   #}
+   if (length(unique(data[ ,cpvarname])) == 1) {
+      stop("cpvarname must have more than one unique value")
+   }
+   if (length(unique(data[ ,cpvarname])) < 3) {
+       stop("cpvarname must have more than two unique values")
+   }
 
    if (!is.character(time)) {
-      stop("time must be a character")
+       stop("time must be a character")
    }
-   #if (length(unique(data$time)) == 1) {
-   #   stop("time must have more than one unique value")
-   #}
-   #if (length(unique(data$time)) < 3) {
-   #   stop("time must have more than two unique values")
-   #}
+   if (!all(is.numeric(data[ ,time]) | is.na(data[ ,time]))) {
+       stop("time must be numeric or NA")
+   }
+   if (length(unique(data[ ,time])) == 1) {
+       stop("time must have more than one unique value")
+   }
+   if (length(unique(data[ ,time])) < 3) {
+       stop("time must have more than two unique values")
+   }
+
+   if (any(data[ ,time] <= 0)){
+      cat("\nPlease note: For at least one observation time is <= 0\n")
+      cat("this can lead to an error message of the Cox regression\n")
+   }
 
    if (!is.character(event)) {
-      stop("event must be a character")
+       stop("event must be a character")
    }
-   # if (length(unique(data$event)) != 2) {
-   #    stop("event must have two unique values")
-   # }
-   # if (length(unique(data$event)) < 2) {
-   #    stop("event must have more than one unique value")
-   # }
+   if (length(unique(data[ ,event])) != 2) {
+        stop("event must have two unique values")
+   }
 
-   if (!is.character(cofactors)) {
-      stop("cofactors must be a character")
+   if (!is.null(covariates) & !is.character(covariates)) {
+      stop("covariates must be a character vector or NULL")
+   }
+   if (!all(covariates %in% colnames(data))) {
+      stop("all covariates must be included in data, check the names of the covariates")
    }
 
    if (!is.data.frame(data)) {
@@ -120,7 +129,7 @@ function(cpvarname,
    biomarker <- cpvarname
 
    #' Data frame contains only the variables that must be included in the model
-   cpdata <- data[, c(biomarker, time, event, cofactors)]
+   cpdata <- data[, c(biomarker, time, event, covariates)]
 
    #' nrm = Number of rows in cpdata before possible changes
    nrm_start  <- nrow(cpdata)
@@ -152,6 +161,10 @@ function(cpvarname,
    #' nrm = Number of rows in cpdata after removing observations with
    #'     missing values in biomarker
    nrm  <- nrow(cpdata)
+
+   #' If there are no covariates, cov is defined as a constant
+   if (is.null(covariates)) {cov_ <- rep(1, nrm)}
+
 
    #' If only one cutpoint is estimated, symtails and ushape is set to FALSE
    if (nbofcp == 1) {
@@ -200,7 +213,7 @@ function(cpvarname,
       #' Show user approx. remaining time
       if (nbr.m.perm.time == loop_nr) {
          tm <- proc.time() - ptm
-         cat("Approx. remaining time in seconds:", round((tm[3] * (1 / timefactor)
+         cat("\nApprox. remaining time in seconds:", round((tm[3] * (1 / timefactor)
          ), 0), "\n")
          ptm <- proc.time()
       }
@@ -229,11 +242,25 @@ function(cpvarname,
    #' Generate vector with cutpoints
    cp <- c(NA, NA)
 
+
    cp[1] <- biomarker[cp1_position]
    names(cp[1]) <- "CP1"
 
    cp[2] <- biomarker[cp2_position]
    names(cp[2]) <- "CP2"
+
+
+   # check if cp[1] and cp[2] are not NA
+   if (!is.na(cp[1]) && (!is.na(cp[2]))) {
+
+      # check if cp[1] is smaller than cp[2], if yes, switch the values
+      if(cp[2] < cp[1]){ cpx   <- cp[1]
+                         cp[1] <- cp[2]
+                         cp[2] <- cpx
+                         rm(cpx)
+      }
+   }
+
 
    #' Output:------------------------------------------------------------------
 
@@ -264,8 +291,8 @@ function(cpvarname,
    cat(" Cutpoints for u-shape (ushape)   = ", ushape,
        "   (is set FALSE if nbofcp = 1)\n")
    cat("--------------------------------------------------------------------\n")
-   cat("Cofactors are:\n")
-   cat(" ",cofactors, "\n")
+   cat("covariates are:\n")
+   cat(" ",covariates, "\n")
    cat("--------------------------------------------------------------------\n")
    cat("Minimum group size for original dataset is ", round((nrm_start * bandwith), 0),
      " (", bandwith * 100, "% of sample size, N = ", nrm_start,  ")\n", sep = "")
@@ -274,7 +301,7 @@ function(cpvarname,
 
    if (nbofcp == 1) {
 
-      cat("Cutpoint for", cpvarname, "=", cp[1], "\n")
+      cat("Cutpoint for", cpvarname, "<=", cp[1], "\n")
       cat("-----------------------------------------------------------------\n")
       cat("Group sizes for original dataset\n")
       cat(" Total:   N = ", nrm_start, "\n", sep = "")
@@ -286,8 +313,8 @@ function(cpvarname,
 
    if (nbofcp == 2) {
 
-      cat(" 1.Cutpoint for", cpvarname, "=", cp[1], "\n")
-      cat(" 2.Cutpoint for", cpvarname, "=", cp[2], "\n")
+      cat(" 1.Cutpoint for", cpvarname, "<=", cp[1], "\n")
+      cat(" 2.Cutpoint for", cpvarname, "<=", cp[2], "\n")
       cat("-----------------------------------------------------------------\n")
       cat("Group sizes of the dataset\n")
       cat(" Total:   N = ", nrm_start, "\n", sep = "")

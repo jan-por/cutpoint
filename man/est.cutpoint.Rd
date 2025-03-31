@@ -8,7 +8,7 @@ est.cutpoint(
   cpvarname,
   time = "time",
   event = "event",
-  cofactors,
+  covariates = NULL,
   data = data,
   nbofcp = 1,
   bandwith = 0.1,
@@ -27,8 +27,8 @@ estimated}
 
 \item{event}{character, name of the event variable}
 
-\item{cofactors}{character, vector with the names of the covariates or/ and
-factors}
+\item{covariates}{character, vector with the names of the covariates or/ and
+factors; if there are no covariates, covariates = NULL}
 
 \item{data}{data.frame, data set with the variables}
 

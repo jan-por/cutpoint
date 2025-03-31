@@ -4,11 +4,6 @@
 # cutpoint
 
 <!-- badges: start -->
-
-[![Codecov test
-coverage](https://codecov.io/gh/jan-por/cutpoint/graph/badge.svg)](https://app.codecov.io/gh/jan-por/cutpoint)
-[![R-CMD-check](https://github.com/jan-por/cutpoint/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jan-por/cutpoint/actions/workflows/R-CMD-check.yaml)
-[![Codecov test coverage](https://codecov.io/gh/jan-por/cutpoint/graph/badge.svg)](https://app.codecov.io/gh/jan-por/cutpoint)
 <!-- badges: end -->
 
 The goal of cutpoint is to …
