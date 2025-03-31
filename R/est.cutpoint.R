@@ -47,7 +47,7 @@ function(cpvarname,
    if (!is.character(cpvarname)) {
       stop("time must be a character")
    }
-
+ # noch kontrollieren
    #if (length(unique(data$cpvarname)) == 1) {
    #   stop("cpvarname must have more than one unique value")
    #}
