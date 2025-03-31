@@ -20,8 +20,9 @@
 #' @importFrom survival coxph
 #' @importFrom survival Surv
 #' @import utils
-utils::globalVariables(c("graphics", "abline", "legend", "lines", "mtext"))
-utils::globalVariables(c("stats", "quantile", "termplot", "df"))
+utils::globalVariables(c("graphics", "abline", "legend", "lines", "mtext",
+                         "stats", "quantile", "termplot", "df"))
+
 
 pspline.plot <-
    function(cpobj, show.splines = TRUE) {
