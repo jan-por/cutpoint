@@ -20,11 +20,7 @@
 #' @importFrom utils globalVariables
 #' @export
 #'
-#' @rdname pspline.plot
 #' @keywords cutpoint pspline plot visualization termplot
-#' @aliases pspline.plot
-#' @seealso \code{\link{est.cutpoint}}
-#' @references Harrell, F. E. (2001). Regression modeling strategies: with applications to linear models, logistic and ordinal regression, and survival analysis. Springer Science & Business Media.
 #'
 pspline.plot <-
    function(cpobj, show.splines = TRUE) {
