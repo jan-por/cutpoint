@@ -51,6 +51,7 @@ tails}
 }
 \value{
 returns the estimated cutpoints and the characteristics of the groups
+for the original dataset
 }
 \description{
 One or two cutpoints of a variable are estimated by the AIC

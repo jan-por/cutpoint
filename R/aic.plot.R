@@ -6,8 +6,6 @@
 #' @param dp.aic numeric, digits for the AIC values
 #' @returns returns a plot which shows the AIC values of the estimating
 #'   procedure
-#' @export
-#'
 #' @examples
 #' # Create a vector with AIC values
 #' AIC_values <- c(1950:1910, 1910:1920, 1920:1880, 1880:1920)
@@ -16,9 +14,13 @@
 #'
 #' cpobj <- list(AIC_values = AIC_values)
 #' aic.plot(cpobj, dp.aic = 2)
-#' @importFrom graphics plot
-#' @import utils
-utils::globalVariables(c("graphics", "title"))
+#' @importFrom graphics plot title legend
+#' @importFrom utils round
+#' @importFrom stats min
+#' @importFrom utils globalVariables
+#' @export
+#'
+#' @seealso \code{\link{est.cutpoint}}
 
 aic.plot <-
    function(cpobj, dp.aic = 2) {

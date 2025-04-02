@@ -6,8 +6,6 @@
 #' @param cpobj list contains variables for pspline plot
 #' @param show.splines logical, if TRUE shows the splines with different DF
 #' @returns returns a plot with the pspline and shows the cutpoints
-#' @export
-#'
 #' @examples
 #' biomarker <- rnorm(100, mean = 100, sd = 10)
 #' time <- seq(1, 100, 1)
@@ -16,14 +14,18 @@
 #' plot_splines_list <- list(cpdata = datf, nbofcp = 1, cp = 95, dp = 2,
 #'     cpvarname = "Biomarker")
 #' pspline.plot(plot_splines_list)
-#' @import survival
-#' @importFrom survival coxph
-#' @importFrom survival Surv
-#' @import utils
-utils::globalVariables(c("graphics", "abline", "legend", "lines", "mtext",
-                         "stats", "quantile", "termplot", "df"))
-
-
+#' @importFrom stats quantile
+#' @importFrom survival coxph Surv
+#' @importFrom graphics abline legend lines mtext
+#' @importFrom utils globalVariables
+#' @export
+#'
+#' @rdname pspline.plot
+#' @keywords cutpoint pspline plot visualization termplot
+#' @aliases pspline.plot
+#' @seealso \code{\link{est.cutpoint}}
+#' @references Harrell, F. E. (2001). Regression modeling strategies: with applications to linear models, logistic and ordinal regression, and survival analysis. Springer Science & Business Media.
+#'
 pspline.plot <-
    function(cpobj, show.splines = TRUE) {
 
@@ -105,9 +107,10 @@ pspline.plot <-
          ) ,
          data = cpdata
       )
-      df_optimal <- round(tfit$df, 0)
+      degfr_optimal <- round(tfit$df, 1)
 
-      df <- c(5, 4, 3, 2)
+      #' Define degree of freedom used for termplot
+      degfr <- c(5, 4, 3, 2)
 
       tempcolors <- c("#d7191c", "#fdae61", "#abd9e9", "#2c7bb6","black")
 
@@ -118,7 +121,7 @@ pspline.plot <-
       else {
          main_text <-
             paste0("Splines with optimal degrees of freedom (df = ",
-                   df_optimal,
+                   degfr_optimal,
                    ")")
       }
 
@@ -130,8 +133,8 @@ pspline.plot <-
          col.se   = "black",
          lwd.term = 2,
          font.lab = 2,
-         xlab     = paste("Cutpoint variable: ", cpvarname),
-         ylab     = "log relative hazard",
+         xlabs     = paste("Cutpoint variable: ", cpvarname),
+         ylabs     = "log relative hazard",
          main     = main_text,
          sub      = paste0("Mean: ",
             round(mean(biomarker), 2),
@@ -148,11 +151,11 @@ pspline.plot <-
 
 
       if (show.splines ==  TRUE) {
-         for (i in 1:length(df)) {
+         for (i in 1:length(degfr)) {
             try(tfit <- survival::coxph(
                formula = Surv(time, event) ~ pspline(
                   x = biomarker,
-                  df = df[i],
+                  df = degfr[i],
                   caic = TRUE
                ),
                data = cpdata
@@ -170,13 +173,14 @@ pspline.plot <-
          legend(
             "topright",
             cex = 0.8,
-            paste0("df=", c(df[1:length(df)],
-                         paste((df_optimal[[length(df_optimal)]]), "(optimal)"
+            paste0("df=", c(degfr[1:length(degfr)],
+               paste((degfr_optimal[[length(degfr_optimal)]]), "(optimal)"
             ))),
             lty = 1,
-            col = tempcolors[1:length(df)],
+            col = tempcolors[1:(length(degfr)+1)],
             lwd = 2
          )
+
       } # End: if (show.splines ==  TRUE)
 
       abline(
@@ -186,35 +190,24 @@ pspline.plot <-
       )
 
       if (nbofcp == 1) {
-         abline(v = cp[1], col = "red")
-         mtext(
-            paste("CP:", round(cp[1], dp)),
-            side = 3,
-            at = cp[1],
-            line = 0,
-            col = "red"
-         )
-
+         abline(v = cp[1], col = "red", lwd = 2)
       }
 
       if (nbofcp == 2) {
-         abline(v = cp[1], col = "red")
-         mtext(
-            paste("CP1:", round(cp[1], dp)),
-            side = 3,
-            at = ((cp[1])*0.9),
-            line = 0,
-            col = "red"
-         )
-         abline(v = cp[2], col = "red")
-         mtext(
-            paste("CP2:", round(cp[2], dp)),
-            side = 3,
-            at = ((cp[2])*1.1),
-            line = 0,
-            col = "red"
-         )
+         abline(v = cp[1], col = "red", lwd = 2)
+         abline(v = cp[2], col = "red", lwd = 2)
       }
+
+      legend(
+         "bottomleft",
+         title = "Cutpoint:  ",
+         cex = 0.8,
+         if (nbofcp == 1) {paste("\u2264", cp[1])} else {
+            paste("\u2264", cp[1], "and", "\u2264", cp[2]) } ,
+         lty = 1,
+         col = tempcolors[1:(length(degfr)+1)],
+         lwd = 2
+      )
 
       return(invisible())
 

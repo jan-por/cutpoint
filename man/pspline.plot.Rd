@@ -27,3 +27,18 @@ plot_splines_list <- list(cpdata = datf, nbofcp = 1, cp = 95, dp = 2,
     cpvarname = "Biomarker")
 pspline.plot(plot_splines_list)
 }
+\references{
+Harrell, F. E. (2001). Regression modeling strategies: with applications to linear models, logistic and ordinal regression, and survival analysis. Springer Science & Business Media.
+
+Get quantiles of biomarker
+Get optimal degree of freedom
+Define degree of freedom used for termplot
+}
+\seealso{
+\code{\link{est.cutpoint}}
+}
+\keyword{cutpoint}
+\keyword{plot}
+\keyword{pspline}
+\keyword{termplot}
+\keyword{visualization}

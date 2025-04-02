@@ -3,6 +3,9 @@
 \name{aic.plot}
 \alias{aic.plot}
 \title{Plot AIC values}
+\usage{
+aic.plot(cpobj, dp.aic = 2)
+}
 \arguments{
 \item{cpobj}{list, contains a vector of AIC values}
 
@@ -23,4 +26,7 @@ AIC_values <- round(AIC_values + rnorm(length(AIC_values),
 
 cpobj <- list(AIC_values = AIC_values)
 aic.plot(cpobj, dp.aic = 2)
+}
+\seealso{
+\code{\link{est.cutpoint}}
 }

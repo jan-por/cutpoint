@@ -25,11 +25,14 @@
 #' @param all_splines logical, if TRUE all splines are shown
 #'
 #' @returns returns the estimated cutpoints and the characteristics of the groups
+#'  for the original dataset
+#' @importFrom survival coxph
+#' @importFrom survival Surv
+#' @importFrom stats AIC
+#' @importFrom stats complete.cases
+#' @importFrom utils globalVariables
 #' @export
 #'
-#' @import utils
-utils::globalVariables(c("stats", "complete.cases", "AIC"))
-
 est.cutpoint <-
 function(cpvarname,
          time = "time",
@@ -46,6 +49,9 @@ function(cpvarname,
 
    #' Check if the input is correct
    #' -------------------------------------------------------------------------
+   if (!all(cpvarname %in% colnames(data))) {
+      stop("cpvarname must be included in data, check the name of cpvarname")
+   }
    if (!is.character(cpvarname)) {
       stop("cpvarname must be a character")
    }
@@ -70,7 +76,7 @@ function(cpvarname,
    }
 
    if (any(data[ ,time] <= 0)){
-      cat("\nPlease note: For at least one observation time is <= 0\n")
+      cat("\nPlease note: For at least one observation, follow-up time is","\u2264","0\n")
       cat("this can lead to an error message of the Cox regression\n")
    }
 
@@ -284,24 +290,27 @@ function(cpvarname,
    cat("--------------------------------------------------------------------\n")
    cat("SETTINGS:\n")
    cat(" Cutpoint-variable                = ", cpvarname, "\n")
-   cat(" Number of cutpoints   (nbofcp) = ", nbofcp, "\n")
+   cat(" Number of cutpoints   (nbofcp)   = ", nbofcp, "\n")
    cat(" Min. group size in %  (bandwith) = ", bandwith, "\n")
    cat(" Symmetric tails       (symtails) = ", symtails,
-       "   (is set FALSE if nbofcp = 1)\n")
+       "  (is set FALSE if nbofcp = 1)\n")
    cat(" Cutpoints for u-shape (ushape)   = ", ushape,
-       "   (is set FALSE if nbofcp = 1)\n")
+       "  (is set FALSE if nbofcp = 1)\n")
    cat("--------------------------------------------------------------------\n")
-   cat("covariates are:\n")
-   cat(" ",covariates, "\n")
+   if (is.null(covariates)) {
+      cat("No covariates were selected\n")
+   } else {
+      cat("Covariates or factors are:\n")
+      cat(" ",covariates, "\n") }
    cat("--------------------------------------------------------------------\n")
-   cat("Minimum group size for original dataset is ", round((nrm_start * bandwith), 0),
-     " (", bandwith * 100, "% of sample size, N = ", nrm_start,  ")\n", sep = "")
+   cat("Minimum group size is ", round((nrm_start * bandwith), 0),
+     " (", bandwith * 100, "% of sample size in original dataset, N = ", nrm_start,  ")\n", sep = "")
    cat("--------------------------------------------------------------------\n")
    cat("Number of Cutpoints searching for:", nbofcp, "\n")
 
    if (nbofcp == 1) {
 
-      cat("Cutpoint for", cpvarname, "<=", cp[1], "\n")
+      cat("Cutpoint:", cpvarname, "\u2264", cp[1], "\n")
       cat("-----------------------------------------------------------------\n")
       cat("Group sizes for original dataset\n")
       cat(" Total:   N = ", nrm_start, "\n", sep = "")
@@ -313,10 +322,10 @@ function(cpvarname,
 
    if (nbofcp == 2) {
 
-      cat(" 1.Cutpoint for", cpvarname, "<=", cp[1], "\n")
-      cat(" 2.Cutpoint for", cpvarname, "<=", cp[2], "\n")
+      cat(" 1.Cutpoint:", cpvarname, "\u2264", cp[1], "\n")
+      cat(" 2.Cutpoint:", cpvarname, "\u2264", cp[2], "\n")
       cat("-----------------------------------------------------------------\n")
-      cat("Group sizes of the dataset\n")
+      cat("Group sizes for original dataset\n")
       cat(" Total:   N = ", nrm_start, "\n", sep = "")
       cat(" Group 1: n = ", nbbygroup[1], " (", round(percbygroup[1]*100,1), "%)\n", sep = "")
       cat(" Group 2: n = ", nbbygroup[2], " (", round(percbygroup[2]*100,1), "%)\n", sep = "")
