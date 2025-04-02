@@ -3,7 +3,7 @@
 #' @description Create matrix with all factor combinations of the biomarker
 #' @param bandwith numeric, determines the minimum size per group of the
 #'   dichitomised biomarker
-#' @param nbofcp numeric, number of cutpoints searching for
+#' @param nb_of_cp numeric, number of cutpoints searching for
 #' @param nrm numeric, number of rows in cpdata after removing observations
 #'   with missing values in biomarker
 #' @param symtails logical, if TRUE the tails of the dichotomised biomarker
@@ -12,8 +12,8 @@
 #'   dichotomised biomarker
 #' @export
 
-combine.factors <-
-   function(bandwith = 0.1, nbofcp = 1, nrm, symtails = FALSE) {
+combine_factors <-
+   function(bandwith = 0.1, nb_of_cp = 1, nrm, symtails = FALSE) {
 
    if (!is.numeric(bandwith))
       stop("bandwith must be numeric")
@@ -21,11 +21,11 @@ combine.factors <-
        bandwith > 0.3)
       stop("bandwith must be between 0 and 0.3")
 
-   if (!is.numeric(nbofcp))
-      stop("nbofcp must be numeric")
-   if (nbofcp != 1 &
-       nbofcp != 2)
-      stop("nbofcp must be 1 or 2")
+   if (!is.numeric(nb_of_cp))
+      stop("nb_of_cp must be numeric")
+   if (nb_of_cp != 1 &
+       nb_of_cp != 2)
+      stop("nb_of_cp must be 1 or 2")
 
    if (!is.numeric(nrm))
       stop("nrm must be numeric")
@@ -42,7 +42,7 @@ combine.factors <-
 
 
    #' Create matrix with all factor combinations of the dichotomised biomarker
-   m.perm.fun <- as.matrix(RcppAlgos::comboGeneral((nbofcp + 1),
+   m.perm.fun <- as.matrix(RcppAlgos::comboGeneral((nb_of_cp + 1),
                                                    nrm,
                                                    repetition = TRUE))
 
@@ -54,7 +54,7 @@ combine.factors <-
    # as this variable is used for deletion, bandwith_nb must be reduced by 1
    bandwith_nb <- bandwith_nb - 1
 
-   #' If nbofcp == 1
+   #' If nb_of_cp == 1
    #' How often does the 1 occur per line
    y <- rowSums(m.perm.fun == 1)
    m.perm.fun <- cbind(m.perm.fun, y)
@@ -64,7 +64,7 @@ combine.factors <-
    m.perm.fun <- m.perm.fun[!(m.perm.fun[, (ncol(m.perm.fun))] %in% 0:bandwith_nb), ]
    m.perm.fun <- m.perm.fun[, -seq(ncol(m.perm.fun), ncol(m.perm.fun))]
 
-   #' If nbofcp == 2
+   #' If nb_of_cp == 2
    y <- rowSums(m.perm.fun == 2)
    m.perm.fun <- cbind(m.perm.fun, y)
    rm(y)
@@ -75,7 +75,7 @@ combine.factors <-
 
 
    #' How often does the 2 occur per line
-   if (nbofcp == 2) {
+   if (nb_of_cp == 2) {
       y <- rowSums(m.perm.fun == 3)
       m.perm.fun <- cbind(m.perm.fun, y)
       rm(y)
@@ -103,4 +103,4 @@ combine.factors <-
    return(m.perm.fun)
 
 
-   } #' End: combine.factors <- function( --------------------------------------------------------------
+   } #' End: combine_factors <- function( --------------------------------------------------------------

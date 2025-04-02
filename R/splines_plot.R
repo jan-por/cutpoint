@@ -2,14 +2,14 @@
 #'
 #' @description Create penalized smoothing splines plot with different degrees
 #'     of freedom and shows the cutpoints of the biomarker
-#' @name pspplot
-#' @param cpobj list, contains variables for pspline plot: nbofcp (number of
+#' @name splines_plot
+#' @param cpobj list, contains variables for pspline plot: nb_of_cp (number of
 #'   cutpoints), cp (contain one or two cutpoint/s), dp (digits for plot),
 #'   cpvarname (name of the variable for which the cutpoints are estimated)
 #'   cpdata (a data.frame, contains the following variables: variable which is
 #'   dichotomized, time (follow-up time), event (status indicator) and covariates
 #'   (a vector with the names of the covariates))
-#' @param show.splines logical value: if TRUE, shows the splines for different
+#' @param show_splines logical value: if TRUE, shows the splines for different
 #'    degree of freedom. This may help identify if overfitting occurs.
 #' @returns returns a plot with penalized smoothing splines and shows the
 #'    cutpoints
@@ -18,19 +18,19 @@
 #' time <- seq(1, 100, 1)
 #' event <- rbinom(100, 1, 0.5)
 #' datf <- data.frame(time, event, biomarker)
-#' plot_splines_list <- list(cpdata = datf, nbofcp = 1, cp = 95, dp = 2,
+#' plot_splines_list <- list(cpdata = datf, nb_of_cp = 1, cp = 95, dp = 2,
 #'     cpvarname = "Biomarker")
-#' pspplot(plot_splines_list)
+#' splines_plot(plot_splines_list)
 #' @importFrom stats quantile
 #' @importFrom survival coxph Surv pspline
 #' @importFrom graphics abline legend lines
 #' @importFrom utils globalVariables
 #' @export
 #'
-#' @seealso \code{\link{est.cutpoint}}
+#' @seealso \code{\link{est_cutpoint}}
 
-pspplot <-
-   function(cpobj, show.splines = TRUE) {
+splines_plot <-
+   function(cpobj, show_splines = TRUE) {
 
       #' Check if cpobj is a list
       if (!is.list(cpobj)) {
@@ -38,7 +38,7 @@ pspplot <-
       }
 
       #' Extract necessary variables from cpobj
-      nbofcp    <- cpobj$nbofcp
+      nb_of_cp    <- cpobj$nb_of_cp
       cp        <- cpobj$cp
       dp        <- cpobj$dp
       cpdata    <- cpobj$cpdata
@@ -47,11 +47,11 @@ pspplot <-
 
       #' Check variables
 
-      if (!is.numeric(nbofcp))
-         stop("nbofcp must be numeric")
-      if (nbofcp != 1 &
-          nbofcp != 2)
-         stop("nbofcp must be 1 or 2")
+      if (!is.numeric(nb_of_cp))
+         stop("nb_of_cp must be numeric")
+      if (nb_of_cp != 1 &
+          nb_of_cp != 2)
+         stop("nb_of_cp must be 1 or 2")
 
       if (!is.numeric(cp)) stop("cp must be numeric")
 
@@ -63,8 +63,8 @@ pspplot <-
       if (dp > 19)
          stop("dp must be smaller than 20")
 
-      if (!is.logical(show.splines))
-         stop("show.splines must be logical (TRUE or FALSE)")
+      if (!is.logical(show_splines))
+         stop("show_splines must be logical (TRUE or FALSE)")
 
       if (!("time" %in% names(cpdata))) {
          stop("time must be a column in cpdata")
@@ -123,7 +123,7 @@ pspplot <-
       tempcolors <- c("#d7191c", "#fdae61", "#abd9e9", "#2c7bb6","black")
 
       #' Define main text for plot
-      if (show.splines ==  TRUE) {
+      if (show_splines ==  TRUE) {
          main_text <- "Splines with different degrees of freedom (df)"
       }
       else {
@@ -157,7 +157,7 @@ pspplot <-
       ) # End: termplot
 
       #' Show splines with different degrees of freedom and add legend
-      if (show.splines ==  TRUE) {
+      if (show_splines ==  TRUE) {
          for (i in 1:length(degfr)) {
             try(tfit <- survival::coxph(
                formula = Surv(time, event) ~ pspline(
@@ -178,7 +178,7 @@ pspplot <-
          }
 
          legend(
-            "topright",
+            "bottomright",
             cex = 0.8,
             paste0("df=", c(degfr[1:length(degfr)],
                paste((degfr_optimal[[length(degfr_optimal)]]), "(optimal)"
@@ -188,7 +188,7 @@ pspplot <-
             lwd = 2
          )
 
-      } # End: if (show.splines ==  TRUE)
+      } # End: if (show_splines ==  TRUE)
 
       #' Add lines for mean and quantiles of biomarker
       abline(
@@ -197,24 +197,24 @@ pspplot <-
          lty = c("dotted", "dotted", "dotted", "dashed")
       )
 
-      if (nbofcp == 1) {
+      if (nb_of_cp == 1) {
          abline(v = cp[1], col = "red", lwd = 2)
       }
 
-      if (nbofcp == 2) {
+      if (nb_of_cp == 2) {
          abline(v = cp[1], col = "red", lwd = 2)
          abline(v = cp[2], col = "red", lwd = 2)
       }
 
       #' Show cutpoints as legend in plot
       #' Define title for legend
-      if (nbofcp == 1) { cptext <- "Cutpoint:  " } else { cptext <- "Cutpoints:  " }
+      if (nb_of_cp == 1) { cptext <- "Cutpoint:  " } else { cptext <- "Cutpoints:  " }
 
       legend(
             "bottomleft",
             title = cptext,
             cex = 0.8,
-            paste("\u2264", cp[1]),
+            paste("\u2264", round((cp[1]),dp)),
             lty = 1,
             col = tempcolors[1:(length(degfr)+1)],
             lwd = 2
@@ -224,8 +224,8 @@ pspplot <-
          "bottomleft",
          title = cptext,
          cex = 0.8,
-         if (nbofcp == 1) {paste("\u2264", cp[1])} else {
-            paste("\u2264", cp[1], "and", "\u2264", cp[2]) } ,
+         if (nb_of_cp == 1) {paste("\u2264", round((cp[1]),dp))} else {
+            paste("\u2264", round((cp[1]),dp), "and", "\u2264", round((cp[2]),dp)) } ,
          lty = 1,
          col = tempcolors[1:(length(degfr)+1)],
          lwd = 2

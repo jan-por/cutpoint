@@ -1,7 +1,7 @@
 #' @title Plot AIC values
 #'
 #' @description Create plot of AIC values of estimating procedure
-#' @name aicplot
+#' @name aic_plot
 #' @param cpobj list, contains a vector of AIC values (AIC_values) of the
 #'   estimating procedure
 #' @param dp.aic numeric, digits for the AIC values
@@ -14,14 +14,14 @@
 #'                     mean = 0, sd = 5), digits = 2)
 #'
 #' cpobj <- list(AIC_values = AIC_values)
-#' aicplot(cpobj, dp.aic = 2)
+#' aic_plot(cpobj, dp.aic = 2)
 #' @importFrom graphics plot title legend
 #' @importFrom utils globalVariables
 #' @export
 #'
-#' @seealso \code{\link{est.cutpoint}}
+#' @seealso \code{\link{est_cutpoint}}
 
-aicplot <-
+aic_plot <-
    function(cpobj, dp.aic = 2) {
 
       if (!is.list(cpobj)) {
@@ -47,7 +47,7 @@ aicplot <-
       smallest_AIC <- min(AIC_values)
 
       plot(AIC_values)
-      title(main = "AIC-values of the estimating prozess")
+      title(main = "AIC-values of the estimation process")
 
       legend("bottomleft",
              legend = paste("min AIC: ", smallest_AIC),

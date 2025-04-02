@@ -4,7 +4,7 @@
 #'   criterion in a Cox proportional hazards model. The cutpoints are estimated
 #'   by dichotomizing the variable. The cutpoints with the lowest AIC value are
 #'   chosen.
-#' @name est.cutpoint
+#' @name est_cutpoint
 #'
 #' @param cpvarname character, name of the variable for which the cutpoints are
 #'   estimated
@@ -14,13 +14,13 @@
 #'   factors. If there are no covariates set: covariates = NULL
 #' @param data a data.frame, contains the following variables: variable which is
 #'   dichotomized, follow-up time, event (status indicator) and the covariates
-#' @param nbofcp numeric, number of cutpoints to be estimated
+#' @param nb_of_cp numeric, number of cutpoints to be estimated
 #' @param bandwith numeric, minimum group size in percent of the total sample
 #'   size, bandwith must be between 0 and 0.3
 #' @param ushape logical value: if TRUE, the cutpoints are estimated under the
 #'   assumtion that the spline plot shows a u-form
 #' @param symtails logical value: if TRUE, the cutpoints are estimated with
-#'   symmetric tails. If nbofcp=1, symtails is set to FALSE
+#'   symmetric tails. If nb_of_cp=1, symtails is set to FALSE
 #' @param dp numeric, number of decimal places the cutpoints are rounded to
 #' @param plot_splines logical value: if TRUE, a penalized spline plot is
 #'   created
@@ -38,13 +38,13 @@
 #' @importFrom utils globalVariables
 #' @export
 #'
-est.cutpoint <-
+est_cutpoint <-
 function(cpvarname,
          time         = "time",
          event        = "event",
          covariates   = NULL,
          data         = data,
-         nbofcp       = 1,
+         nb_of_cp     = 1,
          bandwith     = 0.1,
          ushape       = FALSE,
          symtails     = FALSE,
@@ -103,11 +103,11 @@ function(cpvarname,
       stop("data must be a data.frame")
    }
 
-   if (!is.numeric(nbofcp))
-      stop("nbofcp must be numeric")
-   if (nbofcp != 1 &
-       nbofcp != 2)
-      stop("nbofcp must be 1 or 2")
+   if (!is.numeric(nb_of_cp))
+      stop("nb_of_cp must be numeric")
+   if (nb_of_cp != 1 &
+       nb_of_cp != 2)
+      stop("nb_of_cp must be 1 or 2")
 
    if (!is.numeric(bandwith))
       stop("bandwith must be numeric")
@@ -173,19 +173,27 @@ function(cpvarname,
    #'     missing values in biomarker
    nrm  <- nrow(cpdata)
 
+   if (is.null(covariates) && nrm < 200 && ushape == TRUE) {
+      cat(" \n")
+      cat("! With few observations and without the use of covariates, a warning \n")
+      cat("may occur: - Loglik converges before ... may be infinite. - \n")
+      cat("The test that is triggered to generate this warning is very sensitive.")
+      cat(" \n")
+   }
+
    #' If there are no covariates, cov is defined as a constant
    if (is.null(covariates)) {cov_ <- rep(1, nrm)}
 
 
    #' If only one cutpoint is estimated, symtails and ushape is set to FALSE
-   if (nbofcp == 1) {
+   if (nb_of_cp == 1) {
       symtails <- ushape <- FALSE
    }
 
    #' Numbers of observations which should at least remain in line
-   m.perm <- combine.factors(bandwith, nbofcp, nrm, symtails)
+   m.perm <- combine_factors(bandwith, nb_of_cp, nrm, symtails)
 
-   #' If ushape==TRUE then create new m.perm with 3 categories, as ushape only
+   #' If ushape==TRUE then create new m.perm with 2 categories, as u-shape only
    #'     has 2 categories
    if (ushape == TRUE) {
       m.perm[m.perm == 3] <- 1
@@ -197,7 +205,7 @@ function(cpvarname,
    #'     be run through
    nbr.m.perm <- nrow(m.perm)
 
-   #' vector for AIC values
+   #' Vector for AIC values
    AIC_values <- rep(NA, nbr.m.perm)
 
    #' After 5%, remaining time is communicated for this timefactor is defined
@@ -240,7 +248,7 @@ function(cpvarname,
    #' if ushape==TRUE then create new m.perm with 3 categories, as ushape
    #'    has only 2 categories
    if (ushape == TRUE) {
-      m.perm <- combine.factors(bandwith, nbofcp, nrm, symtails)
+      m.perm <- combine_factors(bandwith, nb_of_cp, nrm, symtails)
    }
 
 
@@ -295,12 +303,12 @@ function(cpvarname,
    cat("--------------------------------------------------------------------\n")
    cat("SETTINGS:\n")
    cat(" Cutpoint-variable                = ", cpvarname, "\n")
-   cat(" Number of cutpoints   (nbofcp)   = ", nbofcp, "\n")
+   cat(" Number of cutpoints   (nb_of_cp) = ", nb_of_cp, "\n")
    cat(" Min. group size in %  (bandwith) = ", bandwith, "\n")
    cat(" Symmetric tails       (symtails) = ", symtails,
-       "  (is set FALSE if nbofcp = 1)\n")
+       "  (is set FALSE if nb_of_cp = 1)\n")
    cat(" Cutpoints for u-shape (ushape)   = ", ushape,
-       "  (is set FALSE if nbofcp = 1)\n")
+       "  (is set FALSE if nb_of_cp = 1)\n")
    cat("--------------------------------------------------------------------\n")
    if (is.null(covariates)) {
       cat("No covariates were selected\n")
@@ -311,9 +319,9 @@ function(cpvarname,
    cat("Minimum group size is ", round((nrm_start * bandwith), 0),
      " (", bandwith * 100, "% of sample size in original dataset, N = ", nrm_start,  ")\n", sep = "")
    cat("--------------------------------------------------------------------\n")
-   cat("Number of Cutpoints searching for:", nbofcp, "\n")
+   cat("Number of Cutpoints searching for:", nb_of_cp, "\n")
 
-   if (nbofcp == 1) {
+   if (nb_of_cp == 1) {
 
       cat("Cutpoint:", cpvarname, "\u2264", cp[1], "\n")
       cat("-----------------------------------------------------------------\n")
@@ -325,7 +333,7 @@ function(cpvarname,
       cp <- cp[-2]
    }
 
-   if (nbofcp == 2) {
+   if (nb_of_cp == 2) {
 
       cat(" 1.Cutpoint:", cpvarname, "\u2264", cp[1], "\n")
       cat(" 2.Cutpoint:", cpvarname, "\u2264", cp[2], "\n")
@@ -345,16 +353,16 @@ function(cpvarname,
       cp = cp,
       cpdata = cpdata,
       cpvarname = cpvarname,
-      nbofcp = nbofcp,
+      nb_of_cp = nb_of_cp,
       dp = dp,
       AIC_values = AIC_values
    )
 
    #' Plot Splines
    if (plot_splines == TRUE) {
-      pspplot(returnlist, show.splines = all_splines)
+      splines_plot(returnlist, show_splines = all_splines)
    }
 
    return(returnlist)
 
-} # End: est.cutpoint <- function
+} # End: est_cutpoint <- function
