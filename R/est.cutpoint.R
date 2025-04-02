@@ -2,30 +2,35 @@
 #'
 #' @description One or two cutpoints of a variable are estimated by the AIC
 #'   criterion in a Cox proportional hazards model. The cutpoints are estimated
-#'   by dichotomizing the variable and testing the log-likelihood ratio test.
-#'   The cutpoints with the lowest AIC value are chosen.
+#'   by dichotomizing the variable. The cutpoints with the lowest AIC value are
+#'   chosen.
 #' @name est.cutpoint
 #'
 #' @param cpvarname character, name of the variable for which the cutpoints are
-#'     estimated
-#' @param time character, name of the time variable
-#' @param event character, name of the event variable
-#' @param covariates character, vector with the names of the covariates or/ and
-#'   factors; if there are no covariates, covariates = NULL
-#' @param data data.frame, data set with the variables
-#' @param nbofcp numeric, number of cutpoints searching for
+#'   estimated
+#' @param time character, this is the follow-up time
+#' @param event character, the status indicator, normally 0=no event, 1=event
+#' @param covariates character vector with the names of the covariates or/ and
+#'   factors. If there are no covariates set: covariates = NULL
+#' @param data a data.frame, contains the following variables: variable which is
+#'   dichotomized, follow-up time, event (status indicator) and the covariates
+#' @param nbofcp numeric, number of cutpoints to be estimated
 #' @param bandwith numeric, minimum group size in percent of the total sample
 #'   size, bandwith must be between 0 and 0.3
-#' @param ushape logical, if TRUE the cutpoints are estimated with three
-#'   categories
-#' @param symtails logical, if TRUE the cutpoints are estimated with symmetric
-#'   tails
+#' @param ushape logical value: if TRUE, the cutpoints are estimated under the
+#'   assumtion that the spline plot shows a u-form
+#' @param symtails logical value: if TRUE, the cutpoints are estimated with
+#'   symmetric tails. If nbofcp=1, symtails is set to FALSE
 #' @param dp numeric, number of decimal places the cutpoints are rounded to
-#' @param plot_splines logical, if TRUE creates pspline plot
-#' @param all_splines logical, if TRUE all splines are shown
-#'
-#' @returns returns the estimated cutpoints and the characteristics of the groups
-#'  for the original dataset
+#' @param plot_splines logical value: if TRUE, a penalized spline plot is
+#'   created
+#' @param all_splines logical value: if TRUE, the plot shows splines with
+#'   different degrees of freedom. This may help identify if overfitting occurs.
+#' @references Govindarajulu, U., & Tarpey, T. (2020). Optimal partitioning for
+#'   the proportional hazards model. Journal of Applied Statistics, 49(4),
+#'   968–987. https://doi.org/10.1080/02664763.2020.1846690
+#' @returns returns the estimated cutpoints and the characteristics of the
+#'   groups in relation to the original data set
 #' @importFrom survival coxph
 #' @importFrom survival Surv
 #' @importFrom stats AIC
@@ -35,17 +40,17 @@
 #'
 est.cutpoint <-
 function(cpvarname,
-         time = "time",
-         event = "event",
-         covariates = NULL,
-         data = data,
-         nbofcp = 1,
-         bandwith = 0.1,
-         ushape     = FALSE,
-         symtails   = FALSE,
-         dp         = 2,
+         time         = "time",
+         event        = "event",
+         covariates   = NULL,
+         data         = data,
+         nbofcp       = 1,
+         bandwith     = 0.1,
+         ushape       = FALSE,
+         symtails     = FALSE,
+         dp           = 2,
          plot_splines = TRUE,
-         all_splines = TRUE) {
+         all_splines  = TRUE) {
 
    #' Check if the input is correct
    #' -------------------------------------------------------------------------
@@ -76,7 +81,7 @@ function(cpvarname,
    }
 
    if (any(data[ ,time] <= 0)){
-      cat("\nPlease note: For at least one observation, follow-up time is","\u2264","0\n")
+      cat("\nPlease note: For at least one observation the follow-up time is","\u2264","0\n")
       cat("this can lead to an error message of the Cox regression\n")
    }
 
@@ -312,7 +317,7 @@ function(cpvarname,
 
       cat("Cutpoint:", cpvarname, "\u2264", cp[1], "\n")
       cat("-----------------------------------------------------------------\n")
-      cat("Group sizes for original dataset\n")
+      cat("Group size in relation to the original data set\n")
       cat(" Total:   N = ", nrm_start, "\n", sep = "")
       cat(" Group 1: n = ", nbbygroup[1], " (", round(percbygroup[1]*100,1), "%)\n", sep = "")
       cat(" Group 2: n = ", nbbygroup[2], " (", round(percbygroup[2]*100,1), "%)\n", sep = "")
@@ -325,7 +330,7 @@ function(cpvarname,
       cat(" 1.Cutpoint:", cpvarname, "\u2264", cp[1], "\n")
       cat(" 2.Cutpoint:", cpvarname, "\u2264", cp[2], "\n")
       cat("-----------------------------------------------------------------\n")
-      cat("Group sizes for original dataset\n")
+      cat("Group size in relation to the original data set\n")
       cat(" Total:   N = ", nrm_start, "\n", sep = "")
       cat(" Group 1: n = ", nbbygroup[1], " (", round(percbygroup[1]*100,1), "%)\n", sep = "")
       cat(" Group 2: n = ", nbbygroup[2], " (", round(percbygroup[2]*100,1), "%)\n", sep = "")

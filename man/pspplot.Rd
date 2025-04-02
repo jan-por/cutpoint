@@ -2,21 +2,28 @@
 % Please edit documentation in R/pspplot.R
 \name{pspplot}
 \alias{pspplot}
-\title{Plot psplines}
+\title{Plot penalized smoothing splines and shows cutpoints}
 \usage{
 pspplot(cpobj, show.splines = TRUE)
 }
 \arguments{
-\item{cpobj}{list contains variables for pspline plot}
+\item{cpobj}{list, contains variables for pspline plot: nbofcp (number of
+cutpoints), cp (contain one or two cutpoint/s), dp (digits for plot),
+cpvarname (name of the variable for which the cutpoints are estimated)
+cpdata (a data.frame, contains the following variables: variable which is
+dichotomized, time (follow-up time), event (status indicator) and covariates
+(a vector with the names of the covariates))}
 
-\item{show.splines}{logical, if TRUE shows the splines with different DF}
+\item{show.splines}{logical value: if TRUE, shows the splines for different
+degree of freedom. This may help identify if overfitting occurs.}
 }
 \value{
-returns a plot with the pspline and shows the cutpoints
+returns a plot with penalized smoothing splines and shows the
+cutpoints
 }
 \description{
-Create pspline plot with different degrees of freedom and
-shows the cutpoints of the biomarker
+Create penalized smoothing splines plot with different degrees
+of freedom and shows the cutpoints of the biomarker
 }
 \examples{
 biomarker <- rnorm(100, mean = 100, sd = 10)
@@ -27,18 +34,18 @@ plot_splines_list <- list(cpdata = datf, nbofcp = 1, cp = 95, dp = 2,
     cpvarname = "Biomarker")
 pspplot(plot_splines_list)
 }
-\keyword{Define}
-\keyword{Get}
-\keyword{biomarker}
-\keyword{cutpoint}
-\keyword{degree}
-\keyword{for}
-\keyword{freedom}
-\keyword{of}
-\keyword{optimal}
-\keyword{plot}
-\keyword{pspline}
-\keyword{quantiles}
-\keyword{termplot}
-\keyword{used}
-\keyword{visualization}
+\seealso{
+\code{\link{est.cutpoint}}
+Check if cpobj is a list
+Extract necessary variables from cpobj
+Check variables
+Get quantiles of biomarker
+Get optimal degree of freedom
+Define degree of freedom used for termplot
+Define main text for plot
+Visualization: pspline Plot - termplot -----------------------
+Show splines with different degrees of freedom and add legend
+Add lines for mean and quantiles of biomarker
+Show cutpoints as legend in plot
+Define title for legend
+}

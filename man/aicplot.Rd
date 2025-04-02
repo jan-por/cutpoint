@@ -7,7 +7,8 @@
 aicplot(cpobj, dp.aic = 2)
 }
 \arguments{
-\item{cpobj}{list, contains a vector of AIC values}
+\item{cpobj}{list, contains a vector of AIC values (AIC_values) of the
+estimating procedure}
 
 \item{dp.aic}{numeric, digits for the AIC values}
 }

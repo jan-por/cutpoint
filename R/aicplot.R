@@ -2,7 +2,8 @@
 #'
 #' @description Create plot of AIC values of estimating procedure
 #' @name aicplot
-#' @param cpobj list, contains a vector of AIC values
+#' @param cpobj list, contains a vector of AIC values (AIC_values) of the
+#'   estimating procedure
 #' @param dp.aic numeric, digits for the AIC values
 #' @returns returns a plot which shows the AIC values of the estimating
 #'   procedure

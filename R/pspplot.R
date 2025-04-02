@@ -1,11 +1,18 @@
-#' @title Plot psplines
+#' @title Plot penalized smoothing splines and shows cutpoints
 #'
-#' @description Create pspline plot with different degrees of freedom and
-#'   shows the cutpoints of the biomarker
+#' @description Create penalized smoothing splines plot with different degrees
+#'     of freedom and shows the cutpoints of the biomarker
 #' @name pspplot
-#' @param cpobj list contains variables for pspline plot
-#' @param show.splines logical, if TRUE shows the splines with different DF
-#' @returns returns a plot with the pspline and shows the cutpoints
+#' @param cpobj list, contains variables for pspline plot: nbofcp (number of
+#'   cutpoints), cp (contain one or two cutpoint/s), dp (digits for plot),
+#'   cpvarname (name of the variable for which the cutpoints are estimated)
+#'   cpdata (a data.frame, contains the following variables: variable which is
+#'   dichotomized, time (follow-up time), event (status indicator) and covariates
+#'   (a vector with the names of the covariates))
+#' @param show.splines logical value: if TRUE, shows the splines for different
+#'    degree of freedom. This may help identify if overfitting occurs.
+#' @returns returns a plot with penalized smoothing splines and shows the
+#'    cutpoints
 #' @examples
 #' biomarker <- rnorm(100, mean = 100, sd = 10)
 #' time <- seq(1, 100, 1)
@@ -15,25 +22,30 @@
 #'     cpvarname = "Biomarker")
 #' pspplot(plot_splines_list)
 #' @importFrom stats quantile
-#' @importFrom survival coxph Surv
-#' @importFrom graphics abline legend lines mtext
+#' @importFrom survival coxph Surv pspline
+#' @importFrom graphics abline legend lines
 #' @importFrom utils globalVariables
 #' @export
 #'
-#' @keywords cutpoint pspline plot visualization termplot
-#'
+#' @seealso \code{\link{est.cutpoint}}
+
 pspplot <-
    function(cpobj, show.splines = TRUE) {
 
+      #' Check if cpobj is a list
       if (!is.list(cpobj)) {
          stop("Cutpoint object (cpobj) must be a list")
       }
 
+      #' Extract necessary variables from cpobj
       nbofcp    <- cpobj$nbofcp
       cp        <- cpobj$cp
       dp        <- cpobj$dp
       cpdata    <- cpobj$cpdata
       cpvarname <- cpobj$cpvarname
+
+
+      #' Check variables
 
       if (!is.numeric(nbofcp))
          stop("nbofcp must be numeric")
@@ -95,7 +107,7 @@ pspplot <-
 
       #' Get optimal degree of freedom
       tfit <- survival::coxph(
-         formula = Surv(time, event) ~ pspline(
+         formula = Surv(time, event) ~ survival::pspline(
             x = biomarker,
             df = 0,
             caic = TRUE,
@@ -110,7 +122,7 @@ pspplot <-
 
       tempcolors <- c("#d7191c", "#fdae61", "#abd9e9", "#2c7bb6","black")
 
-
+      #' Define main text for plot
       if (show.splines ==  TRUE) {
          main_text <- "Splines with different degrees of freedom (df)"
       }
@@ -121,7 +133,7 @@ pspplot <-
                    ")")
       }
 
-
+      #' Visualization: pspline Plot - termplot -----------------------
       termplot(
          tfit,
          se       = TRUE,
@@ -144,8 +156,7 @@ pspplot <-
          )
       ) # End: termplot
 
-
-
+      #' Show splines with different degrees of freedom and add legend
       if (show.splines ==  TRUE) {
          for (i in 1:length(degfr)) {
             try(tfit <- survival::coxph(
@@ -179,6 +190,7 @@ pspplot <-
 
       } # End: if (show.splines ==  TRUE)
 
+      #' Add lines for mean and quantiles of biomarker
       abline(
          v = c(q[2], q[3], q[4], mean(biomarker)),
          col = c("grey", "grey", "grey", "red"),
@@ -194,9 +206,23 @@ pspplot <-
          abline(v = cp[2], col = "red", lwd = 2)
       }
 
+      #' Show cutpoints as legend in plot
+      #' Define title for legend
+      if (nbofcp == 1) { cptext <- "Cutpoint:  " } else { cptext <- "Cutpoints:  " }
+
+      legend(
+            "bottomleft",
+            title = cptext,
+            cex = 0.8,
+            paste("\u2264", cp[1]),
+            lty = 1,
+            col = tempcolors[1:(length(degfr)+1)],
+            lwd = 2
+         )
+
       legend(
          "bottomleft",
-         title = "Cutpoint:  ",
+         title = cptext,
          cex = 0.8,
          if (nbofcp == 1) {paste("\u2264", cp[1])} else {
             paste("\u2264", cp[1], "and", "\u2264", cp[2]) } ,

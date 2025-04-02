@@ -23,39 +23,47 @@ est.cutpoint(
 \item{cpvarname}{character, name of the variable for which the cutpoints are
 estimated}
 
-\item{time}{character, name of the time variable}
+\item{time}{character, this is the follow-up time}
 
-\item{event}{character, name of the event variable}
+\item{event}{character, the status indicator, normally 0=no event, 1=event}
 
-\item{covariates}{character, vector with the names of the covariates or/ and
-factors; if there are no covariates, covariates = NULL}
+\item{covariates}{character vector with the names of the covariates or/ and
+factors. If there are no covariates set: covariates = NULL}
 
-\item{data}{data.frame, data set with the variables}
+\item{data}{a data.frame, contains the following variables: variable which is
+dichotomized, follow-up time, event (status indicator) and the covariates}
 
-\item{nbofcp}{numeric, number of cutpoints searching for}
+\item{nbofcp}{numeric, number of cutpoints to be estimated}
 
 \item{bandwith}{numeric, minimum group size in percent of the total sample
 size, bandwith must be between 0 and 0.3}
 
-\item{ushape}{logical, if TRUE the cutpoints are estimated with three
-categories}
+\item{ushape}{logical value: if TRUE, the cutpoints are estimated under the
+assumtion that the spline plot shows a u-form}
 
-\item{symtails}{logical, if TRUE the cutpoints are estimated with symmetric
-tails}
+\item{symtails}{logical value: if TRUE, the cutpoints are estimated with
+symmetric tails. If nbofcp=1, symtails is set to FALSE}
 
 \item{dp}{numeric, number of decimal places the cutpoints are rounded to}
 
-\item{plot_splines}{logical, if TRUE creates pspline plot}
+\item{plot_splines}{logical value: if TRUE, a penalized spline plot is
+created}
 
-\item{all_splines}{logical, if TRUE all splines are shown}
+\item{all_splines}{logical value: if TRUE, the plot shows splines with
+different degrees of freedom. This may help identify if overfitting occurs.}
 }
 \value{
-returns the estimated cutpoints and the characteristics of the groups
-for the original dataset
+returns the estimated cutpoints and the characteristics of the
+groups in relation to the original data set
 }
 \description{
 One or two cutpoints of a variable are estimated by the AIC
 criterion in a Cox proportional hazards model. The cutpoints are estimated
-by dichotomizing the variable and testing the log-likelihood ratio test.
-The cutpoints with the lowest AIC value are chosen.
+by dichotomizing the variable. The cutpoints with the lowest AIC value are
+chosen.
+}
+\references{
+Govindarajulu, U., & Tarpey, T. (2020). Optimal partitioning for
+the proportional hazards model. Journal of Applied Statistics, 49(4),
+968–987. https://doi.org/10.1080/02664763.2020.1846690
 }
