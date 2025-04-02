@@ -1,7 +1,7 @@
 #' @title Plot AIC values
 #'
 #' @description Create plot of AIC values of estimating procedure
-#' @name aic.plot
+#' @name aicplot
 #' @param cpobj list, contains a vector of AIC values
 #' @param dp.aic numeric, digits for the AIC values
 #' @returns returns a plot which shows the AIC values of the estimating
@@ -13,16 +13,14 @@
 #'                     mean = 0, sd = 5), digits = 2)
 #'
 #' cpobj <- list(AIC_values = AIC_values)
-#' aic.plot(cpobj, dp.aic = 2)
+#' aicplot(cpobj, dp.aic = 2)
 #' @importFrom graphics plot title legend
-#' @importFrom utils round
-#' @importFrom stats min
 #' @importFrom utils globalVariables
 #' @export
 #'
 #' @seealso \code{\link{est.cutpoint}}
 
-aic.plot <-
+aicplot <-
    function(cpobj, dp.aic = 2) {
 
       if (!is.list(cpobj)) {

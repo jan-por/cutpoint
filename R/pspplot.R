@@ -2,7 +2,7 @@
 #'
 #' @description Create pspline plot with different degrees of freedom and
 #'   shows the cutpoints of the biomarker
-#' @name pspline.plot
+#' @name pspplot
 #' @param cpobj list contains variables for pspline plot
 #' @param show.splines logical, if TRUE shows the splines with different DF
 #' @returns returns a plot with the pspline and shows the cutpoints
@@ -13,7 +13,7 @@
 #' datf <- data.frame(time, event, biomarker)
 #' plot_splines_list <- list(cpdata = datf, nbofcp = 1, cp = 95, dp = 2,
 #'     cpvarname = "Biomarker")
-#' pspline.plot(plot_splines_list)
+#' pspplot(plot_splines_list)
 #' @importFrom stats quantile
 #' @importFrom survival coxph Surv
 #' @importFrom graphics abline legend lines mtext
@@ -22,7 +22,7 @@
 #'
 #' @keywords cutpoint pspline plot visualization termplot
 #'
-pspline.plot <-
+pspplot <-
    function(cpobj, show.splines = TRUE) {
 
       if (!is.list(cpobj)) {

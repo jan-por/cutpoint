@@ -347,7 +347,7 @@ function(cpvarname,
 
    #' Plot Splines
    if (plot_splines == TRUE) {
-      pspline.plot(returnlist, show.splines = all_splines)
+      pspplot(returnlist, show.splines = all_splines)
    }
 
    return(returnlist)
