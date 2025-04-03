@@ -15,8 +15,8 @@
 #' @param data a data.frame, contains the following variables: variable which is
 #'   dichotomized, follow-up time, event (status indicator) and the covariates
 #' @param nb_of_cp numeric, number of cutpoints to be estimated
-#' @param bandwith numeric, minimum group size in percent of the total sample
-#'   size, bandwith must be between 0 and 0.3
+#' @param bandwith numeric, minimum group size per group in percent of the total
+#'   sample size, bandwith must be between 0.05 and 0.30, default is 0.10
 #' @param ushape logical value: if TRUE, the cutpoints are estimated under the
 #'   assumtion that the spline plot shows a u-form
 #' @param symtails logical value: if TRUE, the cutpoints are estimated with
@@ -33,8 +33,7 @@
 #'   groups in relation to the original data set
 #' @importFrom survival coxph
 #' @importFrom survival Surv
-#' @importFrom stats AIC
-#' @importFrom stats complete.cases
+#' @importFrom stats AIC complete.cases median quantile rnorm
 #' @importFrom utils globalVariables
 #' @export
 #'
@@ -111,9 +110,9 @@ function(cpvarname,
 
    if (!is.numeric(bandwith))
       stop("bandwith must be numeric")
-   if (bandwith < 0 |
-       bandwith > 0.3)
-      stop("bandwith must be between 0 and 0.3")
+   if (bandwith < 0.05 |
+       bandwith > 0.30)
+      stop("bandwith must be between 0.05 and 0.30")
 
    if (!is.logical(ushape))
       stop("ushape must be logical (TRUE or FALSE)")
@@ -150,7 +149,8 @@ function(cpvarname,
    #' Observations are deleted for missing values of the cutpoint variable
    cpdata <- cpdata[complete.cases(cpdata$biomarker), ]
 
-   #' If there are more than 1000 observations, a random sample with 1000 observations is created
+   #' If there are more than 1000 observations, a random sample with 1000
+   #'     observations is created
    sample_yes <- FALSE
 
    if (nrow(cpdata) > 1000) {
@@ -173,21 +173,36 @@ function(cpvarname,
    #'     missing values in biomarker
    nrm  <- nrow(cpdata)
 
-   if (is.null(covariates) && nrm < 200 && ushape == TRUE) {
-      cat(" \n")
-      cat("! With few observations and without the use of covariates, a warning \n")
-      cat("may occur: - Loglik converges before ... may be infinite. - \n")
-      cat("The test that is triggered to generate this warning is very sensitive.")
-      cat(" \n")
-   }
+   #if (is.null(covariates) && nrm < 200 && ushape == TRUE) {
+   #   cat(" \n")
+   #   cat("! With few observations and without the use of covariates, a warning \n")
+   #   cat("may occur: - Loglik converges before ... may be infinite. - \n")
+   #   cat("The test that is triggered to generate this warning is very sensitive.")
+   #   cat(" \n")
+   #}
 
    #' If there are no covariates, cov is defined as a constant
    if (is.null(covariates)) {cov_ <- rep(1, nrm)}
 
-
    #' If only one cutpoint is estimated, symtails and ushape is set to FALSE
    if (nb_of_cp == 1) {
       symtails <- ushape <- FALSE
+   }
+
+   # Prevent infinite of Cox regression in case of no covariate and ushape==TRUE
+   if (is.null(covariates) && ushape == TRUE) {
+
+      # Calculate SD on basis of the median of the biomarker:
+
+      median_biomarker <- median(biomarker, na.rm = TRUE)
+
+      # Prevent division of 0
+      ifelse (median_biomarker == 0, median_biomarker <- 0.1, median_biomarker)
+      if (median_biomarker > 0) {sd_value <- median_biomarker / 1e+10} else {
+         sd_value <- abs( 1/(median_biomarker * (1e+10)))}
+
+      # Set cov_ as infinite preventer
+      cov_ <- rnorm(nrm, sd = sd_value)
    }
 
    #' Numbers of observations which should at least remain in line
@@ -232,7 +247,7 @@ function(cpvarname,
       #' Show user approx. remaining time
       if (nbr.m.perm.time == loop_nr) {
          tm <- proc.time() - ptm
-         cat("\nApprox. remaining time in seconds:", round((tm[3] * (1 / timefactor)
+         cat("\nApprox. remaining time for estimation in seconds:", round((tm[3] * (1 / timefactor)
          ), 0), "\n")
          ptm <- proc.time()
       }

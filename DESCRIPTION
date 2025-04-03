@@ -25,3 +25,5 @@ RoxygenNote: 7.3.2
 Roxygen: list(markdown = TRUE)
 URL: https://github.com/jan-por/cutpoint
 BugReports: https://github.com/jan-por/cutpoint/issues
+Depends: 
+    R (>= 3.5)

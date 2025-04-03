@@ -5,3 +5,6 @@
 ^LICENSE\.md$
 ^\.github$
 ^README\.Rmd$
+^generate_cp_ushape_data\.R$
+^data-raw$
+^notesignore$

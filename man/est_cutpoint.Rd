@@ -35,8 +35,8 @@ dichotomized, follow-up time, event (status indicator) and the covariates}
 
 \item{nb_of_cp}{numeric, number of cutpoints to be estimated}
 
-\item{bandwith}{numeric, minimum group size in percent of the total sample
-size, bandwith must be between 0 and 0.3}
+\item{bandwith}{numeric, minimum group size per group in percent of the total
+sample size, bandwith must be between 0.05 and 0.30, default is 0.10}
 
 \item{ushape}{logical value: if TRUE, the cutpoints are estimated under the
 assumtion that the spline plot shows a u-form}

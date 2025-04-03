@@ -208,13 +208,14 @@ splines_plot <-
 
       #' Show cutpoints as legend in plot
       #' Define title for legend
-      if (nb_of_cp == 1) { cptext <- "Cutpoint:  " } else { cptext <- "Cutpoints:  " }
+      if (nb_of_cp == 1) { cptext <- "Cutpoint:  " } else {
+         cptext <- "Cutpoints:  " }
 
       legend(
             "bottomleft",
             title = cptext,
             cex = 0.8,
-            paste("\u2264", round((cp[1]),dp)),
+            paste("\u2264", round((cp[1]), dp)),
             lty = 1,
             col = tempcolors[1:(length(degfr)+1)],
             lwd = 2
@@ -224,8 +225,9 @@ splines_plot <-
          "bottomleft",
          title = cptext,
          cex = 0.8,
-         if (nb_of_cp == 1) {paste("\u2264", round((cp[1]),dp))} else {
-            paste("\u2264", round((cp[1]),dp), "and", "\u2264", round((cp[2]),dp)) } ,
+         if (nb_of_cp == 1) {paste("\u2264", round((cp[1]), dp))} else {
+            paste("\u2264", round((cp[1]),dp), "and", "\u2264",
+                  round((cp[2]), dp)) },
          lty = 1,
          col = tempcolors[1:(length(degfr)+1)],
          lwd = 2
