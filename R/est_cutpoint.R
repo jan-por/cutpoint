@@ -198,8 +198,8 @@ function(cpvarname,
 
       # Prevent division of 0
       ifelse (median_biomarker == 0, median_biomarker <- 0.1, median_biomarker)
-      if (median_biomarker > 0) {sd_value <- median_biomarker / 1e+10} else {
-         sd_value <- abs( 1/(median_biomarker * (1e+10)))}
+      if (median_biomarker > 0) {sd_value <- median_biomarker / 1e+8} else {
+         sd_value <- abs( 1/(median_biomarker * (1e+8)))}
 
       # Set cov_ as infinite preventer
       cov_ <- rnorm(nrm, sd = sd_value)
@@ -208,10 +208,17 @@ function(cpvarname,
    #' Numbers of observations which should at least remain in line
    m.perm <- combine_factors(bandwith, nb_of_cp, nrm, symtails)
 
-   #' If ushape==TRUE then create new m.perm with 2 categories, as u-shape only
+   #' If ushape is TRUE then create new m.perm with 2 categories, as u-shape only
    #'     has 2 categories
    if (ushape == TRUE) {
       m.perm[m.perm == 3] <- 1
+   }
+
+   #' If ushape is TRUE and bandwith < 0.1, then bandwith is set to 0.1
+   change_bw <- FALSE
+   if (ushape == TRUE && bandwith < 0.1) {
+      bandwith <- 0.1
+      change_bw <- TRUE
    }
 
    loop_nr <- 0
@@ -319,7 +326,11 @@ function(cpvarname,
    cat("SETTINGS:\n")
    cat(" Cutpoint-variable                = ", cpvarname, "\n")
    cat(" Number of cutpoints   (nb_of_cp) = ", nb_of_cp, "\n")
-   cat(" Min. group size in %  (bandwith) = ", bandwith, "\n")
+   if (change_bw == TRUE) {
+      cat(" Min. group size in %  (bandwith) = ", bandwith,
+          " (was set to 0.1 because ushape is TRUE)\n")
+      } else {
+   cat(" Min. group size in %  (bandwith) = ", bandwith, "\n")}
    cat(" Symmetric tails       (symtails) = ", symtails,
        "  (is set FALSE if nb_of_cp = 1)\n")
    cat(" Cutpoints for u-shape (ushape)   = ", ushape,

@@ -1,3 +1,6 @@
+## code to prepare `cp_ushape_data` dataset goes here
+
+
 #Generate cp_ushape_data as example
 n <- 200
 x <- rnorm(n)
