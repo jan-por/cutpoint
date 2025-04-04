@@ -5,8 +5,7 @@
 #' @param cpobj list, contains a vector of AIC values (AIC_values) of the
 #'   estimating procedure
 #' @param dp.aic numeric, digits for the AIC values
-#' @returns returns a plot which shows the AIC values of the estimating
-#'   procedure
+#' @returns Plots the AIC values, derived from the estimation procedure.
 #' @examples
 #' # Create a vector with AIC values
 #' AIC_values <- c(1950:1910, 1910:1920, 1920:1880, 1880:1920)

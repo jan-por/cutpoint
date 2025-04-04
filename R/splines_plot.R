@@ -5,14 +5,14 @@
 #' @name splines_plot
 #' @param cpobj list, contains variables for pspline plot: nb_of_cp (number of
 #'   cutpoints), cp (contain one or two cutpoint/s), dp (digits for plot),
-#'   cpvarname (name of the variable for which the cutpoints are estimated)
-#'   cpdata (a data.frame, contains the following variables: variable which is
+#'   cpvarname (name of the variable for that the cutpoints are estimated)
+#'   cpdata (a data frame, contains the following variables: a variable that is
 #'   dichotomized, time (follow-up time), event (status indicator) and covariates
-#'   (a vector with the names of the covariates))
-#' @param show_splines logical value: if TRUE, shows the splines for different
-#'    degree of freedom. This may help identify if overfitting occurs.
-#' @returns returns a plot with penalized smoothing splines and shows the
-#'    cutpoints
+#'   (a vector with the names of the covariates and/or factors))
+#' @param show_splines logical value: if TRUE, The plot shows splines with
+#'   different degrees of freedom. This may help determine whether
+#'   misspecification or overfitting occurs.
+#' @returns Plots penalized smoothing splines and shows the cutpoints.
 #' @examples
 #' biomarker <- rnorm(100, mean = 100, sd = 10)
 #' time <- seq(1, 100, 1)

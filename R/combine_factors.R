@@ -8,9 +8,7 @@
 #'   with missing values in biomarker
 #' @param symtails logical, if TRUE the tails of the dichotomised biomarker
 #'   are symmetrical
-#' @returns returns an integer matrix with all factor combinations of the
-#'   dichotomised biomarker
-#' @export
+#' @returns Returns all factor combinations of the dichotomized variable.
 
 combine_factors <-
    function(bandwith = 0.1, nb_of_cp = 1, nrm, symtails = FALSE) {

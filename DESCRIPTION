@@ -1,7 +1,7 @@
 Package: cutpoint
 Type: Package
 Title: Estimate cutpoints of metric variables in the context of Cox-regression
-Version: 0.1.0
+Version: 0.0.0.9000
 Authors@R: c(
     person(
       "Jan", "Porthun",
@@ -9,9 +9,19 @@ Authors@R: c(
       role = c("aut", "cre")
     )
   )
-Description: One or two cutpoints of a metric variable, such as a biomarker, 
-    can be determined in the context of survival analysis. These cutpoints are 
-    utilized to create groups with differend survival probabilities. 
+Description: One or two cutpoints of a metric variable are estimated using
+    the AIC criterion within a multivariable Cox proportional hazards model.
+    These cutpoints are used to create two or three groups with different
+    survival probabilities. The cutpoints are estimated by dichotomizing the
+    variable of interest, which is then incorporated into the Cox-regression
+    model. The biomarker cutpoint is the value at which the AIC reaches its
+    lowest value for the corresponding Cox-regression model. This process
+    occurs within a multivariable framework, as other covariates and/or
+    factors are considered during the search for the cutpoints.
+    Cutpoints can also be estimated when the variable of interest shows 
+    a U-shaped or inverse U-shaped relationship with to hazard ratio of 
+    time-to-event data. The argument symtail allows for the estimation of two 
+    cutpoints, ensuring that the two outer tails represent groups of equal size. 
 License: CC BY 4.0 + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -27,3 +37,6 @@ URL: https://github.com/jan-por/cutpoint
 BugReports: https://github.com/jan-por/cutpoint/issues
 Depends: 
     R (>= 3.5)
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

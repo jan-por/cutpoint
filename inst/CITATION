@@ -1,0 +1,9 @@
+bibentry(
+  bibtype  = "Manual",
+  title    = "Estimate cutpoints of metric variables in the context of Cox-regression",
+  author   = c(person("Porthun", "Jan", role = c("aut", "cre"))),
+  address = "NTNU, Norway",
+  year     = "2025",
+  note = "R package version 0.1.0",
+  url = "https://github.com/jan-por/cutpoint",
+)

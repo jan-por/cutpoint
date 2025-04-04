@@ -9,17 +9,17 @@ splines_plot(cpobj, show_splines = TRUE)
 \arguments{
 \item{cpobj}{list, contains variables for pspline plot: nb_of_cp (number of
 cutpoints), cp (contain one or two cutpoint/s), dp (digits for plot),
-cpvarname (name of the variable for which the cutpoints are estimated)
-cpdata (a data.frame, contains the following variables: variable which is
+cpvarname (name of the variable for that the cutpoints are estimated)
+cpdata (a data frame, contains the following variables: a variable that is
 dichotomized, time (follow-up time), event (status indicator) and covariates
-(a vector with the names of the covariates))}
+(a vector with the names of the covariates and/or factors))}
 
-\item{show_splines}{logical value: if TRUE, shows the splines for different
-degree of freedom. This may help identify if overfitting occurs.}
+\item{show_splines}{logical value: if TRUE, The plot shows splines with
+different degrees of freedom. This may help determine whether
+misspecification or overfitting occurs.}
 }
 \value{
-returns a plot with penalized smoothing splines and shows the
-cutpoints
+Plots penalized smoothing splines and shows the cutpoints.
 }
 \description{
 Create penalized smoothing splines plot with different degrees

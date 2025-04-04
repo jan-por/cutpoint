@@ -13,8 +13,7 @@ estimating procedure}
 \item{dp.aic}{numeric, digits for the AIC values}
 }
 \value{
-returns a plot which shows the AIC values of the estimating
-procedure
+Plots the AIC values, derived from the estimation procedure.
 }
 \description{
 Create plot of AIC values of estimating procedure

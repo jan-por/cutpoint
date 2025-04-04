@@ -1,41 +1,79 @@
-#' @title Estimates cutpoints
+#' @title Estimate cutpoints in a multivariable setting for survival data
 #'
-#' @description One or two cutpoints of a variable are estimated by the AIC
-#'   criterion in a Cox proportional hazards model. The cutpoints are estimated
-#'   by dichotomizing the variable. The cutpoints with the lowest AIC value are
-#'   chosen.
+#' @description One or two cutpoints of a metric variable are estimated using
+#'   the AIC criterion within a multivariable Cox proportional hazards model.
+#'   These cutpoints are used to create two or three groups with different
+#'   survival probabilities. The cutpoints are estimated by dichotomizing the
+#'   variable of interest, which is then incorporated into the Cox-regression
+#'   model. The biomarker cutpoint is the value at which the AIC reaches its
+#'   lowest value for the corresponding Cox-regression model. This process
+#'   occurs within a multivariable framework, as other covariates and/or
+#'   factors are considered during the search for the cutpoints.
+#'   Cutpoints can also be estimated when the variable of interest shows
+#'   a U-shaped or inverted U-shaped relationship with to hazard ratio of
+#'   time-to-event data. The argument symtail allows for the estimation of two
+#'   cutpoints, ensuring that the two outer tails represent groups of equal size.
 #' @name est_cutpoint
-#'
-#' @param cpvarname character, name of the variable for which the cutpoints are
-#'   estimated
+#' @param cpvarname character, the name of the variable for which the cut points
+#'   are estimated.
 #' @param time character, this is the follow-up time
 #' @param event character, the status indicator, normally 0=no event, 1=event
-#' @param covariates character vector with the names of the covariates or/ and
-#'   factors. If there are no covariates set: covariates = NULL
+#' @param covariates character vector with the names of the covariates and/ or
+#'   factors. If no covariates are used in the estimation process,
+#'   set covariates = NULL.
 #' @param data a data.frame, contains the following variables: variable which is
 #'   dichotomized, follow-up time, event (status indicator) and the covariates
+#'   and/or cofactors
 #' @param nb_of_cp numeric, number of cutpoints to be estimated
 #' @param bandwith numeric, minimum group size per group in percent of the total
 #'   sample size, bandwith must be between 0.05 and 0.30, default is 0.10
+#'   If ushape = TRUE, bandwidth must be at least 0.1.
 #' @param ushape logical value: if TRUE, the cutpoints are estimated under the
-#'   assumtion that the spline plot shows a u-form
+#'   assumtion that the spline plot shows a U-shaped form or a inverted U-shaped
+#'   curve.
 #' @param symtails logical value: if TRUE, the cutpoints are estimated with
-#'   symmetric tails. If nb_of_cp=1, symtails is set to FALSE
+#'   symmetric tails. If nb_of_cp = 1, symtails is set to FALSE
 #' @param dp numeric, number of decimal places the cutpoints are rounded to
 #' @param plot_splines logical value: if TRUE, a penalized spline plot is
 #'   created
-#' @param all_splines logical value: if TRUE, the plot shows splines with
-#'   different degrees of freedom. This may help identify if overfitting occurs.
+#' @param all_splines logical value: if TRUE, The plot shows splines with
+#'   different degrees of freedom. This may help determine whether
+#'   misspecification or overfitting occurs.
 #' @references Govindarajulu, U., & Tarpey, T. (2020). Optimal partitioning for
 #'   the proportional hazards model. Journal of Applied Statistics, 49(4),
 #'   968–987. https://doi.org/10.1080/02664763.2020.1846690
-#' @returns returns the estimated cutpoints and the characteristics of the
-#'   groups in relation to the original data set
+#' @returns Returns the cutpoints and the characteristics of the formed groups.
+#' @export
+#'
+#' @examples
+#' # Example 1:
+#' # Estimate two cutpoints of the variable biomarker.
+#' # The dataset data1 is included in this package and contains
+#' # the variables time, event, biomarker, cutpoint_1, and cutpoint_2.
+#' cpobj <- est_cutpoint(
+#'   cpvarname  = "biomarker",
+#'   covariates = c("covariate_1", "covariate_2"),
+#'   data       = data1,
+#'   nb_of_cp   = 2
+#'   )
+#'
+#' # Example 2:
+#' # Searching for cutpoints when the biomarker variable shows a U-shaped or
+#' # inverted U-shaped relationship to the hazard ratio.
+#' # The dataset data2_ushape is included in this package and contains
+#' # the variables time, event, biomarker, and cutpoint_1.
+#' cpobj <- est_cutpoint(
+#'   cpvarname  = "biomarker",
+#'   covariates = c("covariate_1"),
+#'   data       = data2_ushape,
+#'   nb_of_cp   = 2,
+#'   bandwith   = 0.2,
+#'   ushape     = TRUE
+#'   )
 #' @importFrom survival coxph
 #' @importFrom survival Surv
 #' @importFrom stats AIC complete.cases median quantile rnorm
 #' @importFrom utils globalVariables
-#' @export
 #'
 est_cutpoint <-
 function(cpvarname,
@@ -51,8 +89,8 @@ function(cpvarname,
          plot_splines = TRUE,
          all_splines  = TRUE) {
 
-   #' Check if the input is correct
-   #' -------------------------------------------------------------------------
+#' Verify that the input is correct
+#' Check if the cutpoint variable is in the data
    if (!all(cpvarname %in% colnames(data))) {
       stop("cpvarname must be included in data, check the name of cpvarname")
    }
@@ -66,6 +104,7 @@ function(cpvarname,
        stop("cpvarname must have more than two unique values")
    }
 
+#' Check if the time variable is in the data
    if (!is.character(time)) {
        stop("time must be a character")
    }
@@ -138,7 +177,7 @@ function(cpvarname,
    # "cpvarname" is used for labelling and "biomarker" for calculations
    biomarker <- cpvarname
 
-   #' Data frame contains only the variables that must be included in the model
+   #' data frame includes only the variables that should be part of the model    # ##########################################################
    cpdata <- data[, c(biomarker, time, event, covariates)]
 
    #' nrm = Number of rows in cpdata before possible changes
@@ -248,6 +287,8 @@ function(cpvarname,
                             cpdata)
 
       AIC_values[i] <- AIC(result.cox)
+
+      if (loop_nr < 10) print(result.cox)
 
       rm(result.cox)
 
