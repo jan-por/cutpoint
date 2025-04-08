@@ -27,6 +27,8 @@ Encoding: UTF-8
 LazyData: true
 Imports:
     graphics,
+    magrittr,
+    plotly,
     RcppAlgos,
     stats,
     survival,

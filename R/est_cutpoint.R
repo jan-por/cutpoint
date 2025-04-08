@@ -72,7 +72,8 @@
 #'   )
 #' @importFrom survival coxph
 #' @importFrom survival Surv
-#' @importFrom stats AIC complete.cases median quantile rnorm
+#' @importFrom stats AIC complete.cases median quantile rnorm as.formula
+#'                   update.formula
 #' @importFrom utils globalVariables
 #'
 est_cutpoint <-
@@ -177,8 +178,30 @@ function(cpvarname,
    # "cpvarname" is used for labelling and "biomarker" for calculations
    biomarker <- cpvarname
 
-   #' data frame includes only the variables that should be part of the model    # ##########################################################
+   #' data frame includes only the variables that should be part of the model
    cpdata <- data[, c(biomarker, time, event, covariates)]
+
+   #' Keep the original cutpoint variable
+   cpvariable_original <- sort(data[ ,biomarker])
+
+   # var_fac <- as.factor(cpdata$carditox)
+   # cpdata$carditox <- NULL
+   # dummies <- model.matrix(~var_fac)
+   # cpdata <- cbind(cpdata, dummies)
+   #
+   # var_fac <- as.factor(cpdata$sex)
+   # cpdata$sex <- NULL
+   # dummies <- model.matrix(~var_fac)
+   # cpdata <- cbind(cpdata, dummies)
+
+   # #options("contrasts")
+   # dummies <- model.matrix(~ carditox + sex, cpdata)
+   # print(head(dummies))
+   # cpdata$carditox <- cpdata$sex <- NULL
+   # cpdata <- cbind(cpdata, dummies)
+
+
+
 
    #' nrm = Number of rows in cpdata before possible changes
    nrm_start  <- nrow(cpdata)
@@ -201,12 +224,12 @@ function(cpvarname,
    cpdata <- cpdata[order(cpdata$biomarker), ]
    biomarker <- cpdata$biomarker
 
-   cov_ <- cbind(cpdata)
+   #cov_ <- cbind(cpdata)
 
    #' Remove elements from cov_ (time, event, biomarker)
-   cov_ <- cov_[!names(cov_) %in% c("time", "event", "biomarker")]
+   #cov_ <- cov_[!names(cov_) %in% c("time", "event", "biomarker")]
 
-   cov_ <- as.matrix(cov_)
+  # cov_ <- as.matrix(cov_)
 
    #' nrm = Number of rows in cpdata after removing observations with
    #'     missing values in biomarker
@@ -220,32 +243,51 @@ function(cpvarname,
    #   cat(" \n")
    #}
 
-   #' If there are no covariates, cov is defined as a constant
-   if (is.null(covariates)) {cov_ <- rep(1, nrm)}
 
-   #' If only one cutpoint is estimated, symtails and ushape is set to FALSE
+      #' If only one cutpoint is estimated, symtails and ushape is set to FALSE
    if (nb_of_cp == 1) {
-      symtails <- ushape <- FALSE
+      symtails <- FALSE
+      ushape   <- FALSE
    }
 
-   # Prevent infinite of Cox regression in case of no covariate and ushape==TRUE
-   if (is.null(covariates) && ushape == TRUE) {
-
-      # Calculate SD on basis of the median of the biomarker:
-
-      median_biomarker <- median(biomarker, na.rm = TRUE)
-
-      # Prevent division of 0
-      ifelse (median_biomarker == 0, median_biomarker <- 0.1, median_biomarker)
-      if (median_biomarker > 0) {sd_value <- median_biomarker / 1e+8} else {
-         sd_value <- abs( 1/(median_biomarker * (1e+8)))}
-
-      # Set cov_ as infinite preventer
-      cov_ <- rnorm(nrm, sd = sd_value)
+   #' If ushape is TRUE and bandwith < 0.1, then bandwith is set to 0.1
+   change_bw <- FALSE
+   if (ushape == TRUE && bandwith < 0.1) {
+      bandwith <- 0.1
+      change_bw <- TRUE    # Info for output
    }
+
+   #' If there are no covariates, constant_var is defined as a vector of 1
+   if (is.null(covariates)) {constant_var <- rep(1, nrm)}
+
+   # # Prevent infinite of Cox regression in case of no covariate and ushape==TRUE  # nicht mehr notwedig da über toler.inf = 1e-03 in coxph keine Warnung mehr
+   # if (is.null(covariates) && ushape == TRUE) {
+   #
+   #    # Calculate SD for the infinite preventer on basis of the median:
+   #
+   #    median_biomarker <- median(biomarker, na.rm = TRUE)
+   #
+   #    # Prevent division of 0
+   #    ifelse (median_biomarker == 0, median_biomarker <- 0.01, median_biomarker)
+   #    if (median_biomarker > 0) {sd_value <- median_biomarker / 1e+20} else {
+   #       sd_value <- abs( 1/(median_biomarker * (1e+20)))}
+   #
+   #    # Set constant (=constant_var) as infinite preventer
+   #    constant_var <- rnorm(nrm, sd = sd_value)
+   # }
+
+
+   # Formula (FML) for Cox regression from vector of covariates
+   if (!is.null(covariates)) {
+      FML <- as.formula(paste0('~ biomarker_dicho +', paste(covariates, collapse = "+")))
+   } else {
+      FML <- as.formula(paste0('~ biomarker_dicho + constant_var'))
+   }
+
 
    #' Numbers of observations which should at least remain in line
    m.perm <- combine_factors(bandwith, nb_of_cp, nrm, symtails)
+
 
    #' If ushape is TRUE then create new m.perm with 2 categories, as u-shape only
    #'     has 2 categories
@@ -253,12 +295,6 @@ function(cpvarname,
       m.perm[m.perm == 3] <- 1
    }
 
-   #' If ushape is TRUE and bandwith < 0.1, then bandwith is set to 0.1
-   change_bw <- FALSE
-   if (ushape == TRUE && bandwith < 0.1) {
-      bandwith <- 0.1
-      change_bw <- TRUE
-   }
 
    loop_nr <- 0
 
@@ -269,6 +305,13 @@ function(cpvarname,
    #' Vector for AIC values
    AIC_values <- rep(NA, nbr.m.perm)
 
+   #' Vector for Likelihood ratio test (LRT) values
+   LRT_values <- rep(NA, nbr.m.perm)
+
+   #' Matrix for cpvariable values
+   cpvariable_values <- matrix(NA, nrow = nbr.m.perm, ncol = 2)
+
+
    #' After 5%, remaining time is communicated for this timefactor is defined
    timefactor <- 0.05
    nbr.m.perm.time <- round(nbr.m.perm * timefactor, 0)
@@ -277,26 +320,38 @@ function(cpvarname,
    ptm <- proc.time()
 
 
+
    for (i in 1:(nbr.m.perm)) {
+
       loop_nr <- loop_nr + 1
 
-      biomarker_dicho <- as.factor(m.perm[i, ])
+      #biomarker_dicho <- as.factor(m.perm[i, ])                                # früher als Factor, Warum?
+      biomarker_dicho <- m.perm[i, ]
 
-      result.cox <-
-         survival::coxph(Surv(time, event) ~ cov_ + biomarker_dicho, data =
-                            cpdata)
+      result.cox <- survival::coxph(update.formula(Surv(time, event)~., FML), data = cpdata, eps = 1e-09, toler.inf = 1e-03)
 
       AIC_values[i] <- AIC(result.cox)
 
-      if (loop_nr < 10) print(result.cox)
+      # Extraction of the likelihood ratio chi2 -test
+      LRT_values[i] <- (summary(result.cox))$logtest["test"]
+
+      # Assigning the corresponding cpvariable values
+      cpvariable_values[i, 1] <- biomarker[(rle(biomarker_dicho)$lengths[1])]
+
+      if (nb_of_cp == 2) { cpvariable_values[i, 2] <-
+                           biomarker[(sum(rle(biomarker_dicho)$lengths[1:2]))]
+      }
+
+
+      if (loop_nr < 4) print(result.cox)
 
       rm(result.cox)
 
       #' Show user approx. remaining time
       if (nbr.m.perm.time == loop_nr) {
          tm <- proc.time() - ptm
-         cat("\nApprox. remaining time for estimation in seconds:", round((tm[3] * (1 / timefactor)
-         ), 0), "\n")
+         cat("\nApprox. remaining time for estimation:", round((tm[3] * (1 / timefactor)
+         ), 0), "seconds \n")
          ptm <- proc.time()
       }
 
@@ -321,6 +376,7 @@ function(cpvarname,
    cp1_position <- sum(m.perm[minAIC_row_nb, ] == 1)
    cp2_position <- sum(m.perm[minAIC_row_nb, ] <= 2)
 
+
    #' Generate vector with cutpoints
    cp <- c(NA, NA)
 
@@ -344,19 +400,29 @@ function(cpvarname,
    }
 
 
+   #' Get the counts and percentage of groups in relation to the original data
+   lcpvo <- length(cpvariable_original)
+
+   if(nb_of_cp == 1){
+      x <- which(cpvariable_original == cp[1])
+      nbbygroup1 <- x[length(x)]
+      percbygroup1 <- nbbygroup1 / lcpvo
+      nbbygroup2 <- lcpvo - nbbygroup1
+      percbygroup2 <- nbbygroup2 / lcpvo
+      rm(x)
+   } else {
+      x <- which(cpvariable_original == cp[1])
+      nbbygroup1 <- x[length(x)]
+      percbygroup1 <- nbbygroup1 / lcpvo
+      x <- which(cpvariable_original == cp[2])
+      nbbygroup2 <- x[length(x)] - nbbygroup1
+      percbygroup2 <- nbbygroup2 / lcpvo
+      nbbygroup3 <- lcpvo - nbbygroup1 - nbbygroup2
+      percbygroup3 <- nbbygroup3 / lcpvo
+      rm(x)
+   }
+
    #' Output:------------------------------------------------------------------
-
-   #' Get the counts of each group
-   group_counts <- table(m.perm[minAIC_row_nb, ])
-
-   #' Calculate the total count
-   total_count <- sum(group_counts)
-
-   #' Get the percentage
-   percbygroup <- group_counts / total_count
-
-   #' Calculate numbers per group for original dataset
-   nbbygroup <- round(percbygroup * nrm_start, 0)
 
    cat("--------------------------------------------------------------------\n")
    if (sample_yes == TRUE){
@@ -392,10 +458,10 @@ function(cpvarname,
 
       cat("Cutpoint:", cpvarname, "\u2264", cp[1], "\n")
       cat("-----------------------------------------------------------------\n")
-      cat("Group size in relation to the original data set\n")
-      cat(" Total:   N = ", nrm_start, "\n", sep = "")
-      cat(" Group 1: n = ", nbbygroup[1], " (", round(percbygroup[1]*100,1), "%)\n", sep = "")
-      cat(" Group 2: n = ", nbbygroup[2], " (", round(percbygroup[2]*100,1), "%)\n", sep = "")
+      cat("Group size in relation to valid data of ",cpvarname ," in original data set\n")
+      cat(" Total:   N = ", lcpvo, "\n", sep = "")
+      cat(" Group 1: n = ", nbbygroup1, " (", round(percbygroup1*100,1), "%)\n", sep = "")
+      cat(" Group 2: n = ", nbbygroup2, " (", round(percbygroup2*100,1), "%)\n", sep = "")
 
       cp <- cp[-2]
    }
@@ -405,11 +471,11 @@ function(cpvarname,
       cat(" 1.Cutpoint:", cpvarname, "\u2264", cp[1], "\n")
       cat(" 2.Cutpoint:", cpvarname, "\u2264", cp[2], "\n")
       cat("-----------------------------------------------------------------\n")
-      cat("Group size in relation to the original data set\n")
-      cat(" Total:   N = ", nrm_start, "\n", sep = "")
-      cat(" Group 1: n = ", nbbygroup[1], " (", round(percbygroup[1]*100,1), "%)\n", sep = "")
-      cat(" Group 2: n = ", nbbygroup[2], " (", round(percbygroup[2]*100,1), "%)\n", sep = "")
-      cat(" Group 3: n = ", nbbygroup[3], " (", round(percbygroup[3]*100,1), "%)\n", sep = "")
+      cat("Group size in relation to valid data of ",cpvarname ," in original data set\n")
+      cat(" Total:   N = ", lcpvo, "\n", sep = "")
+      cat(" Group 1: n = ", nbbygroup1, " (", round(percbygroup1*100,1), "%)\n", sep = "")
+      cat(" Group 2: n = ", nbbygroup2, " (", round(percbygroup2*100,1), "%)\n", sep = "")
+      cat(" Group 3: n = ", nbbygroup3, " (", round(percbygroup3*100,1), "%)\n", sep = "")
 
    }
 
@@ -422,7 +488,9 @@ function(cpvarname,
       cpvarname = cpvarname,
       nb_of_cp = nb_of_cp,
       dp = dp,
-      AIC_values = AIC_values
+      AIC_values = AIC_values,
+      LRT_values = LRT_values,
+      cpvariable_values = cpvariable_values
    )
 
    #' Plot Splines

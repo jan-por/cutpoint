@@ -38,7 +38,7 @@ splines_plot <-
       }
 
       #' Extract necessary variables from cpobj
-      nb_of_cp    <- cpobj$nb_of_cp
+      nb_of_cp  <- cpobj$nb_of_cp
       cp        <- cpobj$cp
       dp        <- cpobj$dp
       cpdata    <- cpobj$cpdata
