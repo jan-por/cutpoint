@@ -1,7 +1,8 @@
 #' @title Plot AIC and LRT values
 #'
-#' @description Create plot of AIC- or Likelihood ratio test values of the
-#'   estimating procedure
+#' @description Create a plot of AIC- or Likelihood ratio test values of the
+#'   estimating procedure.In the case of two cut points, a contour plot can be
+#'   created.
 #' @name value_plot
 #' @param cpobj list, contains a vector of AIC values (AIC_values) and
 #'   Likelihood ratio test values (LRT_values) of the estimating procedure
@@ -20,14 +21,18 @@
 #'   along with the corresponding AIC or LRT values. Index plots that do not
 #'   show extreme values suggest that there may not be any actual cutpoints in
 #'   the data. Contour plots provide an opportunity to explore whether there
-#'   could be other potential cutpoints with similar AIC or LRT values.
+#'   could be other potential cutpoints with similar AIC or LRT values. The
+#'   smaller the bandwidth (minimum group size per group), the more precise
+#'   and meaningful the contour plots can be interpreted.
 #' @returns Plots the AIC- or LRT-values, derived from the estimation procedure.
 #' @examples
-#' # Print the AIC-values
+#' # Example 1
+#' # Plot AIC-values and potential cutpoints of the estimation process
+#'
 #' # Create AIC values:
 #' AIC_values <- c(1950:1910, 1910:1920, 1920:1880, 1880:1920)
 #' AIC_values <- round(AIC_values + rnorm(length(AIC_values),
-#'                     mean = 0, sd = 5), digits = 2)
+#'                    mean = 0, sd = 5), digits = 2)
 #'
 #' # Create a cutpoint variable:
 #' cpvariable_values <- matrix(NA, nrow = length(AIC_values), ncol = 2)
@@ -41,6 +46,28 @@
 #'               )
 #'
 #' value_plot(cpobj, plotvalues = "AIC", dp.plot = 2, show_limit = TRUE)
+#'
+#' # Example 2
+#' # Splines plot based on data1
+#' # The data set data1 is included in this package
+#' cpobj <- est_cutpoint(
+#'   cpvarname    = "biomarker",
+#'   covariates   = c("covariate_1", "covariate_2"),
+#'   data         = data1,
+#'   nb_of_cp     = 2,
+#'   plot_splines = TRUE,
+#' )
+#' # Example 3
+#' # Contour plot based on data1
+#' # The data set data1 is included in this package
+#' cpobj <- est_cutpoint(
+#'    cpvarname    = "biomarker",
+#'    covariates   = c("covariate_1", "covariate_2"),
+#'    data         = data1,
+#'    nb_of_cp     = 2,
+#'    plot_splines = FALSE,
+#' )
+#' value_plot(cpobj, plotvalues = "AIC", plottype2cp = "contour")
 #' @importFrom graphics plot title legend
 #' @importFrom utils globalVariables
 #' @importFrom plotly plot_ly
@@ -117,6 +144,8 @@ function(cpobj,
    }
    cpvarname <- cpobj$cpvarname
 
+
+   #' Checks and assignments if plotvalues == AIC
    if (plotvalues == "AIC") {
 
          if (!is.vector(cpobj$AIC_values)) {
@@ -130,7 +159,6 @@ function(cpobj,
          if (!is.numeric(cpobj$AIC_values)) {
             stop("AIC values must be numeric")}
 
-
          plot_values       <- round(cpobj$AIC_values, digits = dp.plot)
          value_name        <- "AIC"
          extrem_value      <- min(plot_values)
@@ -140,6 +168,7 @@ function(cpobj,
 
       } else {
 
+   #' Checks and assignments if plotvalues == LRT
          if (!is.vector(cpobj$LRT_values)) {
             stop("LRT values must be a vector")}
          if (length(cpobj$LRT_values) == 0) {
@@ -159,41 +188,53 @@ function(cpobj,
          legend_position   <- "bottomright"
       }
 
-      if(cpobj$nb_of_cp == 1) {
 
-         plot_1cp <-  plot(cpobj$cpvariable_values[ ,1], plot_values,
-                 col  = plot_color, pch = 19, cex = 0.5,
-                 xlab = paste0(cpvarname," values"),
-                 ylab = paste0(value_name, " - values"),
-                 main = paste0("Plot of ", value_name,
-                               " - values of the estimation process"))
-         plot_1cp
-         returnlist <- c(plot_1cp)
+   #' Create plot if number of cutpoints is 1
+   if(cpobj$nb_of_cp == 1) {
 
-      } else {
+      plot(cpobj$cpvariable_values[ ,1], plot_values,
+           col  = plot_color, pch = 19, cex = 0.5,
+           xlab = paste0(cpvarname),
+           ylab = paste0(value_name, " - values"),
+           main = paste0("Plot of ", value_name,
+                         " - values of the estimation process"))
 
-         plot_1cp <-  plot(plot_values, col = plot_color, pch = 19, cex = 0.5,
-                 xlab = "Index",
-                 ylab = paste0(value_name, " - values"),
-                 main = paste0("Plot of ", value_name,
-                               " - values of the estimation process"))
-         plot_1cp
-         returnlist <- c(plot_1cp)
+      if (show_limit == TRUE) {
+
+         legend(legend_position, legend =
+                   paste0(extrem_value_name, " ", value_name, ": ",
+                          extrem_value
+                   ),
+                cex = 0.75
+         )
       }
-         if (show_limit == TRUE) {
+   }
 
-            legend(legend_position, legend =
-                      paste0(extrem_value_name, " ", value_name, ": ",
-                             extrem_value
-                      ),
-                   cex = 0.75
-            )
-         }
+   #' Create plot if number of cutpoints is 2 and plottype2cp == "index"
+   if(cpobj$nb_of_cp == 2 && plottype2cp == "index") {
+
+      plot(plot_values, col = plot_color, pch = 19, cex = 0.5,
+           xlab = "Index",
+           ylab = paste0(value_name, " - values"),
+           main = paste0("Plot of ", value_name,
+                         " - values of the estimation process"))
+
+      if (show_limit == TRUE) {
+
+         legend(legend_position, legend =
+                   paste0(extrem_value_name, " ", value_name, ": ",
+                          extrem_value
+                   ),
+                cex = 0.75
+         )
+      }
+   }
 
 
-   # Show contour plot if number of cutpoints (nb_of_cp) is 2
-   if(cpobj$nb_of_cp == 2) {
-      plot_2cp <- plotly::plot_ly(
+   #' Create plot if number of cutpoints is 2 and plottype2cp == "index"
+   if(cpobj$nb_of_cp == 2 && plottype2cp == "contour") {
+
+      cp_plot <- plotly::plot_ly(
          x = cpobj$cpvariable_values[ ,1],
          y = cpobj$cpvariable_values[ ,2],
          z = plot_values,
@@ -207,12 +248,12 @@ function(cpobj,
          " values: dark colours; ",
          extrem_value_name, " ", value_name, ": ",
          extrem_value
-         )
+      )
 
       # Define Y-axis title
       yaxis_title <- paste0("Potential values of ", cpvarname," for cutpoint 2")
 
-      plot_2cp <- plot_2cp %>%
+      cp_plot <- cp_plot %>%
          plotly::layout(
          title  = paste0(
             "Contour plot - coloured ",value_name,
@@ -222,9 +263,9 @@ function(cpobj,
          xaxis  = list(title = xaxis_title),
          legend = list(title=value_name)
          )
-      print(plot_2cp)
-      returnlist <- c(plot_2cp)
+
+      print(cp_plot)
    }
 
-   return(returnlist)
+   return(invisible())
 }

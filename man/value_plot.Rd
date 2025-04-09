@@ -34,21 +34,26 @@ are shown in the RStudio viewer and illustrate the two potential cutpoints
 along with the corresponding AIC or LRT values. Index plots that do not
 show extreme values suggest that there may not be any actual cutpoints in
 the data. Contour plots provide an opportunity to explore whether there
-could be other potential cutpoints with similar AIC or LRT values.}
+could be other potential cutpoints with similar AIC or LRT values. The
+smaller the bandwidth (minimum group size per group), the more precise
+and meaningful the contour plots can be interpreted.}
 }
 \value{
 Plots the AIC- or LRT-values, derived from the estimation procedure.
 }
 \description{
-Create plot of AIC- or Likelihood ratio test values of the
-estimating procedure
+Create a plot of AIC- or Likelihood ratio test values of the
+estimating procedure.In the case of two cut points, a contour plot can be
+created.
 }
 \examples{
-# Print the AIC-values
+# Example 1
+# Plot AIC-values and potential cutpoints of the estimation process
+
 # Create AIC values:
 AIC_values <- c(1950:1910, 1910:1920, 1920:1880, 1880:1920)
 AIC_values <- round(AIC_values + rnorm(length(AIC_values),
-                    mean = 0, sd = 5), digits = 2)
+                   mean = 0, sd = 5), digits = 2)
 
 # Create a cutpoint variable:
 cpvariable_values <- matrix(NA, nrow = length(AIC_values), ncol = 2)
@@ -62,7 +67,34 @@ cpobj <- list(AIC_values        = AIC_values,
               )
 
 value_plot(cpobj, plotvalues = "AIC", dp.plot = 2, show_limit = TRUE)
+
+# Example 2
+# Splines plot based on data1
+# The data set data1 is included in this package
+cpobj <- est_cutpoint(
+  cpvarname    = "biomarker",
+  covariates   = c("covariate_1", "covariate_2"),
+  data         = data1,
+  nb_of_cp     = 2,
+  plot_splines = TRUE,
+)
+# Example 3
+# Contour plot based on data1
+# The data set data1 is included in this package
+cpobj <- est_cutpoint(
+   cpvarname    = "biomarker",
+   covariates   = c("covariate_1", "covariate_2"),
+   data         = data1,
+   nb_of_cp     = 2,
+   plot_splines = FALSE,
+)
+value_plot(cpobj, plotvalues = "AIC", plottype2cp = "contour")
 }
 \seealso{
 \code{\link{est_cutpoint}}
+Checks and assignments if plotvalues == AIC
+Checks and assignments if plotvalues == LRT
+Create plot if number of cutpoints is 1
+Create plot if number of cutpoints is 2 and plottype2cp == "index"
+Create plot if number of cutpoints is 2 and plottype2cp == "index"
 }

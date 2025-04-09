@@ -260,22 +260,6 @@ function(cpvarname,
    #' If there are no covariates, constant_var is defined as a vector of 1
    if (is.null(covariates)) {constant_var <- rep(1, nrm)}
 
-   # # Prevent infinite of Cox regression in case of no covariate and ushape==TRUE  # nicht mehr notwedig da über toler.inf = 1e-03 in coxph keine Warnung mehr
-   # if (is.null(covariates) && ushape == TRUE) {
-   #
-   #    # Calculate SD for the infinite preventer on basis of the median:
-   #
-   #    median_biomarker <- median(biomarker, na.rm = TRUE)
-   #
-   #    # Prevent division of 0
-   #    ifelse (median_biomarker == 0, median_biomarker <- 0.01, median_biomarker)
-   #    if (median_biomarker > 0) {sd_value <- median_biomarker / 1e+20} else {
-   #       sd_value <- abs( 1/(median_biomarker * (1e+20)))}
-   #
-   #    # Set constant (=constant_var) as infinite preventer
-   #    constant_var <- rnorm(nrm, sd = sd_value)
-   # }
-
 
    # Formula (FML) for Cox regression from vector of covariates
    if (!is.null(covariates)) {
@@ -325,7 +309,7 @@ function(cpvarname,
 
       loop_nr <- loop_nr + 1
 
-      #biomarker_dicho <- as.factor(m.perm[i, ])                                # früher als Factor, Warum?
+      #biomarker_dicho <- as.factor(m.perm[i, ])
       biomarker_dicho <- m.perm[i, ]
 
       result.cox <- survival::coxph(update.formula(Surv(time, event)~., FML), data = cpdata, eps = 1e-09, toler.inf = 1e-03)
