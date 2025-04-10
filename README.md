@@ -81,10 +81,7 @@ For the other arguments, their default settings are used:
 The output displays the primary settings and estimates for the cut
 points.
 
-\`cpobj \<- est_cutpoint( cpvarname = “biomarker”, covariates =
-c(“covariate_1”, “covariate_2”), data = data1, nb_of_cp = 2 )
-
-\`
+`cpobj <- est_cutpoint(cpvarname = "biomarker", covariates = c("covariate_1", "covariate_2"), data = data1, nb_of_cp = 2 )`
 
 The argument bandwidth can change the minimum group sizes and may lead
 to different cutpoint estimates.
@@ -102,9 +99,9 @@ different degrees of freedom:
 <figure>
 <img
 src="man/figures/cutpoint-package_splines_plot_with_different_degrees_of_freedom.png"
-alt="Splines with different degrees of freedom (df)" />
-<figcaption aria-hidden="true">Splines with different degrees of freedom
-(df)</figcaption>
+alt="Figure 1) Splines with different degrees of freedom (df)" />
+<figcaption aria-hidden="true">Figure 1) Splines with different degrees
+of freedom (df)</figcaption>
 </figure>
 
 The cutpoints are horizontal red lines, while the dashed red line
@@ -120,9 +117,9 @@ show_splines to FALSE to obtain a clearer illustration:
 <figure>
 <img
 src="man/figures/cutpoint-package_splines_plot_with_optimal_degrees_of_freedom.png"
-alt="Splines plot with optimal degrees of freedom" />
-<figcaption aria-hidden="true">Splines plot with optimal degrees of
-freedom</figcaption>
+alt="Figure 2) Splines plot with optimal degrees of freedom" />
+<figcaption aria-hidden="true">Figure 2) Splines plot with optimal
+degrees of freedom</figcaption>
 </figure>
 
 ### **Contour plots and Index plots**
@@ -146,9 +143,9 @@ can be interpreted.
 
 <figure>
 <img src="man/figures/cutpoint-package_value_plot_for_two_cutpoints.png"
-alt="Contour plot shows coloured AIC values and potential cutpoints" />
-<figcaption aria-hidden="true">Contour plot shows coloured AIC values
-and potential cutpoints</figcaption>
+alt="Figure 3) Contour plot shows coloured AIC values and potential cutpoints" />
+<figcaption aria-hidden="true">Figure 3) Contour plot shows coloured AIC
+values and potential cutpoints</figcaption>
 </figure>
 
 Index plots that don´t show clear extreme values suggest that a real

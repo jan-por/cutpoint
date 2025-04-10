@@ -97,10 +97,7 @@ For the other arguments, their default settings are used:
 The output displays the primary settings and estimates for the cut
 points.
 
-\`cpobj \<- est_cutpoint( cpvarname = "biomarker", covariates =
-c("covariate_1", "covariate_2"), data = data1, nb_of_cp = 2 )
-
-\`
+`cpobj <- est_cutpoint(cpvarname = "biomarker", covariates = c("covariate_1", "covariate_2"), data = data1, nb_of_cp = 2 )`
 
 The argument bandwidth can change the minimum group sizes and may lead
 to different cutpoint estimates.
@@ -115,7 +112,7 @@ different degrees of freedom:
 
 `plot(cutpoint-package_value_plot_for_two_cutpoints)`
 
-![Splines with different degrees of freedom
+![Figure 1) Splines with different degrees of freedom
 (df)](man/figures/cutpoint-package_splines_plot_with_different_degrees_of_freedom.png)
 
 The cutpoints are horizontal red lines, while the dashed red line
@@ -128,7 +125,7 @@ show_splines to FALSE to obtain a clearer illustration:
 
 `splines_plot(cpobj, show_splines = FALSE)`
 
-![Splines plot with optimal degrees of
+![Figure 2) Splines plot with optimal degrees of
 freedom](man/figures/cutpoint-package_splines_plot_with_optimal_degrees_of_freedom.png)
 
 ### **Contour plots and Index plots**
@@ -150,16 +147,12 @@ red cross). Other potential cut points, for example, are ≤ 137 and ≤ 181
 group size per group), the more precise and meaningful the contour plots
 can be interpreted.
 
-![Contour plot shows coloured AIC values and potential
+![Figure 3) Contour plot shows coloured AIC values and potential
 cutpoints](man/figures/cutpoint-package_value_plot_for_two_cutpoints.png)
 
 Index plots that don´t show clear extreme values suggest that a real
-cutpoint may not
-exist in the data. The same applies to contour plots, which show only
-three or
-four colors for the AIC or LRT statistic values. However, even if there
-is no
-true cutoff in the data, cutoff points can still be established,
-allowing for
-the formation of groups with different probabilities of an event
-occurring.
+cutpoint may not exist in the data. The same applies to contour plots,
+which show only three or four colors for the AIC or LRT statistic
+values. However, even if there is no true cutoff in the data, cutoff
+points can still be established, allowing for the formation of groups
+with different probabilities of an event occurring.

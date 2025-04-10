@@ -6,6 +6,8 @@
 \alias{cutpoint-package}
 \title{cutpoint: Estimate cutpoints of metric variables in the context of Cox-regression}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 One or two cutpoints of a metric variable are estimated using the AIC criterion within a multivariable Cox proportional hazards model. These cutpoints are used to create two or three groups with different survival probabilities. The cutpoints are estimated by dichotomizing the variable of interest, which is then incorporated into the Cox-regression model. The biomarker cutpoint is the value at which the AIC reaches its lowest value for the corresponding Cox-regression model. This process occurs within a multivariable framework, as other covariates and/or factors are considered during the search for the cutpoints. Cutpoints can also be estimated when the variable of interest shows a U-shaped or inverse U-shaped relationship with to hazard ratio of time-to-event data. The argument symtail allows for the estimation of two cutpoints, ensuring that the two outer tails represent groups of equal size.
 }
 \seealso{
