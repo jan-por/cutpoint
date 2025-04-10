@@ -3,53 +3,57 @@
 #' @description One or two cutpoints of a metric variable are estimated using
 #'   the AIC criterion within a multivariable Cox proportional hazards model.
 #'   These cutpoints are used to create two or three groups with different
-#'   survival probabilities. The cutpoints are estimated by dichotomizing the
+#'   survival probabilities.
+#' @description The cutpoints are estimated by dichotomizing the
 #'   variable of interest, which is then incorporated into the Cox-regression
 #'   model. The biomarker cutpoint is the value at which the AIC reaches its
 #'   lowest value for the corresponding Cox-regression model. This process
 #'   occurs within a multivariable framework, as other covariates and/or
 #'   factors are considered during the search for the cutpoints.
-#'   Cutpoints can also be estimated when the variable of interest shows
-#'   a U-shaped or inverted U-shaped relationship with to hazard ratio of
-#'   time-to-event data. The argument symtail allows for the estimation of two
+#' @description Cutpoints can also be estimated when the variable of interest
+#'   shows a U-shaped or inverted U-shaped relationship to hazard ratio of
+#'   time-to-event data. The argument `symtail` allows for the estimation of two
 #'   cutpoints, ensuring that the two outer tails represent groups of equal size.
 #' @name est_cutpoint
 #' @param cpvarname character, the name of the variable for which the cut points
 #'   are estimated.
-#' @param time character, this is the follow-up time
+#' @param time character, this is the follow-up time.
 #' @param event character, the status indicator, normally 0=no event, 1=event
 #' @param covariates character vector with the names of the covariates and/ or
 #'   factors. If no covariates are used in the estimation process,
-#'   set covariates = NULL.
-#' @param data a data.frame, contains the following variables: variable which is
-#'   dichotomized, follow-up time, event (status indicator) and the covariates
-#'   and/or cofactors
+#'   set `covariates = NULL`.
+#' @param data a data.frame, contains the following variables:
+#' * variable which is dichotomized
+#' * follow-up time
+#' * event (status indicator)
+#' * covariates and/or cofactors
 #' @param nb_of_cp numeric, number of cutpoints to be estimated
 #' @param bandwith numeric, minimum group size per group in percent of the total
-#'   sample size, bandwith must be between 0.05 and 0.30, default is 0.10
-#'   If ushape = TRUE, bandwidth must be at least 0.1.
-#' @param ushape logical value: if TRUE, the cutpoints are estimated under the
+#'   sample size, `bandwith` must be between 0.05 and 0.30, default is 0.10
+#'   If `ushape = TRUE`, `bandwidth` must be at least 0.1.
+#' @param ushape logical value: if `TRUE`, the cutpoints are estimated under the
 #'   assumtion that the spline plot shows a U-shaped form or a inverted U-shaped
 #'   curve.
-#' @param symtails logical value: if TRUE, the cutpoints are estimated with
-#'   symmetric tails. If nb_of_cp = 1, symtails is set to FALSE
+#' @param symtails logical value: if `TRUE`, the cutpoints are estimated with
+#'   symmetric tails. If `nb_of_cp = 1`, symtails is set to `FALSE`
 #' @param dp numeric, number of decimal places the cutpoints are rounded to
-#' @param plot_splines logical value: if TRUE, a penalized spline plot is
+#' @param plot_splines logical value: if `TRUE`, a penalized spline plot is
 #'   created
-#' @param all_splines logical value: if TRUE, The plot shows splines with
+#' @param all_splines logical value: if `TRUE`, The plot shows splines with
 #'   different degrees of freedom. This may help determine whether
 #'   misspecification or overfitting occurs.
 #' @references Govindarajulu, U., & Tarpey, T. (2020). Optimal partitioning for
 #'   the proportional hazards model. Journal of Applied Statistics, 49(4),
 #'   968–987. https://doi.org/10.1080/02664763.2020.1846690
-#' @returns Returns the cutpoints and the characteristics of the formed groups.
+#' @returns Returns the `cpobj` object with cutpoints and the characteristics
+#'   of the formed groups.
 #' @export
 #'
 #' @examples
 #' # Example 1:
 #' # Estimate two cutpoints of the variable biomarker.
 #' # The dataset data1 is included in this package and contains
-#' # the variables time, event, biomarker, cutpoint_1, and cutpoint_2.
+#' # the variables time, event, biomarker, covariate_1, and covariate_2.
 #' cpobj <- est_cutpoint(
 #'   cpvarname  = "biomarker",
 #'   covariates = c("covariate_1", "covariate_2"),

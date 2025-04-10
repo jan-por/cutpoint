@@ -2,7 +2,7 @@
 % Please edit documentation in R/value_plot.R
 \name{value_plot}
 \alias{value_plot}
-\title{Plot AIC and LRT values}
+\title{Plot AIC and LRT values from \code{cpobj} object}
 \usage{
 value_plot(
   cpobj,
@@ -16,18 +16,18 @@ value_plot(
 \item{cpobj}{list, contains a vector of AIC values (AIC_values) and
 Likelihood ratio test values (LRT_values) of the estimating procedure}
 
-\item{plotvalues}{character, either "AIC" or "LRT". Either the AIC or
-LRT values are displayed. Default is "AIC".}
+\item{plotvalues}{character, either \code{AIC} or \code{LRT}. Either the AIC or
+LRT values are displayed. Default is \code{AIC}.}
 
 \item{dp.plot}{numeric, digits for the AIC values and LRT values.
-Default is 2.}
+Default is \code{2}.}
 
-\item{show_limit}{logical, if TRUE the minimum AIC value is shown in the plot
-if plotvalues = "AIC" and the maximum LRT value is shown if
-plotvalues = "LRT"}
+\item{show_limit}{logical, if \code{TRUE} the minimum AIC value is shown in the
+plot if \code{plotvalues = "AIC"} and the maximum LRT value is shown if
+\code{plotvalues = "LRT"}}
 
-\item{plottype2cp}{character, either "contour" or "index". Default is
-"contour".This option is available only when searching for two cutpoints.
+\item{plottype2cp}{character, either \code{contour} or \code{index}. Default is
+\code{contour}. This option is available only when searching for two cutpoints.
 Index plots and contour plots can be selected. Index plots display all AIC
 or LRT values from the estimation process as a scatter plot. Contour plots
 are shown in the RStudio viewer and illustrate the two potential cutpoints
@@ -35,7 +35,7 @@ along with the corresponding AIC or LRT values. Index plots that do not
 show extreme values suggest that there may not be any actual cutpoints in
 the data. Contour plots provide an opportunity to explore whether there
 could be other potential cutpoints with similar AIC or LRT values. The
-smaller the bandwidth (minimum group size per group), the more precise
+smaller the \code{bandwidth} (minimum group size per group), the more precise
 and meaningful the contour plots can be interpreted.}
 }
 \value{

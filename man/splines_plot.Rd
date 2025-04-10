@@ -2,19 +2,23 @@
 % Please edit documentation in R/splines_plot.R
 \name{splines_plot}
 \alias{splines_plot}
-\title{Plot penalized smoothing splines and shows cutpoints}
+\title{Plot penalized smoothing splines and shows cutpoints from \code{cpobj} object}
 \usage{
 splines_plot(cpobj, show_splines = TRUE)
 }
 \arguments{
-\item{cpobj}{list, contains variables for pspline plot: nb_of_cp (number of
-cutpoints), cp (contain one or two cutpoint/s), dp (digits for plot),
-cpvarname (name of the variable for that the cutpoints are estimated)
-cpdata (a data frame, contains the following variables: a variable that is
-dichotomized, time (follow-up time), event (status indicator) and covariates
-(a vector with the names of the covariates and/or factors))}
+\item{cpobj}{list, contains variables for pspline plot:
+\itemize{
+\item \code{nb_of_cp} (number of cutpoints)
+\item \code{cp} (contain one or two cutpoint/s)
+\item \code{dp} (digits for plot)
+\item \code{cpvarname} (name of the variable for that the cutpoints are estimated)
+\item \code{cpdata} a data frame, contains the following variables: a variable that is
+dichotomized, \code{time} (follow-up time), \code{even}t (status indicator),
+\code{covariates} (a vector with the names of the covariates and/or factors))
+}}
 
-\item{show_splines}{logical value: if TRUE, The plot shows splines with
+\item{show_splines}{logical, if \code{TRUE}, The plot shows splines with
 different degrees of freedom. This may help determine whether
 misspecification or overfitting occurs.}
 }
@@ -23,7 +27,7 @@ Plots penalized smoothing splines and shows the cutpoints.
 }
 \description{
 Create penalized smoothing splines plot with different degrees
-of freedom and shows the cutpoints of the biomarker
+of freedom and shows the cutpoints of the biomarker.
 }
 \examples{
 biomarker <- rnorm(100, mean = 100, sd = 10)

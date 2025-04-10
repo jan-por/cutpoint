@@ -1,15 +1,17 @@
-#' @title Plot penalized smoothing splines and shows cutpoints
+#' @title Plot penalized smoothing splines and shows cutpoints from `cpobj` object
 #'
 #' @description Create penalized smoothing splines plot with different degrees
-#'     of freedom and shows the cutpoints of the biomarker
+#'    of freedom and shows the cutpoints of the biomarker.
 #' @name splines_plot
-#' @param cpobj list, contains variables for pspline plot: nb_of_cp (number of
-#'   cutpoints), cp (contain one or two cutpoint/s), dp (digits for plot),
-#'   cpvarname (name of the variable for that the cutpoints are estimated)
-#'   cpdata (a data frame, contains the following variables: a variable that is
-#'   dichotomized, time (follow-up time), event (status indicator) and covariates
-#'   (a vector with the names of the covariates and/or factors))
-#' @param show_splines logical value: if TRUE, The plot shows splines with
+#' @param cpobj list, contains variables for pspline plot:
+#' * `nb_of_cp` (number of cutpoints)
+#' * `cp` (contain one or two cutpoint/s)
+#' * `dp` (digits for plot)
+#' * `cpvarname` (name of the variable for that the cutpoints are estimated)
+#' * `cpdata` a data frame, contains the following variables: a variable that is
+#'   dichotomized, `time` (follow-up time), `even`t (status indicator),
+#'   `covariates` (a vector with the names of the covariates and/or factors))
+#' @param show_splines logical, if `TRUE`, The plot shows splines with
 #'   different degrees of freedom. This may help determine whether
 #'   misspecification or overfitting occurs.
 #' @returns Plots penalized smoothing splines and shows the cutpoints.
