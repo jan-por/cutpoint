@@ -3,7 +3,7 @@
 \docType{data}
 \name{data1}
 \alias{data1}
-\title{Dataset for testing the cutpoint estimating function: est_cutpoint}
+\title{Dataset for testing the cutpoint estimating function: cp_est}
 \format{
 \subsection{"data1"}{
 

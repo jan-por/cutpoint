@@ -14,14 +14,13 @@
 #'   shows a U-shaped or inverted U-shaped relationship to hazard ratio of
 #'   time-to-event data. The argument `symtail` allows for the estimation of two
 #'   cutpoints, ensuring that the two outer tails represent groups of equal size.
-#' @name est_cutpoint
+#' @name cp_est
 #' @param cpvarname character, the name of the variable for which the cut points
 #'   are estimated.
 #' @param time character, this is the follow-up time.
 #' @param event character, the status indicator, normally 0=no event, 1=event
 #' @param covariates character vector with the names of the covariates and/ or
-#'   factors. If no covariates are used in the estimation process,
-#'   set `covariates = NULL`.
+#'   factors. If no covariates are used, set `covariates = NULL`.
 #' @param data a data.frame, contains the following variables:
 #' * variable which is dichotomized
 #' * follow-up time
@@ -31,6 +30,9 @@
 #' @param bandwith numeric, minimum group size per group in percent of the total
 #'   sample size, `bandwith` must be between 0.05 and 0.30, default is 0.10
 #'   If `ushape = TRUE`, `bandwidth` must be at least 0.1.
+#' @param est_type character, the method used to estimate the cut points. The
+#'   default is 'AIC'. The other options is "LRT" (likelihood ratio test
+#'   statistic)
 #' @param ushape logical value: if `TRUE`, the cutpoints are estimated under the
 #'   assumtion that the spline plot shows a U-shaped form or a inverted U-shaped
 #'   curve.
@@ -54,7 +56,7 @@
 #' # Estimate two cutpoints of the variable biomarker.
 #' # The dataset data1 is included in this package and contains
 #' # the variables time, event, biomarker, covariate_1, and covariate_2.
-#' cpobj <- est_cutpoint(
+#' cpobj <- cp_est(
 #'   cpvarname  = "biomarker",
 #'   covariates = c("covariate_1", "covariate_2"),
 #'   data       = data1,
@@ -62,11 +64,11 @@
 #'   )
 #'
 #' # Example 2:
-#' # Searching for cutpoints when the biomarker variable shows a U-shaped or
+#' # Searching for cutpoints, if the biomarker variable shows a U-shaped or
 #' # inverted U-shaped relationship to the hazard ratio.
 #' # The dataset data2_ushape is included in this package and contains
 #' # the variables time, event, biomarker, and cutpoint_1.
-#' cpobj <- est_cutpoint(
+#' cpobj <- cp_est(
 #'   cpvarname  = "biomarker",
 #'   covariates = c("covariate_1"),
 #'   data       = data2_ushape,
@@ -80,7 +82,7 @@
 #'                   update.formula
 #' @importFrom utils globalVariables
 #'
-est_cutpoint <-
+cp_est <-
 function(cpvarname,
          time         = "time",
          event        = "event",
@@ -88,6 +90,7 @@ function(cpvarname,
          data         = data,
          nb_of_cp     = 1,
          bandwith     = 0.1,
+         est_type     = "AIC",
          ushape       = FALSE,
          symtails     = FALSE,
          dp           = 2,
@@ -124,7 +127,8 @@ function(cpvarname,
    }
 
    if (any(data[ ,time] <= 0)){
-      cat("\nPlease note: For at least one observation the follow-up time is","\u2264","0\n")
+      cat("\nPlease note: For at least one observation the follow-up time is",
+          "\u2264","0\n")
       cat("this can lead to an error message of the Cox regression\n")
    }
 
@@ -158,6 +162,14 @@ function(cpvarname,
        bandwith > 0.30)
       stop("bandwith must be between 0.05 and 0.30")
 
+   if (!is.character(est_type))
+         stop("est_type must be a character ('AIC' or 'LRT')")
+      est_type <- toupper(est_type)
+   if ((est_type != "AIC") && (est_type != "LRT"))
+         stop("est_type must be 'AIC' or 'LRT'")
+
+
+
    if (!is.logical(ushape))
       stop("ushape must be logical (TRUE or FALSE)")
 
@@ -187,24 +199,6 @@ function(cpvarname,
 
    #' Keep the original cutpoint variable
    cpvariable_original <- sort(data[ ,biomarker])
-
-   # var_fac <- as.factor(cpdata$carditox)
-   # cpdata$carditox <- NULL
-   # dummies <- model.matrix(~var_fac)
-   # cpdata <- cbind(cpdata, dummies)
-   #
-   # var_fac <- as.factor(cpdata$sex)
-   # cpdata$sex <- NULL
-   # dummies <- model.matrix(~var_fac)
-   # cpdata <- cbind(cpdata, dummies)
-
-   # #options("contrasts")
-   # dummies <- model.matrix(~ carditox + sex, cpdata)
-   # print(head(dummies))
-   # cpdata$carditox <- cpdata$sex <- NULL
-   # cpdata <- cbind(cpdata, dummies)
-
-
 
 
    #' nrm = Number of rows in cpdata before possible changes
@@ -267,14 +261,15 @@ function(cpvarname,
 
    # Formula (FML) for Cox regression from vector of covariates
    if (!is.null(covariates)) {
-      FML <- as.formula(paste0('~ biomarker_dicho +', paste(covariates, collapse = "+")))
+      FML <- as.formula(paste0('~ biomarker_dicho +',
+                               paste(covariates, collapse = "+")))
    } else {
       FML <- as.formula(paste0('~ biomarker_dicho + constant_var'))
    }
 
 
    #' Numbers of observations which should at least remain in line
-   m.perm <- combine_factors(bandwith, nb_of_cp, nrm, symtails)
+   m.perm <- factors_combine(bandwith, nb_of_cp, nrm, symtails)
 
 
    #' If ushape is TRUE then create new m.perm with 2 categories, as u-shape only
@@ -300,13 +295,12 @@ function(cpvarname,
    cpvariable_values <- matrix(NA, nrow = nbr.m.perm, ncol = 2)
 
 
-   #' After 5%, remaining time is communicated for this timefactor is defined
+   #' After 5%, remaining time is communicated, for this timefactor is defined
    timefactor <- 0.05
    nbr.m.perm.time <- round(nbr.m.perm * timefactor, 0)
 
    #' Start time measurement
    ptm <- proc.time()
-
 
 
    for (i in 1:(nbr.m.perm)) {
@@ -316,7 +310,8 @@ function(cpvarname,
       #biomarker_dicho <- as.factor(m.perm[i, ])
       biomarker_dicho <- m.perm[i, ]
 
-      result.cox <- survival::coxph(update.formula(Surv(time, event)~., FML), data = cpdata, eps = 1e-09, toler.inf = 1e-03)
+      result.cox <- survival::coxph(update.formula(Surv(time, event)~., FML),
+                                  data = cpdata, eps = 1e-09, toler.inf = 1e-03)
 
       AIC_values[i] <- AIC(result.cox)
 
@@ -330,15 +325,13 @@ function(cpvarname,
                            biomarker[(sum(rle(biomarker_dicho)$lengths[1:2]))]
       }
 
-
-      if (loop_nr < 4) print(result.cox)
-
       rm(result.cox)
 
       #' Show user approx. remaining time
       if (nbr.m.perm.time == loop_nr) {
          tm <- proc.time() - ptm
-         cat("\nApprox. remaining time for estimation:", round((tm[3] * (1 / timefactor)
+         cat("\nApprox. remaining time for estimation:",
+             round((tm[3] * (1 / timefactor)
          ), 0), "seconds \n")
          ptm <- proc.time()
       }
@@ -354,20 +347,31 @@ function(cpvarname,
    #' if ushape==TRUE then create new m.perm with 3 categories, as ushape
    #'    has only 2 categories
    if (ushape == TRUE) {
-      m.perm <- combine_factors(bandwith, nb_of_cp, nrm, symtails)
+      m.perm <- factors_combine(bandwith, nb_of_cp, nrm, symtails)
    }
 
+   #' Extract the cutpoints from the biomarker variable
+   #'
 
-   #' Cutpoint is at position minAIC_row_nb of , all those less than or equal to
-   #'    Cutpoint (minAIC_row_nb) belong to the first group
-   minAIC_row_nb <- which.min(AIC_values)
-   cp1_position <- sum(m.perm[minAIC_row_nb, ] == 1)
-   cp2_position <- sum(m.perm[minAIC_row_nb, ] <= 2)
+   if(est_type == "AIC") {
 
+      #' Cutpoint is at position minAIC_row_nb of, all those less than or equal
+      #' ... to Cutpoint (minAIC_row_nb) belong to the first group
+      minAIC_row_nb <- which.min(AIC_values)
+      cp1_position  <- sum(m.perm[minAIC_row_nb, ] == 1)
+      cp2_position  <- sum(m.perm[minAIC_row_nb, ] <= 2)
+
+      } else {
+
+      #' Cutpoint is at position maxLRT_row_nb of , all those less than or equal
+      #' ...to Cutpoint (minLRT_row_nb) belong to the first group
+      maxLRT_row_nb <- which.max(LRT_values)
+      cp1_position  <- sum(m.perm[maxLRT_row_nb, ] == 1)
+      cp2_position  <- sum(m.perm[maxLRT_row_nb, ] <= 2)
+   }
 
    #' Generate vector with cutpoints
    cp <- c(NA, NA)
-
 
    cp[1] <- biomarker[cp1_position]
    names(cp[1]) <- "CP1"
@@ -414,8 +418,8 @@ function(cpvarname,
 
    cat("--------------------------------------------------------------------\n")
    if (sample_yes == TRUE){
-   cat("! Because the number of obervations in original dataset is >1000\n")
-   cat("  a random sample of 1000 obervations is used for estimating the cutpoints\n")
+   cat("! Because the number of observations in the original dataset is >1000\n")
+   cat("  a random sample of 1000 observations is used for estimating the cutpoints\n")
    }
    cat("--------------------------------------------------------------------\n")
    cat("SETTINGS:\n")
@@ -426,6 +430,7 @@ function(cpvarname,
           " (was set to 0.1 because ushape is TRUE)\n")
       } else {
    cat(" Min. group size in %  (bandwith) = ", bandwith, "\n")}
+   cat(" Estimation type       (est_type) = ", est_type, "\n")
    cat(" Symmetric tails       (symtails) = ", symtails,
        "  (is set FALSE if nb_of_cp = 1)\n")
    cat(" Cutpoints for u-shape (ushape)   = ", ushape,
@@ -438,18 +443,22 @@ function(cpvarname,
       cat(" ",covariates, "\n") }
    cat("--------------------------------------------------------------------\n")
    cat("Minimum group size is ", round((nrm_start * bandwith), 0),
-     " (", bandwith * 100, "% of sample size in original dataset, N = ", nrm_start,  ")\n", sep = "")
+     " (", bandwith * 100, "% of sample size in original dataset, N = ",
+     nrm_start,  ")\n", sep = "")
    cat("--------------------------------------------------------------------\n")
-   cat("Number of Cutpoints searching for:", nb_of_cp, "\n")
+   cat("Number of cutpoints searching for:", nb_of_cp, "\n")
 
    if (nb_of_cp == 1) {
 
       cat("Cutpoint:", cpvarname, "\u2264", cp[1], "\n")
       cat("-----------------------------------------------------------------\n")
-      cat("Group size in relation to valid data of ",cpvarname ," in original data set\n")
-      cat(" Total:   N = ", lcpvo, "\n", sep = "")
-      cat(" Group 1: n = ", nbbygroup1, " (", round(percbygroup1*100,1), "%)\n", sep = "")
-      cat(" Group 2: n = ", nbbygroup2, " (", round(percbygroup2*100,1), "%)\n", sep = "")
+      cat("Group size in relation to valid of ",cpvarname ,
+          "in original data set\n")
+      cat(" Total:   N = ", lcpvo, " (100%)\n", sep = "")
+      cat(" Group A: n = ", nbbygroup1, "   (", round(percbygroup1*100,1),
+          "%)\n", sep = "")
+      cat(" Group B: n = ", nbbygroup2, "   (", round(percbygroup2*100,1),
+          "%)\n", sep = "")
 
       cp <- cp[-2]
    }
@@ -459,12 +468,29 @@ function(cpvarname,
       cat(" 1.Cutpoint:", cpvarname, "\u2264", cp[1], "\n")
       cat(" 2.Cutpoint:", cpvarname, "\u2264", cp[2], "\n")
       cat("-----------------------------------------------------------------\n")
-      cat("Group size in relation to valid data of ",cpvarname ," in original data set\n")
-      cat(" Total:   N = ", lcpvo, "\n", sep = "")
-      cat(" Group 1: n = ", nbbygroup1, " (", round(percbygroup1*100,1), "%)\n", sep = "")
-      cat(" Group 2: n = ", nbbygroup2, " (", round(percbygroup2*100,1), "%)\n", sep = "")
-      cat(" Group 3: n = ", nbbygroup3, " (", round(percbygroup3*100,1), "%)\n", sep = "")
+      cat("Group size in relation to valid data of",cpvarname ,
+          " in original data set\n")
 
+      if(ushape == FALSE) {
+
+         cat(" Total:   N = ", lcpvo, " (100%)\n", sep = "")
+         cat(" Group A: n = ", nbbygroup1, "   (",
+             round(percbygroup1*100,1), "%)\n", sep = "")
+         cat(" Group B: n = ", nbbygroup2, "   (",
+             round(percbygroup2*100,1), "%)\n", sep = "")
+         cat(" Group C: n = ", nbbygroup3, "   (",
+             round(percbygroup3*100,1), "%)\n", sep = "")
+
+         } else {
+
+         cat(" Total:                N = ", lcpvo, " (100%)\n", sep = "")
+         cat(" Group A (lower part): n = ", nbbygroup1, "   (",
+             round(percbygroup1*100,1), "%)\n", sep = "")
+         cat(" Group B:              n = ", nbbygroup2, "   (",
+             round(percbygroup2*100,1), "%)\n", sep = "")
+         cat(" Group A (upper part): n = ", nbbygroup3, "   (",
+             round(percbygroup3*100,1), "%)\n", sep = "")
+         }
    }
 
    # End: Output --------------------------------------------------------------
@@ -483,9 +509,9 @@ function(cpvarname,
 
    #' Plot Splines
    if (plot_splines == TRUE) {
-      splines_plot(returnlist, show_splines = all_splines)
+      cp_splines_plot(returnlist, show_splines = all_splines)
    }
 
    return(returnlist)
 
-} # End: est_cutpoint <- function
+} # End: cp_est <- function

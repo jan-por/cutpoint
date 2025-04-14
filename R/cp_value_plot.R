@@ -1,9 +1,9 @@
-#' @title Plot AIC and LRT values from `cpobj` object
+#' @title Plot AIC and LRT-statistics values from `cpobj` object
 #'
 #' @description Create a plot of AIC- or Likelihood ratio test values of the
-#'   estimating procedure.In the case of two cut points, a contour plot can be
+#'   estimating procedure. In the case of two cutpoints, a contour plot can be
 #'   created.
-#' @name value_plot
+#' @name cp_value_plot
 #' @param cpobj list, contains a vector of AIC values (AIC_values) and
 #'   Likelihood ratio test values (LRT_values) of the estimating procedure
 #' @param plotvalues character, either `AIC` or `LRT`. Either the AIC or
@@ -19,7 +19,7 @@
 #'   or LRT values from the estimation process as a scatter plot. Contour plots
 #'   are shown in the RStudio viewer and illustrate the two potential cutpoints
 #'   along with the corresponding AIC or LRT values. Index plots that do not
-#'   show extreme values suggest that there may not be any actual cutpoints in
+#'   show extreme values, suggest that there may not be any actual cutpoints in
 #'   the data. Contour plots provide an opportunity to explore whether there
 #'   could be other potential cutpoints with similar AIC or LRT values. The
 #'   smaller the `bandwidth` (minimum group size per group), the more precise
@@ -45,12 +45,12 @@
 #'               cpvarname         = "Cutpoint variable"
 #'               )
 #'
-#' value_plot(cpobj, plotvalues = "AIC", dp.plot = 2, show_limit = TRUE)
+#' cp_value_plot(cpobj, plotvalues = "AIC", dp.plot = 2, show_limit = TRUE)
 #'
 #' # Example 2
 #' # Splines plot based on data1
 #' # The data set data1 is included in this package
-#' cpobj <- est_cutpoint(
+#' cpobj <- cp_est(
 #'   cpvarname    = "biomarker",
 #'   covariates   = c("covariate_1", "covariate_2"),
 #'   data         = data1,
@@ -60,22 +60,22 @@
 #' # Example 3
 #' # Contour plot based on data1
 #' # The data set data1 is included in this package
-#' cpobj <- est_cutpoint(
+#' cpobj <- cp_est(
 #'    cpvarname    = "biomarker",
 #'    covariates   = c("covariate_1", "covariate_2"),
 #'    data         = data1,
 #'    nb_of_cp     = 2,
 #'    plot_splines = FALSE,
 #' )
-#' value_plot(cpobj, plotvalues = "AIC", plottype2cp = "contour")
+#' cp_value_plot(cpobj, plotvalues = "AIC", plottype2cp = "contour")
 #' @importFrom graphics plot title legend
 #' @importFrom utils globalVariables
 #' @importFrom plotly plot_ly
 #' @export
 #'
-#' @seealso \code{\link{est_cutpoint}}
+#' @seealso \code{\link{cp_est}}
 
-value_plot <-
+cp_value_plot <-
 function(cpobj,
          plotvalues  = "AIC",
          dp.plot     = 2,
@@ -88,14 +88,22 @@ function(cpobj,
    }
 
    if (!is.character(plotvalues)) {
-      stop("event must be a character")
+      stop("plotvalues must be a character")
+   }
+   plotvalues <- toupper(plotvalues)
+   if (plotvalues != "AIC" && plotvalues != "LRT") {
+      stop("plotvalues must be either 'AIC' or 'LRT'")
    }
 
-   if ((!is.character(plottype2cp)) && cpobj$nb_of_cp == 2) {
-         stop("plottype2cp must be a character")}
-   if (plottype2cp != "contour" && plottype2cp != "index") {
-      stop("plottype2cp must be either 'contour' or 'index'")
+   if (cpobj$nb_of_cp == 2){
+
+      if (!is.character(plottype2cp)) {stop("plottype2cp must be a character")}
+      plottype2cp <- tolower(plottype2cp)
+      if (plottype2cp != "contour" && plottype2cp != "index") {
+         stop("plottype2cp must be either 'contour' or 'index'")
+      }
    }
+
    if (cpobj$nb_of_cp != 1 && cpobj$nb_of_cp != 2) {
       stop("nb_of_cp must be either 1 or 2")
    }
@@ -135,9 +143,6 @@ function(cpobj,
    if (!is.logical(show_limit))
       stop("show_limit must be logical (TRUE or FALSE)")
 
-   if (plotvalues != "AIC" && plotvalues != "LRT") {
-      stop("plotvalues must be either 'AIC' or 'LRT'")
-   }
 
    if (!is.character(cpobj$cpvarname)) {
       stop("cpvarname must be a character")
@@ -243,7 +248,7 @@ function(cpobj,
 
       # Define X-axis title
       xaxis_title <- paste0(
-         "Potential values of ",cpvarname," for cutpoint 1\nhigh ", value_name,
+         "Potential values of '",cpvarname,"' for cutpoint 1\nhigh ", value_name,
          " values: light colors; low ", value_name,
          " values: dark colours; ",
          extrem_value_name, " ", value_name, ": ",
@@ -251,13 +256,13 @@ function(cpobj,
       )
 
       # Define Y-axis title
-      yaxis_title <- paste0("Potential values of ", cpvarname," for cutpoint 2")
+      yaxis_title <- paste0("Potential values of '", cpvarname,"' for cutpoint 2")
 
       cp_plot <- cp_plot %>%
          plotly::layout(
          title  = paste0(
-            "Contour plot - coloured ",value_name,
-            " values for potential cutpoints"
+            "Contour plot - coloured ", value_name,
+            " value areas for potential cutpoints"
             ),
          yaxis  = list(title = yaxis_title),
          xaxis  = list(title = xaxis_title),

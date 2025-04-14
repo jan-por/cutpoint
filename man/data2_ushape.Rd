@@ -3,7 +3,7 @@
 \docType{data}
 \name{data2_ushape}
 \alias{data2_ushape}
-\title{Dataset for testing the ushape-cutpoint function}
+\title{Dataset for testing the ushape argument of cp_est function}
 \format{
 \subsection{"data2_ushape"}{
 
@@ -23,7 +23,7 @@ Self-generated example data
 data(data2_ushape)
 }
 \description{
-A dataset containing data for testing the ushape-cutpoint function.
+A dataset containing data for testing the ushape argument of cp_est function.
 }
 \examples{
 data(data2_ushape)

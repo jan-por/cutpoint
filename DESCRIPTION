@@ -9,18 +9,20 @@ Authors@R: c(
       role = c("aut", "cre")
     )
   )
-Description: One or two cutpoints of a metric variable are estimated using
-    the AIC criterion within a multivariable Cox proportional hazards model.
+Description: One or two cutpoints of a metric variable are estimated using 
+    either the AIC (Akaike Information Criterion) or the LRT 
+    (Likelihood-Ratio Test statistic) within a multivariable Cox proportional 
+    hazards model.
     These cutpoints are used to create two or three groups with different
-    survival probabilities. The cutpoints are estimated by dichotomizing the
+    survival probabilities. The cutpoints are estimated by dichotomising the
     variable of interest, which is then incorporated into the Cox-regression
     model. The biomarker cutpoint is the value at which the AIC reaches its
-    lowest value for the corresponding Cox-regression model. This process
-    occurs within a multivariable framework, as other covariates and/or
-    factors are considered during the search for the cutpoints.
-    Cutpoints can also be estimated when the variable of interest shows 
-    a U-shaped or inverse U-shaped relationship with to hazard ratio of 
-    time-to-event data. The argument symtail allows for the estimation of two 
+    lowest value or the LRT statistics his minimum for the corresponding 
+    Cox-regression model. This process occurs within a multivariable framework, 
+    as other covariates and/or factors are considered during the search for the 
+    cutpoints. Cutpoints can also be estimated when the variable of interest 
+    shows a U-shaped or inverse U-shaped relationship to the hazard ratio of 
+    time-to-event data. The argument symtail facilitates the estimate of two 
     cutpoints, ensuring that the two outer tails represent groups of equal size. 
 License: CC BY 4.0 + file LICENSE
 Encoding: UTF-8

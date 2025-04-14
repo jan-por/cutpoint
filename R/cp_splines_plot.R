@@ -2,7 +2,7 @@
 #'
 #' @description Create penalized smoothing splines plot with different degrees
 #'    of freedom and shows the cutpoints of the biomarker.
-#' @name splines_plot
+#' @name cp_splines_plot
 #' @param cpobj list, contains variables for pspline plot:
 #' * `nb_of_cp` (number of cutpoints)
 #' * `cp` (contain one or two cutpoint/s)
@@ -22,16 +22,16 @@
 #' datf <- data.frame(time, event, biomarker)
 #' plot_splines_list <- list(cpdata = datf, nb_of_cp = 1, cp = 95, dp = 2,
 #'     cpvarname = "Biomarker")
-#' splines_plot(plot_splines_list)
+#' cp_splines_plot(plot_splines_list)
 #' @importFrom stats quantile
 #' @importFrom survival coxph Surv pspline
 #' @importFrom graphics abline legend lines
 #' @importFrom utils globalVariables
 #' @export
 #'
-#' @seealso \code{\link{est_cutpoint}}
+#' @seealso \code{\link{cp_est}}
 
-splines_plot <-
+cp_splines_plot <-
    function(cpobj, show_splines = TRUE) {
 
       #' Check if cpobj is a list
@@ -170,7 +170,6 @@ splines_plot <-
                data = cpdata
             ))
 
-
             temp <- termplot(tfit, se = FALSE, plot = FALSE)
             lines(temp$biomarker$x,
                   temp$biomarker$y,
@@ -209,6 +208,7 @@ splines_plot <-
       }
 
       #' Show cutpoints as legend in plot
+
       #' Define title for legend
       if (nb_of_cp == 1) { cptext <- "Cutpoint:  " } else {
          cptext <- "Cutpoints:  " }
@@ -237,4 +237,4 @@ splines_plot <-
 
       return(invisible())
 
-   } # End: Visualization: pspline Plot - termplot -----------------------
+   } # End

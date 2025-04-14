@@ -1,16 +1,17 @@
 #' @title Combine Factors
 #'
-#' @description Create matrix with all factor combinations of the biomarker
+#' @description Intern function, used for creation of a matrix with all factor
+#'   combinations of the cutpoint-variable
 #' @param bandwith numeric, determines the minimum size per group of the
-#'   dichitomised biomarker
+#'   dichitomised variable
 #' @param nb_of_cp numeric, number of cutpoints searching for
 #' @param nrm numeric, number of rows in cpdata after removing observations
 #'   with missing values in biomarker
-#' @param symtails logical, if TRUE the tails of the dichotomised biomarker
+#' @param symtails logical, if TRUE the tails of the dichotomised variable
 #'   are symmetrical
 #' @returns Returns all factor combinations of the dichotomized variable.
 
-combine_factors <-
+factors_combine <-
    function(bandwith = 0.1, nb_of_cp = 1, nrm, symtails = FALSE) {
 
    if (!is.numeric(bandwith))
@@ -39,7 +40,8 @@ combine_factors <-
       stop("symtails must be logical TRUE or FALSE")
 
 
-   #' Create matrix with all factor combinations of the dichotomised biomarker
+   #' Creation of a matrix with all factor combinations of the dichotomised
+   #'   variable
    m.perm.fun <- as.matrix(RcppAlgos::comboGeneral((nb_of_cp + 1),
                                                    nrm,
                                                    repetition = TRUE))
@@ -101,4 +103,4 @@ combine_factors <-
    return(m.perm.fun)
 
 
-   } #' End: combine_factors <- function( --------------------------------------------------------------
+   } #' End: factors_combine <- function( --------------------------------------------------------------
