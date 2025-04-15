@@ -9,7 +9,7 @@
 #'   with missing values in biomarker
 #' @param symtails logical, if TRUE the tails of the dichotomised variable
 #'   are symmetrical
-#' @returns Returns all factor combinations of the dichotomized variable.
+#' @return All factor combinations of the dichotomized variable.
 
 factors_combine <-
    function(bandwith = 0.1, nb_of_cp = 1, nrm, symtails = FALSE) {

@@ -13,6 +13,7 @@ cp_est(
   nb_of_cp = 1,
   bandwith = 0.1,
   est_type = "AIC",
+  cpvar_strata = FALSE,
   ushape = FALSE,
   symtails = FALSE,
   dp = 2,
@@ -39,31 +40,40 @@ factors. If no covariates are used, set \code{covariates = NULL}.}
 \item covariates and/or cofactors
 }}
 
-\item{nb_of_cp}{numeric, number of cutpoints to be estimated}
+\item{nb_of_cp}{numeric, number of cutpoints to be estimated (1 or 2). The
+default is: \code{nb_of_cp = 1}. The other option is \code{nb_of_cp = 2}.}
 
 \item{bandwith}{numeric, minimum group size per group in percent of the total
-sample size, \code{bandwith} must be between 0.05 and 0.30, default is 0.10
+sample size, \code{bandwith} must be between 0.05 and 0.30, default is 0.1
 If \code{ushape = TRUE}, \code{bandwidth} must be at least 0.1.}
 
-\item{est_type}{character, the method used to estimate the cut points. The
-default is 'AIC'. The other options is "LRT" (likelihood ratio test
-statistic)}
+\item{est_type}{character, the method used to estimate the cutpoints. The
+default is 'AIC' (Akaike information criterion). The other options is 'LRT'
+(likelihood ratio test statistic)}
+
+\item{cpvar_strata}{logical value: if \code{FALSE}, The dichotomised variable
+serves as covariate in the Cox-regression model for cutpoint determination.
+If \code{TRUE}, the dichotomised variable is included as a strata in the
+Cox-regression model to determine the cutpoint rather than as a covariate.
+Default is \code{FALSE}.}
 
 \item{ushape}{logical value: if \code{TRUE}, the cutpoints are estimated under the
 assumtion that the spline plot shows a U-shaped form or a inverted U-shaped
-curve.}
+curve. Default is \code{FALSE}.}
 
 \item{symtails}{logical value: if \code{TRUE}, the cutpoints are estimated with
-symmetric tails. If \code{nb_of_cp = 1}, symtails is set to \code{FALSE}}
+symmetric tails. If \code{nb_of_cp = 1}, symtails is set to \code{FALSE}. Default is
+\code{FALSE}.}
 
-\item{dp}{numeric, number of decimal places the cutpoints are rounded to}
+\item{dp}{numeric, number of decimal places the cutpoints are rounded to.
+Default is \code{dp = 2}.}
 
 \item{plot_splines}{logical value: if \code{TRUE}, a penalized spline plot is
-created}
+created. Default is \code{TRUE}.}
 
 \item{all_splines}{logical value: if \code{TRUE}, The plot shows splines with
 different degrees of freedom. This may help determine whether
-misspecification or overfitting occurs.}
+misspecification or overfitting occurs. Default is \code{TRUE}.}
 }
 \value{
 Returns the \code{cpobj} object with cutpoints and the characteristics
@@ -71,20 +81,22 @@ of the formed groups.
 }
 \description{
 One or two cutpoints of a metric variable are estimated using
-the AIC criterion within a multivariable Cox proportional hazards model.
-These cutpoints are used to create two or three groups with different
-survival probabilities.
+either the AIC (Akaike Information Criterion) or the LRT
+(Likelihood-Ratio Test statistic) within a multivariable Cox proportional
+hazards model. These cutpoints are used to create two or three groups with
+different survival probabilities.
 
-The cutpoints are estimated by dichotomizing the
-variable of interest, which is then incorporated into the Cox-regression
-model. The biomarker cutpoint is the value at which the AIC reaches its
-lowest value for the corresponding Cox-regression model. This process
-occurs within a multivariable framework, as other covariates and/or
-factors are considered during the search for the cutpoints.
+The cutpoints are estimated by dichotomising the variable of
+interest, which is then incorporated into the Cox regression model. The
+cutpoint of this variable is the value at which the AIC reaches its lowest
+value or the LRT statistic achieves its maximum for the corresponding Cox
+regression model.
 
-Cutpoints can also be estimated when the variable of interest
-shows a U-shaped or inverted U-shaped relationship to hazard ratio of
-time-to-event data. The argument \code{symtail} allows for the estimation of two
+This process occurs within a multivariable framework, as other
+covariates and/or factors are considered during the search for the
+cutpoints. Cutpoints can also be estimated when the variable of interest
+shows a U-shaped or inverse U-shaped relationship to the hazard ratio of
+time-to-event data. The argument \code{symtail} facilitates the estimation of two
 cutpoints, ensuring that the two outer tails represent groups of equal size.
 }
 \examples{
@@ -100,7 +112,7 @@ cpobj <- cp_est(
   )
 
 # Example 2:
-# Searching for cutpoints, if the biomarker variable shows a U-shaped or
+# Searching for cutpoints, if the variable shows a U-shaped or
 # inverted U-shaped relationship to the hazard ratio.
 # The dataset data2_ushape is included in this package and contains
 # the variables time, event, biomarker, and cutpoint_1.
@@ -117,4 +129,48 @@ cpobj <- cp_est(
 Govindarajulu, U., & Tarpey, T. (2020). Optimal partitioning for
 the proportional hazards model. Journal of Applied Statistics, 49(4),
 968–987. https://doi.org/10.1080/02664763.2020.1846690
+}
+\seealso{
+\code{\link{cp_est}}
+Verify that the input is correct
+Check if the cutpoint variable is in the data
+Check if the time variable is in the data
+data frame includes only the variables that should be part of the model
+Keep the original cutpoint variable
+nrm = Number of rows in cpdata before possible changes
+Observations are deleted for missing values of the cutpoint variable
+If there are more than 1000 observations, a random sample with 1000
+observations is created
+Data frame is sorted by cpvar in ascending order
+Remove elements from cov_ (time, event, cpvar)
+nrm = Number of rows in cpdata after removing observations with
+missing values in cpvar
+If only one cutpoint is estimated, symtails and ushape is set to FALSE
+If ushape is TRUE and bandwith < 0.1, then bandwith is set to 0.1
+If there are no covariates, constant_var is defined as a vector of 1
+Numbers of observations which should at least remain in row
+If ushape is TRUE then create new m.perm with 2 categories, as u-shape only
+has 2 categories
+Number of variants of the cpvar, the number of times the loop must
+be run through
+Vector for AIC values
+Vector for Likelihood ratio test (LRT) values
+Matrix for cpvariable values
+After 5\%, remaining time is communicated, for this timefactor is defined
+Start time measurement
+Extraction of AIC value
+Extraction of the likelihood ratio chi2 -test
+Show the user the approx. remaining time for estimation
+if ushape==TRUE then create new m.perm with 3 categories, because
+has only 2 categories
+Extract the cutpoints from the cpvar variable
+
+Cutpoint is at position minAIC_row_nb of, all those less than or equal
+... to Cutpoint (minAIC_row_nb) belong to the first group
+Cutpoint is at position maxLRT_row_nb of , all those less than or equal
+...to Cutpoint (minLRT_row_nb) belong to the first group
+Generate vector with cutpoints
+Get the counts and percentage of groups in relation to the original data
+Output:------------------------------------------------------------------
+Create splines plot
 }

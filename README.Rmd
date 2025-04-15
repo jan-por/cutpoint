@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# cutpoint: Estimate cutpoints in a multivariable setting for survival data
+# cutpoint: Estimate cutpoints in a multivariable setting for survival data or time-to-event data
 
 ```{r echo=FALSE, results="hide", message=FALSE}
 library("cutpoint")
@@ -83,13 +83,13 @@ pak::pak("jan-por/cutpoint")
 **Estimate one cutpoint of the variable biomarker under consideration of
 two other covariates.**
 
-For this example, the dataset data1, included in the R-package
+For this example, the dataset `data1`, included in the R-package
 `cutpoint`, is used. It has 100 observations and contains the variables:
 
 -   time, event, biomarker, covariate_1, and covariate_2
 
 Because one cutpoint should be estimated, the argument `nb_of_cp` is set
-to 1.
+to 1. (`nb_of_cp = 1`)
 
 For the other arguments, their default settings are used:
 
@@ -97,9 +97,12 @@ For the other arguments, their default settings are used:
 
 -   Estimation type `est_type = "AIC"`
 
+-   Cutpoint variable as strata in Cox model? `cpvar_strata = FALSE`
+    (FALSE: not as strata)
+
 -   Symmetric tails `symtails = FALSE`
 
--   Cutpoints for u-shape `ushape= FALSE`
+-   Cutpoints for u-shape `ushape = FALSE`
 
 ```{r eval=FALSE}
 library(cutpoint) 
@@ -207,8 +210,8 @@ Figure 2. Splines plot with optimal degrees of freedom
 
 The function `cp_value_plot` enables the creation of contour plots and
 index plots from a `cpobj` Object. The AIC values of the cutpoint
-estimation process or the Likelihood Ratio Test (LRT) statistic can be
-used for this.
+estimation process or the Likelihood Ratio Test statistic (LRT)
+statistic can be used for this.
 
 #### **Contour plot**
 
@@ -221,7 +224,7 @@ cpobj <- cp_est(
    cpvarname = "biomarker", 
    covariates = c("covariate_1", "covariate_2"), 
    data = data1, 
-   nb_of_cp = 1
+   nb_of_cp = 2
    )
 ```
 
@@ -246,12 +249,12 @@ estimated cutpoints are: Cutpoint 1 ≤ 89 and Cutpoint 2 ≤ 137 (marked).
 
  \
 The next plot (Figure 4) illustrates another example of a biomarker from
-another dataset, identifying two possible cutpoint combinations. The AIC
-values differ only slightly (3558.3 vs 3558.2). From a statistical point
-of view, both cutpoint combinations may be acceptable. However, perhaps
-one of the two options is more reasonable from a scientific perspective.
-Therefore, it is beneficial to utilise the output in the console and
-examine the plots.\
+another virtual dataset, identifying two possible cutpoint combinations.
+The AIC values differ only slightly (3558.3 vs 3558.2). From a
+statistical point of view, both cutpoint combinations may be acceptable.
+However, perhaps one of the two options is more reasonable from a
+scientific perspective. Therefore, it is beneficial to utilise the
+output in the console and examine the plots.\
  
 
 ![Figure 4. Contour plot shows coloured AIC value areas and two
@@ -278,11 +281,9 @@ for](man/figures/cutpoint-package_index_plot_2_cutpoints_v2.png)
  \
 Index plots that do not show clear areas with extreme values, as
 illustrated in Figure 5, suggest that a real cutpoint may not exist in
-the data. The same applies to contour plots, which show only two or
-three colors for the AIC or LRT statistic values. However, even if there
-is no true cutpoint in the data, it is often possible to establish
-cutpoints, allowing for the formation of groups with different
-probabilities of an event occurring.
+the data. However, even if there is no true cutpoint in the data, it is
+often possible to establish cutpoints, allowing for the formation of
+groups with different probabilities of an event occurring.
 
 ------------------------------------------------------------------------
 

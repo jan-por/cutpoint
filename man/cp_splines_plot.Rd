@@ -27,13 +27,13 @@ Plots penalized smoothing splines and shows the cutpoints.
 }
 \description{
 Create penalized smoothing splines plot with different degrees
-of freedom and shows the cutpoints of the biomarker.
+of freedom and shows the cutpoints of the dichotomised variable.
 }
 \examples{
-biomarker <- rnorm(100, mean = 100, sd = 10)
+cpvar <- rnorm(100, mean = 100, sd = 10)
 time <- seq(1, 100, 1)
 event <- rbinom(100, 1, 0.5)
-datf <- data.frame(time, event, biomarker)
+datf <- data.frame(time, event, cpvar)
 plot_splines_list <- list(cpdata = datf, nb_of_cp = 1, cp = 95, dp = 2,
     cpvarname = "Biomarker")
 cp_splines_plot(plot_splines_list)
@@ -43,13 +43,13 @@ cp_splines_plot(plot_splines_list)
 Check if cpobj is a list
 Extract necessary variables from cpobj
 Check variables
-Get quantiles of biomarker
+Get quantiles of cpvar
 Get optimal degree of freedom
 Define degree of freedom used for termplot
 Define main text for plot
 Visualization: pspline Plot - termplot -----------------------
 Show splines with different degrees of freedom and add legend
-Add lines for mean and quantiles of biomarker
+Add lines for mean and quantiles of cpvar
 Show cutpoints as legend in plot
 Define title for legend
 }

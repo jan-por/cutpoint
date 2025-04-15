@@ -1,18 +1,20 @@
 #' @title Estimate cutpoints in a multivariable setting for survival data
 #'
 #' @description One or two cutpoints of a metric variable are estimated using
-#'   the AIC criterion within a multivariable Cox proportional hazards model.
-#'   These cutpoints are used to create two or three groups with different
-#'   survival probabilities.
-#' @description The cutpoints are estimated by dichotomizing the
-#'   variable of interest, which is then incorporated into the Cox-regression
-#'   model. The biomarker cutpoint is the value at which the AIC reaches its
-#'   lowest value for the corresponding Cox-regression model. This process
-#'   occurs within a multivariable framework, as other covariates and/or
-#'   factors are considered during the search for the cutpoints.
-#' @description Cutpoints can also be estimated when the variable of interest
-#'   shows a U-shaped or inverted U-shaped relationship to hazard ratio of
-#'   time-to-event data. The argument `symtail` allows for the estimation of two
+#'   either the AIC (Akaike Information Criterion) or the LRT
+#'   (Likelihood-Ratio Test statistic) within a multivariable Cox proportional
+#'   hazards model. These cutpoints are used to create two or three groups with
+#'   different survival probabilities.
+#' @description The cutpoints are estimated by dichotomising the variable of
+#'   interest, which is then incorporated into the Cox regression model. The
+#'   cutpoint of this variable is the value at which the AIC reaches its lowest
+#'   value or the LRT statistic achieves its maximum for the corresponding Cox
+#'   regression model.
+#' @description This process occurs within a multivariable framework, as other
+#'   covariates and/or factors are considered during the search for the
+#'   cutpoints. Cutpoints can also be estimated when the variable of interest
+#'   shows a U-shaped or inverse U-shaped relationship to the hazard ratio of
+#'   time-to-event data. The argument `symtail` facilitates the estimation of two
 #'   cutpoints, ensuring that the two outer tails represent groups of equal size.
 #' @name cp_est
 #' @param cpvarname character, the name of the variable for which the cut points
@@ -26,31 +28,37 @@
 #' * follow-up time
 #' * event (status indicator)
 #' * covariates and/or cofactors
-#' @param nb_of_cp numeric, number of cutpoints to be estimated
+#' @param nb_of_cp numeric, number of cutpoints to be estimated (1 or 2). The
+#'   default is: `nb_of_cp = 1`. The other option is `nb_of_cp = 2`.
 #' @param bandwith numeric, minimum group size per group in percent of the total
-#'   sample size, `bandwith` must be between 0.05 and 0.30, default is 0.10
+#'   sample size, `bandwith` must be between 0.05 and 0.30, default is 0.1
 #'   If `ushape = TRUE`, `bandwidth` must be at least 0.1.
-#' @param est_type character, the method used to estimate the cut points. The
-#'   default is 'AIC'. The other options is "LRT" (likelihood ratio test
-#'   statistic)
+#' @param est_type character, the method used to estimate the cutpoints. The
+#'   default is 'AIC' (Akaike information criterion). The other options is 'LRT'
+#'   (likelihood ratio test statistic)
+#' @param cpvar_strata logical value: if `FALSE`, The dichotomised variable
+#'   serves as covariate in the Cox-regression model for cutpoint determination.
+#'   If `TRUE`, the dichotomised variable is included as a strata in the
+#'   Cox-regression model to determine the cutpoint rather than as a covariate.
+#'   Default is `FALSE`.
 #' @param ushape logical value: if `TRUE`, the cutpoints are estimated under the
 #'   assumtion that the spline plot shows a U-shaped form or a inverted U-shaped
-#'   curve.
+#'   curve. Default is `FALSE`.
 #' @param symtails logical value: if `TRUE`, the cutpoints are estimated with
-#'   symmetric tails. If `nb_of_cp = 1`, symtails is set to `FALSE`
-#' @param dp numeric, number of decimal places the cutpoints are rounded to
+#'   symmetric tails. If `nb_of_cp = 1`, symtails is set to `FALSE`. Default is
+#'   `FALSE`.
+#' @param dp numeric, number of decimal places the cutpoints are rounded to.
+#'   Default is `dp = 2`.
 #' @param plot_splines logical value: if `TRUE`, a penalized spline plot is
-#'   created
+#'   created. Default is `TRUE`.
 #' @param all_splines logical value: if `TRUE`, The plot shows splines with
 #'   different degrees of freedom. This may help determine whether
-#'   misspecification or overfitting occurs.
+#'   misspecification or overfitting occurs. Default is `TRUE`.
 #' @references Govindarajulu, U., & Tarpey, T. (2020). Optimal partitioning for
 #'   the proportional hazards model. Journal of Applied Statistics, 49(4),
 #'   968–987. https://doi.org/10.1080/02664763.2020.1846690
 #' @returns Returns the `cpobj` object with cutpoints and the characteristics
 #'   of the formed groups.
-#' @export
-#'
 #' @examples
 #' # Example 1:
 #' # Estimate two cutpoints of the variable biomarker.
@@ -64,7 +72,7 @@
 #'   )
 #'
 #' # Example 2:
-#' # Searching for cutpoints, if the biomarker variable shows a U-shaped or
+#' # Searching for cutpoints, if the variable shows a U-shaped or
 #' # inverted U-shaped relationship to the hazard ratio.
 #' # The dataset data2_ushape is included in this package and contains
 #' # the variables time, event, biomarker, and cutpoint_1.
@@ -81,7 +89,10 @@
 #' @importFrom stats AIC complete.cases median quantile rnorm as.formula
 #'                   update.formula
 #' @importFrom utils globalVariables
+#' @export
 #'
+#' @seealso \code{\link{cp_est}}
+
 cp_est <-
 function(cpvarname,
          time         = "time",
@@ -91,6 +102,7 @@ function(cpvarname,
          nb_of_cp     = 1,
          bandwith     = 0.1,
          est_type     = "AIC",
+         cpvar_strata = FALSE,
          ushape       = FALSE,
          symtails     = FALSE,
          dp           = 2,
@@ -168,7 +180,8 @@ function(cpvarname,
    if ((est_type != "AIC") && (est_type != "LRT"))
          stop("est_type must be 'AIC' or 'LRT'")
 
-
+   if (!is.logical(cpvar_strata))
+         stop("cpvar_strata must be logical (TRUE or FALSE)")
 
    if (!is.logical(ushape))
       stop("ushape must be logical (TRUE or FALSE)")
@@ -191,23 +204,23 @@ function(cpvarname,
    if (!is.logical(all_splines))
       stop("all_splines must be logical (TRUE or FALSE)")
 
-   # "cpvarname" is used for labelling and "biomarker" for calculations
-   biomarker <- cpvarname
+   # "cpvarname" is used for labelling and "cpvar" for calculations
+   cpvar <- cpvarname
 
    #' data frame includes only the variables that should be part of the model
-   cpdata <- data[, c(biomarker, time, event, covariates)]
+   cpdata <- data[, c(cpvar, time, event, covariates)]
 
    #' Keep the original cutpoint variable
-   cpvariable_original <- sort(data[ ,biomarker])
+   cpvariable_original <- sort(data[ ,cpvar])
 
 
    #' nrm = Number of rows in cpdata before possible changes
    nrm_start  <- nrow(cpdata)
 
-   colnames(cpdata)[1:3] <- c("biomarker", "time", "event")
+   colnames(cpdata)[1:3] <- c("cpvar", "time", "event")
 
    #' Observations are deleted for missing values of the cutpoint variable
-   cpdata <- cpdata[complete.cases(cpdata$biomarker), ]
+   cpdata <- cpdata[complete.cases(cpdata$cpvar), ]
 
    #' If there are more than 1000 observations, a random sample with 1000
    #'     observations is created
@@ -218,19 +231,19 @@ function(cpvarname,
       sample_yes <- TRUE
    }
 
-   #' Data frame is sorted by biomarker in ascending order
-   cpdata <- cpdata[order(cpdata$biomarker), ]
-   biomarker <- cpdata$biomarker
+   #' Data frame is sorted by cpvar in ascending order
+   cpdata <- cpdata[order(cpdata$cpvar), ]
+   cpvar <- cpdata$cpvar
 
    #cov_ <- cbind(cpdata)
 
-   #' Remove elements from cov_ (time, event, biomarker)
-   #cov_ <- cov_[!names(cov_) %in% c("time", "event", "biomarker")]
+   #' Remove elements from cov_ (time, event, cpvar)
+   #cov_ <- cov_[!names(cov_) %in% c("time", "event", "cpvar")]
 
   # cov_ <- as.matrix(cov_)
 
    #' nrm = Number of rows in cpdata after removing observations with
-   #'     missing values in biomarker
+   #'     missing values in cpvar
    nrm  <- nrow(cpdata)
 
    #if (is.null(covariates) && nrm < 200 && ushape == TRUE) {
@@ -259,16 +272,28 @@ function(cpvarname,
    if (is.null(covariates)) {constant_var <- rep(1, nrm)}
 
 
-   # Formula (FML) for Cox regression from vector of covariates
-   if (!is.null(covariates)) {
-      FML <- as.formula(paste0('~ biomarker_dicho +',
-                               paste(covariates, collapse = "+")))
+   # Formula (FML) for Cox-regression from vector of covariates:
+
+   if (cpvar_strata == FALSE) {
+      if (!is.null(covariates)) {
+         FML <- as.formula(paste0('~ cpvariable_dicho +',
+                                  paste(covariates, collapse = "+")))
+      } else {
+         FML <- as.formula(paste0('~ cpvariable_dicho + constant_var')) }
+
+   # if cpvar_strata == TRUE:
    } else {
-      FML <- as.formula(paste0('~ biomarker_dicho + constant_var'))
+
+      if (!is.null(covariates)) {
+         FML <- as.formula(paste0('~ strata(cpvariable_dicho) +',
+                                  paste(covariates, collapse = "+")))
+      } else {
+         FML <- as.formula(paste0('~ strata(cpvariable_dicho) + constant_var'))
+      }
    }
 
 
-   #' Numbers of observations which should at least remain in line
+   #' Numbers of observations which should at least remain in row
    m.perm <- factors_combine(bandwith, nb_of_cp, nrm, symtails)
 
 
@@ -281,7 +306,7 @@ function(cpvarname,
 
    loop_nr <- 0
 
-   #' Number of variants of the biomarker, the number of times the loop must
+   #' Number of variants of the cpvar, the number of times the loop must
    #'     be run through
    nbr.m.perm <- nrow(m.perm)
 
@@ -307,27 +332,28 @@ function(cpvarname,
 
       loop_nr <- loop_nr + 1
 
-      #biomarker_dicho <- as.factor(m.perm[i, ])
-      biomarker_dicho <- m.perm[i, ]
+      #cpvariable_dicho <- as.factor(m.perm[i, ])
+      cpvariable_dicho <- m.perm[i, ]
 
       result.cox <- survival::coxph(update.formula(Surv(time, event)~., FML),
                                   data = cpdata, eps = 1e-09, toler.inf = 1e-03)
 
+      #' Extraction of AIC value
       AIC_values[i] <- AIC(result.cox)
 
-      # Extraction of the likelihood ratio chi2 -test
+      #' Extraction of the likelihood ratio chi2 -test
       LRT_values[i] <- (summary(result.cox))$logtest["test"]
 
       # Assigning the corresponding cpvariable values
-      cpvariable_values[i, 1] <- biomarker[(rle(biomarker_dicho)$lengths[1])]
+      cpvariable_values[i, 1] <- cpvar[(rle(cpvariable_dicho)$lengths[1])]
 
       if (nb_of_cp == 2) { cpvariable_values[i, 2] <-
-                           biomarker[(sum(rle(biomarker_dicho)$lengths[1:2]))]
+                           cpvar[(sum(rle(cpvariable_dicho)$lengths[1:2]))]
       }
 
       rm(result.cox)
 
-      #' Show user approx. remaining time
+      #' Show the user the approx. remaining time for estimation
       if (nbr.m.perm.time == loop_nr) {
          tm <- proc.time() - ptm
          cat("\nApprox. remaining time for estimation:",
@@ -344,13 +370,13 @@ function(cpvarname,
    rm(nbr.m.perm.time)
 
 
-   #' if ushape==TRUE then create new m.perm with 3 categories, as ushape
+   #' if ushape==TRUE then create new m.perm with 3 categories, because
    #'    has only 2 categories
    if (ushape == TRUE) {
       m.perm <- factors_combine(bandwith, nb_of_cp, nrm, symtails)
    }
 
-   #' Extract the cutpoints from the biomarker variable
+   #' Extract the cutpoints from the cpvar variable
    #'
 
    if(est_type == "AIC") {
@@ -373,10 +399,10 @@ function(cpvarname,
    #' Generate vector with cutpoints
    cp <- c(NA, NA)
 
-   cp[1] <- biomarker[cp1_position]
+   cp[1] <- cpvar[cp1_position]
    names(cp[1]) <- "CP1"
 
-   cp[2] <- biomarker[cp2_position]
+   cp[2] <- cpvar[cp2_position]
    names(cp[2]) <- "CP2"
 
 
@@ -416,25 +442,26 @@ function(cpvarname,
 
    #' Output:------------------------------------------------------------------
 
-   cat("--------------------------------------------------------------------\n")
    if (sample_yes == TRUE){
+   cat("--------------------------------------------------------------------\n")
    cat("! Because the number of observations in the original dataset is >1000\n")
    cat("  a random sample of 1000 observations is used for estimating the cutpoints\n")
    }
    cat("--------------------------------------------------------------------\n")
    cat("SETTINGS:\n")
-   cat(" Cutpoint-variable                = ", cpvarname, "\n")
-   cat(" Number of cutpoints   (nb_of_cp) = ", nb_of_cp, "\n")
+   cat(" Cutpoint-variable                    = ", cpvarname, "\n")
+   cat(" Number of cutpoints   (nb_of_cp)     = ", nb_of_cp, "\n")
    if (change_bw == TRUE) {
       cat(" Min. group size in %  (bandwith) = ", bandwith,
           " (was set to 0.1 because ushape is TRUE)\n")
       } else {
-   cat(" Min. group size in %  (bandwith) = ", bandwith, "\n")}
-   cat(" Estimation type       (est_type) = ", est_type, "\n")
-   cat(" Symmetric tails       (symtails) = ", symtails,
-       "  (is set FALSE if nb_of_cp = 1)\n")
-   cat(" Cutpoints for u-shape (ushape)   = ", ushape,
-       "  (is set FALSE if nb_of_cp = 1)\n")
+   cat(" Min. group size in %  (bandwith)     = ", bandwith, "\n")}
+   cat(" Estimation type       (est_type)     = ", est_type, "\n")
+   cat(" CP-variable as strata (cpvar_strata) = ", cpvar_strata, "\n")
+   cat(" Symmetric tails       (symtails)     = ", symtails,
+       "  (is set to FALSE if nb_of_cp = 1)\n")
+   cat(" Cutpoints for u-shape (ushape)       = ", ushape,
+       "  (is set to FALSE if nb_of_cp = 1)\n")
    cat("--------------------------------------------------------------------\n")
    if (is.null(covariates)) {
       cat("No covariates were selected\n")
@@ -452,12 +479,12 @@ function(cpvarname,
 
       cat("Cutpoint:", cpvarname, "\u2264", cp[1], "\n")
       cat("-----------------------------------------------------------------\n")
-      cat("Group size in relation to valid of ",cpvarname ,
+      cat("Group size in relation to valid data of",cpvarname ,
           "in original data set\n")
       cat(" Total:   N = ", lcpvo, " (100%)\n", sep = "")
-      cat(" Group A: n = ", nbbygroup1, "   (", round(percbygroup1*100,1),
+      cat(" Group A: n = ", nbbygroup1, " (", round(percbygroup1*100,1),
           "%)\n", sep = "")
-      cat(" Group B: n = ", nbbygroup2, "   (", round(percbygroup2*100,1),
+      cat(" Group B: n = ", nbbygroup2, " (", round(percbygroup2*100,1),
           "%)\n", sep = "")
 
       cp <- cp[-2]
@@ -474,21 +501,21 @@ function(cpvarname,
       if(ushape == FALSE) {
 
          cat(" Total:   N = ", lcpvo, " (100%)\n", sep = "")
-         cat(" Group A: n = ", nbbygroup1, "   (",
+         cat(" Group A: n = ", nbbygroup1, " (",
              round(percbygroup1*100,1), "%)\n", sep = "")
-         cat(" Group B: n = ", nbbygroup2, "   (",
+         cat(" Group B: n = ", nbbygroup2, " (",
              round(percbygroup2*100,1), "%)\n", sep = "")
-         cat(" Group C: n = ", nbbygroup3, "   (",
+         cat(" Group C: n = ", nbbygroup3, " (",
              round(percbygroup3*100,1), "%)\n", sep = "")
 
          } else {
 
          cat(" Total:                N = ", lcpvo, " (100%)\n", sep = "")
-         cat(" Group A (lower part): n = ", nbbygroup1, "   (",
+         cat(" Group A (lower part): n = ", nbbygroup1, " (",
              round(percbygroup1*100,1), "%)\n", sep = "")
-         cat(" Group B:              n = ", nbbygroup2, "   (",
+         cat(" Group B:              n = ", nbbygroup2, " (",
              round(percbygroup2*100,1), "%)\n", sep = "")
-         cat(" Group A (upper part): n = ", nbbygroup3, "   (",
+         cat(" Group A (upper part): n = ", nbbygroup3, " (",
              round(percbygroup3*100,1), "%)\n", sep = "")
          }
    }
@@ -507,7 +534,7 @@ function(cpvarname,
       cpvariable_values = cpvariable_values
    )
 
-   #' Plot Splines
+   #' Create splines plot
    if (plot_splines == TRUE) {
       cp_splines_plot(returnlist, show_splines = all_splines)
    }

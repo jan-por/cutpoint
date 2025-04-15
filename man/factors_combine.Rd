@@ -19,7 +19,7 @@ with missing values in biomarker}
 are symmetrical}
 }
 \value{
-Returns all factor combinations of the dichotomized variable.
+All factor combinations of the dichotomized variable.
 Creation of a matrix with all factor combinations of the dichotomised
 variable
 Delete rows with less than ‘bandwith’ percent of the number of columnsconvert percentages into number

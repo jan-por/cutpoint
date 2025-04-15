@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# cutpoint: Estimate cutpoints in a multivariable setting for survival data
+# cutpoint: Estimate cutpoints in a multivariable setting for survival data or time-to-event data
 
 <img src="man/figures/logo.png" width="91" />
 
@@ -60,13 +60,13 @@ pak::pak("jan-por/cutpoint")
 **Estimate one cutpoint of the variable biomarker under consideration of
 two other covariates.**
 
-For this example, the dataset data1, included in the R-package
+For this example, the dataset `data1`, included in the R-package
 `cutpoint`, is used. It has 100 observations and contains the variables:
 
 - time, event, biomarker, covariate_1, and covariate_2
 
 Because one cutpoint should be estimated, the argument `nb_of_cp` is set
-to 1.
+to 1. (`nb_of_cp = 1`)
 
 For the other arguments, their default settings are used:
 
@@ -74,9 +74,12 @@ For the other arguments, their default settings are used:
 
 - Estimation type `est_type = "AIC"`
 
+- Cutpoint variable as strata in Cox model? `cpvar_strata = FALSE`
+  (FALSE: not as strata)
+
 - Symmetric tails `symtails = FALSE`
 
-- Cutpoints for u-shape `ushape= FALSE`
+- Cutpoints for u-shape `ushape = FALSE`
 
 ``` r
 library(cutpoint) 
@@ -95,14 +98,14 @@ The output displays the primary settings and the cutpoint:
     #> 
     #> Approx. remaining time for estimation: 0 seconds 
     #> --------------------------------------------------------------------
-    #> --------------------------------------------------------------------
     #> SETTINGS:
-    #>  Cutpoint-variable                =  biomarker 
-    #>  Number of cutpoints   (nb_of_cp) =  1 
-    #>  Min. group size in %  (bandwith) =  0.1 
-    #>  Estimation type       (est_type) =  AIC 
-    #>  Symmetric tails       (symtails) =  FALSE   (is set FALSE if nb_of_cp = 1)
-    #>  Cutpoints for u-shape (ushape)   =  FALSE   (is set FALSE if nb_of_cp = 1)
+    #>  Cutpoint-variable                    =  biomarker 
+    #>  Number of cutpoints   (nb_of_cp)     =  1 
+    #>  Min. group size in %  (bandwith)     =  0.1 
+    #>  Estimation type       (est_type)     =  AIC 
+    #>  CP-variable as strata (cpvar_strata) =  FALSE 
+    #>  Symmetric tails       (symtails)     =  FALSE   (is set to FALSE if nb_of_cp = 1)
+    #>  Cutpoints for u-shape (ushape)       =  FALSE   (is set to FALSE if nb_of_cp = 1)
     #> --------------------------------------------------------------------
     #> Covariates or factors are:
     #>   covariate_1 covariate_2 
@@ -112,10 +115,10 @@ The output displays the primary settings and the cutpoint:
     #> Number of cutpoints searching for: 1 
     #> Cutpoint: biomarker ≤ 89 
     #> -----------------------------------------------------------------
-    #> Group size in relation to valid of  biomarker in original data set
+    #> Group size in relation to valid data of biomarker in original data set
     #>  Total:   N = 100 (100%)
-    #>  Group A: n = 12   (12%)
-    #>  Group B: n = 88   (88%)
+    #>  Group A: n = 12 (12%)
+    #>  Group B: n = 88 (88%)
 
 The argument `bandwidth` can change the minimum group sizes and may lead
 to different cutpoint estimates.
@@ -145,14 +148,14 @@ is ≤ 137.
     #> 
     #> Approx. remaining time for estimation: 0 seconds 
     #> --------------------------------------------------------------------
-    #> --------------------------------------------------------------------
     #> SETTINGS:
-    #>  Cutpoint-variable                =  biomarker 
-    #>  Number of cutpoints   (nb_of_cp) =  1 
-    #>  Min. group size in %  (bandwith) =  0.1 
-    #>  Estimation type       (est_type) =  AIC 
-    #>  Symmetric tails       (symtails) =  FALSE   (is set FALSE if nb_of_cp = 1)
-    #>  Cutpoints for u-shape (ushape)   =  FALSE   (is set FALSE if nb_of_cp = 1)
+    #>  Cutpoint-variable                    =  biomarker 
+    #>  Number of cutpoints   (nb_of_cp)     =  1 
+    #>  Min. group size in %  (bandwith)     =  0.1 
+    #>  Estimation type       (est_type)     =  AIC 
+    #>  CP-variable as strata (cpvar_strata) =  FALSE 
+    #>  Symmetric tails       (symtails)     =  FALSE   (is set to FALSE if nb_of_cp = 1)
+    #>  Cutpoints for u-shape (ushape)       =  FALSE   (is set to FALSE if nb_of_cp = 1)
     #> --------------------------------------------------------------------
     #> No covariates were selected
     #> --------------------------------------------------------------------
@@ -161,10 +164,10 @@ is ≤ 137.
     #> Number of cutpoints searching for: 1 
     #> Cutpoint: biomarker ≤ 137 
     #> -----------------------------------------------------------------
-    #> Group size in relation to valid of  biomarker in original data set
+    #> Group size in relation to valid data of biomarker in original data set
     #>  Total:   N = 100 (100%)
-    #>  Group A: n = 29   (29%)
-    #>  Group B: n = 71   (71%)
+    #>  Group A: n = 29 (29%)
+    #>  Group B: n = 71 (71%)
 
 ------------------------------------------------------------------------
 
@@ -214,8 +217,8 @@ Figure 2. Splines plot with optimal degrees of freedom
 
 The function `cp_value_plot` enables the creation of contour plots and
 index plots from a `cpobj` Object. The AIC values of the cutpoint
-estimation process or the Likelihood Ratio Test (LRT) statistic can be
-used for this.
+estimation process or the Likelihood Ratio Test statistic (LRT)
+statistic can be used for this.
 
 #### **Contour plot**
 
@@ -228,7 +231,7 @@ cpobj <- cp_est(
    cpvarname = "biomarker", 
    covariates = c("covariate_1", "covariate_2"), 
    data = data1, 
-   nb_of_cp = 1
+   nb_of_cp = 2
    )
 ```
 
@@ -257,12 +260,12 @@ estimated cutpoints are: Cutpoint 1 ≤ 89 and Cutpoint 2 ≤ 137 (marked).
 
    
 The next plot (Figure 4) illustrates another example of a biomarker from
-another dataset, identifying two possible cutpoint combinations. The AIC
-values differ only slightly (3558.3 vs 3558.2). From a statistical point
-of view, both cutpoint combinations may be acceptable. However, perhaps
-one of the two options is more reasonable from a scientific perspective.
-Therefore, it is beneficial to utilise the output in the console and
-examine the plots.  
+another virtual dataset, identifying two possible cutpoint combinations.
+The AIC values differ only slightly (3558.3 vs 3558.2). From a
+statistical point of view, both cutpoint combinations may be acceptable.
+However, perhaps one of the two options is more reasonable from a
+scientific perspective. Therefore, it is beneficial to utilise the
+output in the console and examine the plots.  
  
 
 <figure>
@@ -297,11 +300,9 @@ searched for</figcaption>
    
 Index plots that do not show clear areas with extreme values, as
 illustrated in Figure 5, suggest that a real cutpoint may not exist in
-the data. The same applies to contour plots, which show only two or
-three colors for the AIC or LRT statistic values. However, even if there
-is no true cutpoint in the data, it is often possible to establish
-cutpoints, allowing for the formation of groups with different
-probabilities of an event occurring.
+the data. However, even if there is no true cutpoint in the data, it is
+often possible to establish cutpoints, allowing for the formation of
+groups with different probabilities of an event occurring.
 
 ------------------------------------------------------------------------
 
@@ -341,14 +342,14 @@ cpobj <- cp_est(
     #> 
     #> Approx. remaining time for estimation: 9 seconds 
     #> --------------------------------------------------------------------
-    #> --------------------------------------------------------------------
     #> SETTINGS:
-    #>  Cutpoint-variable                =  biomarker 
-    #>  Number of cutpoints   (nb_of_cp) =  2 
-    #>  Min. group size in %  (bandwith) =  0.2 
-    #>  Estimation type       (est_type) =  AIC 
-    #>  Symmetric tails       (symtails) =  FALSE   (is set FALSE if nb_of_cp = 1)
-    #>  Cutpoints for u-shape (ushape)   =  TRUE   (is set FALSE if nb_of_cp = 1)
+    #>  Cutpoint-variable                    =  biomarker 
+    #>  Number of cutpoints   (nb_of_cp)     =  2 
+    #>  Min. group size in %  (bandwith)     =  0.2 
+    #>  Estimation type       (est_type)     =  AIC 
+    #>  CP-variable as strata (cpvar_strata) =  FALSE 
+    #>  Symmetric tails       (symtails)     =  FALSE   (is set to FALSE if nb_of_cp = 1)
+    #>  Cutpoints for u-shape (ushape)       =  TRUE   (is set to FALSE if nb_of_cp = 1)
     #> --------------------------------------------------------------------
     #> Covariates or factors are:
     #>   covariate_1 
@@ -361,9 +362,9 @@ cpobj <- cp_est(
     #> -----------------------------------------------------------------
     #> Group size in relation to valid data of biomarker  in original data set
     #>  Total:                N = 200 (100%)
-    #>  Group A (lower part): n = 59   (29.5%)
-    #>  Group B:              n = 65   (32.5%)
-    #>  Group A (upper part): n = 76   (38%)
+    #>  Group A (lower part): n = 59 (29.5%)
+    #>  Group B:              n = 65 (32.5%)
+    #>  Group A (upper part): n = 76 (38%)
 
  
 

@@ -1,7 +1,7 @@
 #' @title Plot penalized smoothing splines and shows cutpoints from `cpobj` object
 #'
 #' @description Create penalized smoothing splines plot with different degrees
-#'    of freedom and shows the cutpoints of the biomarker.
+#'    of freedom and shows the cutpoints of the dichotomised variable.
 #' @name cp_splines_plot
 #' @param cpobj list, contains variables for pspline plot:
 #' * `nb_of_cp` (number of cutpoints)
@@ -16,10 +16,10 @@
 #'   misspecification or overfitting occurs.
 #' @returns Plots penalized smoothing splines and shows the cutpoints.
 #' @examples
-#' biomarker <- rnorm(100, mean = 100, sd = 10)
+#' cpvar <- rnorm(100, mean = 100, sd = 10)
 #' time <- seq(1, 100, 1)
 #' event <- rbinom(100, 1, 0.5)
-#' datf <- data.frame(time, event, biomarker)
+#' datf <- data.frame(time, event, cpvar)
 #' plot_splines_list <- list(cpdata = datf, nb_of_cp = 1, cp = 95, dp = 2,
 #'     cpvarname = "Biomarker")
 #' cp_splines_plot(plot_splines_list)
@@ -88,29 +88,29 @@ cp_splines_plot <-
          stop("event must have more than one unique value")
       }
 
-      if (!("biomarker" %in% names(cpdata))) {
-         stop("biomarker must be a column in cpdata")
+      if (!("cpvar" %in% names(cpdata))) {
+         stop("cpvar must be a column in cpdata")
       }
-      if (length(unique(cpdata$biomarker)) == 1) {
-         stop("biomarker must have more than one unique value")
+      if (length(unique(cpdata$cpvar)) == 1) {
+         stop("cpvar must have more than one unique value")
       }
-      if (length(unique(cpdata$biomarker)) < 3) {
-         stop("biomarker must have more than two unique values")
+      if (length(unique(cpdata$cpvar)) < 3) {
+         stop("cpvar must have more than two unique values")
       }
 
       if (!is.character(cpvarname)) {
          stop("cpvarname must be a character")
       }
 
-      biomarker <- cpdata$biomarker
+      cpvar <- cpdata$cpvar
 
-      #' Get quantiles of biomarker
-      q <- quantile(biomarker, na.rm = TRUE)
+      #' Get quantiles of cpvar
+      q <- quantile(cpvar, na.rm = TRUE)
 
       #' Get optimal degree of freedom
       tfit <- survival::coxph(
          formula = Surv(time, event) ~ survival::pspline(
-            x = biomarker,
+            x = cpvar,
             df = 0,
             caic = TRUE,
             plot = FALSE
@@ -147,7 +147,7 @@ cp_splines_plot <-
          ylabs     = "log relative hazard",
          main     = main_text,
          sub      = paste0("Mean: ",
-            round(mean(biomarker), 2),
+            round(mean(cpvar), 2),
             " (dashed, red line),  Q1: ",
             round(q[2], 2),
             " (grey),  Median: ",
@@ -163,7 +163,7 @@ cp_splines_plot <-
          for (i in 1:length(degfr)) {
             try(tfit <- survival::coxph(
                formula = Surv(time, event) ~ pspline(
-                  x = biomarker,
+                  x = cpvar,
                   df = degfr[i],
                   caic = TRUE
                ),
@@ -171,8 +171,8 @@ cp_splines_plot <-
             ))
 
             temp <- termplot(tfit, se = FALSE, plot = FALSE)
-            lines(temp$biomarker$x,
-                  temp$biomarker$y,
+            lines(temp$cpvar$x,
+                  temp$cpvar$y,
                   col = tempcolors[i],
                   lwd = 2)
             rm(temp)
@@ -191,9 +191,9 @@ cp_splines_plot <-
 
       } # End: if (show_splines ==  TRUE)
 
-      #' Add lines for mean and quantiles of biomarker
+      #' Add lines for mean and quantiles of cpvar
       abline(
-         v = c(q[2], q[3], q[4], mean(biomarker)),
+         v = c(q[2], q[3], q[4], mean(cpvar)),
          col = c("grey", "grey", "grey", "red"),
          lty = c("dotted", "dotted", "dotted", "dashed")
       )

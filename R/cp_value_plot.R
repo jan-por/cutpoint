@@ -1,27 +1,28 @@
 #' @title Plot AIC and LRT-statistics values from `cpobj` object
 #'
-#' @description Create a plot of AIC- or Likelihood ratio test values of the
-#'   estimating procedure. In the case of two cutpoints, a contour plot can be
-#'   created.
+#' @description Create a plot of AIC or Likelihood ratio test statistic values
+#'   for the estimation procedure. If there are two cutpoints, a Contour-plot
+#'   and an Index-plot can be generated.
 #' @name cp_value_plot
 #' @param cpobj list, contains a vector of AIC values (AIC_values) and
-#'   Likelihood ratio test values (LRT_values) of the estimating procedure
+#'   Likelihood ratio test statistic values (LRT_values) of the estimating
+#'   procedure
 #' @param plotvalues character, either `AIC` or `LRT`. Either the AIC or
 #'   LRT values are displayed. Default is `AIC`.
 #' @param dp.plot numeric, digits for the AIC values and LRT values.
 #'   Default is `2`.
 #' @param show_limit logical, if `TRUE` the minimum AIC value is shown in the
-#'   plot if `plotvalues = "AIC"` and the maximum LRT value is shown if
+#'   plot if `plotvalues = "AIC"`, and the maximum LRT value is shown if
 #'   `plotvalues = "LRT"`
 #' @param plottype2cp character, either `contour` or `index`. Default is
-#'   `contour`. This option is available only when searching for two cutpoints.
+#'   `contour`. TThis option is available only when searching for two cutpoints.
 #'   Index plots and contour plots can be selected. Index plots display all AIC
 #'   or LRT values from the estimation process as a scatter plot. Contour plots
 #'   are shown in the RStudio viewer and illustrate the two potential cutpoints
 #'   along with the corresponding AIC or LRT values. Index plots that do not
-#'   show extreme values, suggest that there may not be any actual cutpoints in
+#'   show extreme values suggest that there may not be any actual cutpoints in
 #'   the data. Contour plots provide an opportunity to explore whether there
-#'   could be other potential cutpoints with similar AIC or LRT values. The
+#'   might be other potential cutpoints with similar AIC or LRT values. The
 #'   smaller the `bandwidth` (minimum group size per group), the more precise
 #'   and meaningful the contour plots can be interpreted.
 #' @returns Plots the AIC- or LRT-values, derived from the estimation procedure.
