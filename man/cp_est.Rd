@@ -131,7 +131,6 @@ the proportional hazards model. Journal of Applied Statistics, 49(4),
 968–987. https://doi.org/10.1080/02664763.2020.1846690
 }
 \seealso{
-\code{\link{cp_est}}
 Verify that the input is correct
 Check if the cutpoint variable is in the data
 Check if the time variable is in the data

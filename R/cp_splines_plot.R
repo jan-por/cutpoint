@@ -31,10 +31,9 @@
 #' @importFrom utils globalVariables
 #' @export
 #'
-#' @seealso \code{\link{cp_est}}
+#' @seealso
 
-cp_splines_plot <-
-   function(cpobj, show_splines = TRUE, adj_splines = TRUE) {
+cp_splines_plot <- function(cpobj, show_splines = TRUE, adj_splines = TRUE) {
 
       #' Check if cpobj is a list
       if (!is.list(cpobj)) {

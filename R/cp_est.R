@@ -91,24 +91,23 @@
 #' @importFrom utils globalVariables
 #' @export
 #'
-#' @seealso \code{\link{cp_est}}
+#' @seealso
 
-cp_est <-
-function(cpvarname,
-         time         = "time",
-         event        = "event",
-         covariates   = NULL,
-         data         = data,
-         nb_of_cp     = 1,
-         bandwith     = 0.1,
-         est_type     = "AIC",
-         cpvar_strata = FALSE,
-         ushape       = FALSE,
-         symtails     = FALSE,
-         dp           = 2,
-         plot_splines = TRUE,
-         all_splines  = TRUE
-        ) {
+cp_est <- function(cpvarname,
+            time         = "time",
+            event        = "event",
+            covariates   = NULL,
+            data         = data,
+            nb_of_cp     = 1,
+            bandwith     = 0.1,
+            est_type     = "AIC",
+            cpvar_strata = FALSE,
+            ushape       = FALSE,
+            symtails     = FALSE,
+            dp           = 2,
+            plot_splines = TRUE,
+            all_splines  = TRUE
+           ) {
 
 #' Verify that the input is correct
 #' Check if the cutpoint variable is in the data

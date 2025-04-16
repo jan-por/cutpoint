@@ -42,7 +42,6 @@ plot_splines_list <- list(cpdata = datf, nb_of_cp = 1, cp = 95, dp = 2,
 cp_splines_plot(plot_splines_list)
 }
 \seealso{
-\code{\link{cp_est}}
 Check if cpobj is a list
 Extract necessary variables from cpobj
 Check variables

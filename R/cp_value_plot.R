@@ -74,15 +74,14 @@
 #' @importFrom plotly plot_ly
 #' @export
 #'
-#' @seealso \code{\link{cp_est}}
+#' @seealso
 
-cp_value_plot <-
-function(cpobj,
-         plotvalues  = "AIC",
-         dp.plot     = 2,
-         show_limit  = TRUE,
-         plottype2cp = "contour"
-         )  {
+cp_value_plot <- function(cpobj,
+                          plotvalues  = "AIC",
+                          dp.plot     = 2,
+                          show_limit  = TRUE,
+                          plottype2cp = "contour"
+                          )  {
 
    if (!is.list(cpobj)) {
       stop("Cutpoint object cpobj must be a list")

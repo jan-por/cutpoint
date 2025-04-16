@@ -92,7 +92,6 @@ cpobj <- cp_est(
 cp_value_plot(cpobj, plotvalues = "AIC", plottype2cp = "contour")
 }
 \seealso{
-\code{\link{cp_est}}
 Checks and assignments if plotvalues == AIC
 Checks and assignments if plotvalues == LRT
 Create plot if number of cutpoints is 1
