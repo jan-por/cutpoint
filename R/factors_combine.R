@@ -2,6 +2,7 @@
 #'
 #' @description Intern function, used for creation of a matrix with all factor
 #'   combinations of the cutpoint-variable
+#' @name factors_combine
 #' @param bandwith numeric, determines the minimum size per group of the
 #'   dichitomised variable
 #' @param nb_of_cp numeric, number of cutpoints searching for
@@ -9,8 +10,8 @@
 #'   with missing values in biomarker
 #' @param symtails logical, if TRUE the tails of the dichotomised variable
 #'   are symmetrical
-#' @return All factor combinations of the dichotomized variable.
-
+#' @returns All factor combinations of the dichotomized variable.
+NULL
 factors_combine <-
    function(bandwith = 0.1, nb_of_cp = 1, nrm, symtails = FALSE) {
 

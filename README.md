@@ -29,14 +29,14 @@ cutpoints, particularly through numerical calculations and visual
 examination of different plots according to their functional forms.
 
 For the numerical calculation, either the AIC (Akaike Information
-Criterion) or the LRT (Likelihood-Ratio Test) is used to estimate the
-cutpoint in the context of Cox-regression. The Likelihood Ratio Test
-statistic is calculated by taking the scaled difference between the
-log-likelihoods of the model and the null model’s log-likelihoods.
-Details on the methods can be found in the article by Govindarajulu, U.,
-& Tarpey, T. (2022). Optimal partitioning for the proportional hazards
-model. Journal of Applied Statistics, 49(4), 968–987.
-<https://doi.org/10.1080/02664763.2020.1846690>
+Criterion) or the LRT (Likelihood-Ratio Test statistic) is used to
+estimate the cutpoint in the context of Cox-regression. The Likelihood
+Ratio Test statistic is calculated by taking the scaled difference
+between the log-likelihoods of the model and the null model’s
+log-likelihoods. Details on the methods can be found in the article by
+Govindarajulu, U., & Tarpey, T. (2022). Optimal partitioning for the
+proportional hazards model. Journal of Applied Statistics, 49(4),
+968–987. <https://doi.org/10.1080/02664763.2020.1846690>
 
 The `cp_est` function estimates one or two cutpoints for a biomarker.
 The argument `ushape` enables cutpoints to be estimated assuming the
@@ -374,7 +374,7 @@ cpobj <- cp_est(
     #>  1.Cutpoint: biomarker ≤ 1.589527 
     #>  2.Cutpoint: biomarker ≤ 2.445578 
     #> -----------------------------------------------------------------
-    #> Group size in relation to valid data of biomarker  in original data set
+    #> Group size in relation to valid data of biomarker in original data set
     #>  Total:                N = 200 (100%)
     #>  Group A (lower part): n = 59 (29.5%)
     #>  Group B:              n = 65 (32.5%)
@@ -393,9 +393,9 @@ cp_splines_plot(cpobj, show_splines = FALSE)
 
 <figure>
 <img src="man/figures/cutpoint-package_u-shape_v2.png"
-alt="Figure 6. U-shaped relationship of the predictor (cutpoint variable) to hazard ratio" />
+alt="Figure 6. U-shaped relationship of the predictor (biomarker) to hazard ratio" />
 <figcaption aria-hidden="true">Figure 6. U-shaped relationship of the
-predictor (cutpoint variable) to hazard ratio</figcaption>
+predictor (biomarker) to hazard ratio</figcaption>
 </figure>
 
  

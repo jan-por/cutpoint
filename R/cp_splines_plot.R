@@ -31,8 +31,9 @@
 #' @importFrom utils globalVariables
 #' @export
 #'
-#' @seealso
-
+#' @seealso [cp_est()] for main function of the package, [cp_value_plot()]
+#'   for Value plots and Index plots
+NULL
 cp_splines_plot <- function(cpobj, show_splines = TRUE, adj_splines = TRUE) {
 
       #' Check if cpobj is a list

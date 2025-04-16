@@ -52,14 +52,14 @@ cutpoints, particularly through numerical calculations and visual
 examination of different plots according to their functional forms.
 
 For the numerical calculation, either the AIC (Akaike Information
-Criterion) or the LRT (Likelihood-Ratio Test) is used to estimate the
-cutpoint in the context of Cox-regression. The Likelihood Ratio Test
-statistic is calculated by taking the scaled difference between the
-log-likelihoods of the model and the null model's log-likelihoods.
-Details on the methods can be found in the article by Govindarajulu, U.,
-& Tarpey, T. (2022). Optimal partitioning for the proportional hazards
-model. Journal of Applied Statistics, 49(4), 968–987.
-<https://doi.org/10.1080/02664763.2020.1846690>
+Criterion) or the LRT (Likelihood-Ratio Test statistic) is used to
+estimate the cutpoint in the context of Cox-regression. The Likelihood
+Ratio Test statistic is calculated by taking the scaled difference
+between the log-likelihoods of the model and the null model's
+log-likelihoods. Details on the methods can be found in the article by
+Govindarajulu, U., & Tarpey, T. (2022). Optimal partitioning for the
+proportional hazards model. Journal of Applied Statistics, 49(4),
+968–987. <https://doi.org/10.1080/02664763.2020.1846690>
 
 The `cp_est` function estimates one or two cutpoints for a biomarker.
 The argument `ushape` enables cutpoints to be estimated assuming the
@@ -352,8 +352,8 @@ cp_splines_plot(cpobj, show_splines = FALSE)
 
  
 
-![Figure 6. U-shaped relationship of the predictor (cutpoint variable)
-to hazard ratio](man/figures/cutpoint-package_u-shape_v2.png)
+![Figure 6. U-shaped relationship of the predictor (biomarker) to hazard
+ratio](man/figures/cutpoint-package_u-shape_v2.png)
 
  
 

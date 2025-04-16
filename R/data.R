@@ -14,7 +14,6 @@
 #'   \item{event}{numeric, 0 or 1}
 #' }
 #' @source Self-generated example data
-#' @keywords datasets
 #' @name data1
 #' @usage data(data1)
 #' @docType data
@@ -39,7 +38,6 @@ NULL
 #'   \item{event}{numeric, 0 or 1}
 #' }
 #' @source Self-generated example data
-#' @keywords datasets
 #' @name data2_ushape
 #' @usage data(data2_ushape)
 #' @docType data

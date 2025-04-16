@@ -15,7 +15,7 @@
 #'   plot if `plotvalues = "AIC"`, and the maximum LRT value is shown if
 #'   `plotvalues = "LRT"`
 #' @param plottype2cp character, either `contour` or `index`. Default is
-#'   `contour`. TThis option is available only when searching for two cutpoints.
+#'   `contour`. This option is available only when searching for two cutpoints.
 #'   Index plots and contour plots can be selected. Index plots display all AIC
 #'   or LRT values from the estimation process as a scatter plot. Contour plots
 #'   are shown in the RStudio viewer and illustrate the two potential cutpoints
@@ -74,8 +74,9 @@
 #' @importFrom plotly plot_ly
 #' @export
 #'
-#' @seealso
-
+#' @seealso [cp_est()] for main function of the package, [cp_splines_plot()]
+#'   for penalized spline plots
+NULL
 cp_value_plot <- function(cpobj,
                           plotvalues  = "AIC",
                           dp.plot     = 2,

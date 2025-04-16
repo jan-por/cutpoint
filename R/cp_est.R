@@ -6,10 +6,10 @@
 #'   hazards model. These cutpoints are used to create two or three groups with
 #'   different survival probabilities.
 #' @description The cutpoints are estimated by dichotomising the variable of
-#'   interest, which is then incorporated into the Cox regression model. The
+#'   interest, which is then incorporated into the Cox-regression model. The
 #'   cutpoint of this variable is the value at which the AIC reaches its lowest
-#'   value or the LRT statistic achieves its maximum for the corresponding Cox
-#'   regression model.
+#'   value or the LRT statistic achieves its maximum for the corresponding
+#'   Cox-regression model.
 #' @description This process occurs within a multivariable framework, as other
 #'   covariates and/or factors are considered during the search for the
 #'   cutpoints. Cutpoints can also be estimated when the variable of interest
@@ -17,7 +17,7 @@
 #'   time-to-event data. The argument `symtail` facilitates the estimation of two
 #'   cutpoints, ensuring that the two outer tails represent groups of equal size.
 #' @name cp_est
-#' @param cpvarname character, the name of the variable for which the cut points
+#' @param cpvarname character, the name of the variable for which the cutpoints
 #'   are estimated.
 #' @param time character, this is the follow-up time.
 #' @param event character, the status indicator, normally 0=no event, 1=event
@@ -68,7 +68,8 @@
 #'   cpvarname  = "biomarker",
 #'   covariates = c("covariate_1", "covariate_2"),
 #'   data       = data1,
-#'   nb_of_cp   = 2
+#'   nb_of_cp   = 2,
+#'   plot_splines = FALSE
 #'   )
 #'
 #' # Example 2:
@@ -82,7 +83,8 @@
 #'   data       = data2_ushape,
 #'   nb_of_cp   = 2,
 #'   bandwith   = 0.2,
-#'   ushape     = TRUE
+#'   ushape     = TRUE,
+#'   plot_splines = FALSE
 #'   )
 #' @importFrom survival coxph
 #' @importFrom survival Surv
@@ -91,8 +93,9 @@
 #' @importFrom utils globalVariables
 #' @export
 #'
-#' @seealso
-
+#' @seealso [cp_splines_plot()] for penalized spline plots, [cp_value_plot()]
+#'   for Value plots and Index plots
+NULL
 cp_est <- function(cpvarname,
             time         = "time",
             event        = "event",
@@ -497,8 +500,8 @@ cp_est <- function(cpvarname,
       cat(" 1.Cutpoint:", cpvarname, "\u2264", cp[1], "\n")
       cat(" 2.Cutpoint:", cpvarname, "\u2264", cp[2], "\n")
       cat("-----------------------------------------------------------------\n")
-      cat("Group size in relation to valid data of",cpvarname ,
-          " in original data set\n")
+      cat("Group size in relation to valid data of", cpvarname ,
+          "in original data set\n")
 
       if(ushape == FALSE) {
 

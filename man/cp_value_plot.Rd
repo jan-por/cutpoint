@@ -28,7 +28,7 @@ plot if \code{plotvalues = "AIC"}, and the maximum LRT value is shown if
 \code{plotvalues = "LRT"}}
 
 \item{plottype2cp}{character, either \code{contour} or \code{index}. Default is
-\code{contour}. TThis option is available only when searching for two cutpoints.
+\code{contour}. This option is available only when searching for two cutpoints.
 Index plots and contour plots can be selected. Index plots display all AIC
 or LRT values from the estimation process as a scatter plot. Contour plots
 are shown in the RStudio viewer and illustrate the two potential cutpoints
@@ -92,9 +92,6 @@ cpobj <- cp_est(
 cp_value_plot(cpobj, plotvalues = "AIC", plottype2cp = "contour")
 }
 \seealso{
-Checks and assignments if plotvalues == AIC
-Checks and assignments if plotvalues == LRT
-Create plot if number of cutpoints is 1
-Create plot if number of cutpoints is 2 and plottype2cp == "index"
-Create plot if number of cutpoints is 2 and plottype2cp == "index"
+\code{\link[=cp_est]{cp_est()}} for main function of the package, \code{\link[=cp_splines_plot]{cp_splines_plot()}}
+for penalized spline plots
 }

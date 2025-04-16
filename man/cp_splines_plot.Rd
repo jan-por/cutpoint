@@ -42,25 +42,6 @@ plot_splines_list <- list(cpdata = datf, nb_of_cp = 1, cp = 95, dp = 2,
 cp_splines_plot(plot_splines_list)
 }
 \seealso{
-Check if cpobj is a list
-Extract necessary variables from cpobj
-Check variables
-Get quantiles of cpvar
-Get optimal degree of freedom
-Define formula (FML) for Cox-reg. with cpvar and vector of covariates:
-Without covariates splines cannot be adjusted
-If adj_splines == FALSE
-Define formula for Cox-regression with cpvar only
-Define degree of freedom used for termplot
-Define main text for plot
-Visualization: pspline Plot - termplot -----------------------
-Show splines with different degrees of freedom and add legend
-Formula (FML) for Cox-reg. with cpvar and vector of covariates:
-If adj_splines == TRUE
-Formula (FML) for Cox-reg. with cpvar and vector of covariates
-If adj_splines == FALSE
-Define formula for Cox-regression with cpvar only
-Add lines for mean and quantiles of cpvar
-Show cutpoints as legend in plot
-Define title for legend
+\code{\link[=cp_est]{cp_est()}} for main function of the package, \code{\link[=cp_value_plot]{cp_value_plot()}}
+for Value plots and Index plots
 }

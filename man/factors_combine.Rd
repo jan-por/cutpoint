@@ -20,17 +20,6 @@ are symmetrical}
 }
 \value{
 All factor combinations of the dichotomized variable.
-Creation of a matrix with all factor combinations of the dichotomised
-variable
-Delete rows with less than ‘bandwith’ percent of the number of columnsconvert percentages into number
-
-If nb_of_cp == 1
-How often does the 1 occur per line
-Delete rows with less than ‘bandwith’ percent of the number of columns
-If nb_of_cp == 2
-Delete all rows with less than bandwith per cent of the nb. of columns
-How often does the 2 occur per line
-If m.perm.fun should be symmetrical
 }
 \description{
 Intern function, used for creation of a matrix with all factor

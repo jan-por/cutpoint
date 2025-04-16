@@ -22,7 +22,7 @@ cp_est(
 )
 }
 \arguments{
-\item{cpvarname}{character, the name of the variable for which the cut points
+\item{cpvarname}{character, the name of the variable for which the cutpoints
 are estimated.}
 
 \item{time}{character, this is the follow-up time.}
@@ -87,10 +87,10 @@ hazards model. These cutpoints are used to create two or three groups with
 different survival probabilities.
 
 The cutpoints are estimated by dichotomising the variable of
-interest, which is then incorporated into the Cox regression model. The
+interest, which is then incorporated into the Cox-regression model. The
 cutpoint of this variable is the value at which the AIC reaches its lowest
-value or the LRT statistic achieves its maximum for the corresponding Cox
-regression model.
+value or the LRT statistic achieves its maximum for the corresponding
+Cox-regression model.
 
 This process occurs within a multivariable framework, as other
 covariates and/or factors are considered during the search for the
@@ -98,6 +98,15 @@ cutpoints. Cutpoints can also be estimated when the variable of interest
 shows a U-shaped or inverse U-shaped relationship to the hazard ratio of
 time-to-event data. The argument \code{symtail} facilitates the estimation of two
 cutpoints, ensuring that the two outer tails represent groups of equal size.
+
+Cutpoint is at position minAIC_row_nb of, all those less than or equal
+... to Cutpoint (minAIC_row_nb) belong to the first group
+Cutpoint is at position maxLRT_row_nb of , all those less than or equal
+...to Cutpoint (minLRT_row_nb) belong to the first group
+Generate vector with cutpoints
+Get the counts and percentage of groups in relation to the original data
+Output:------------------------------------------------------------------
+Create splines plot
 }
 \examples{
 # Example 1:
@@ -108,7 +117,8 @@ cpobj <- cp_est(
   cpvarname  = "biomarker",
   covariates = c("covariate_1", "covariate_2"),
   data       = data1,
-  nb_of_cp   = 2
+  nb_of_cp   = 2,
+  plot_splines = FALSE
   )
 
 # Example 2:
@@ -122,7 +132,8 @@ cpobj <- cp_est(
   data       = data2_ushape,
   nb_of_cp   = 2,
   bandwith   = 0.2,
-  ushape     = TRUE
+  ushape     = TRUE,
+  plot_splines = FALSE
   )
 }
 \references{
@@ -131,45 +142,6 @@ the proportional hazards model. Journal of Applied Statistics, 49(4),
 968–987. https://doi.org/10.1080/02664763.2020.1846690
 }
 \seealso{
-Verify that the input is correct
-Check if the cutpoint variable is in the data
-Check if the time variable is in the data
-data frame includes only the variables that should be part of the model
-Keep the original cutpoint variable
-nrm = Number of rows in cpdata before possible changes
-Observations are deleted for missing values of the cutpoint variable
-If there are more than 1000 observations, a random sample with 1000
-observations is created
-Data frame is sorted by cpvar in ascending order
-Remove elements from cov_ (time, event, cpvar)
-nrm = Number of rows in cpdata after removing observations with
-missing values in cpvar
-If only one cutpoint is estimated, symtails and ushape is set to FALSE
-If ushape is TRUE and bandwith < 0.1, then bandwith is set to 0.1
-If there are no covariates, constant_var is defined as a vector of 1
-Numbers of observations which should at least remain in row
-If ushape is TRUE then create new m.perm with 2 categories, as u-shape only
-has 2 categories
-Number of variants of the cpvar, the number of times the loop must
-be run through
-Vector for AIC values
-Vector for Likelihood ratio test (LRT) values
-Matrix for cpvariable values
-After 5\%, remaining time is communicated, for this timefactor is defined
-Start time measurement
-Extraction of AIC value
-Extraction of the likelihood ratio chi2 -test
-Show the user the approx. remaining time for estimation
-if ushape==TRUE then create new m.perm with 3 categories, because
-has only 2 categories
-Extract the cutpoints from the cpvar variable
-
-Cutpoint is at position minAIC_row_nb of, all those less than or equal
-... to Cutpoint (minAIC_row_nb) belong to the first group
-Cutpoint is at position maxLRT_row_nb of , all those less than or equal
-...to Cutpoint (minLRT_row_nb) belong to the first group
-Generate vector with cutpoints
-Get the counts and percentage of groups in relation to the original data
-Output:------------------------------------------------------------------
-Create splines plot
+\code{\link[=cp_splines_plot]{cp_splines_plot()}} for penalized spline plots, \code{\link[=cp_value_plot]{cp_value_plot()}}
+for Value plots and Index plots
 }
