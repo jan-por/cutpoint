@@ -4,7 +4,7 @@
 \alias{cp_splines_plot}
 \title{Plot penalized smoothing splines and shows cutpoints from \code{cpobj} object}
 \usage{
-cp_splines_plot(cpobj, show_splines = TRUE)
+cp_splines_plot(cpobj, show_splines = TRUE, adj_splines = TRUE)
 }
 \arguments{
 \item{cpobj}{list, contains variables for pspline plot:
@@ -21,6 +21,9 @@ dichotomized, \code{time} (follow-up time), \code{even}t (status indicator),
 \item{show_splines}{logical, if \code{TRUE}, The plot shows splines with
 different degrees of freedom. This may help determine whether
 misspecification or overfitting occurs.}
+
+\item{adj_splines}{logical, if \code{TRUE}, the splines are adjusted for the
+covariates. Default is \code{TRUE}.}
 }
 \value{
 Plots penalized smoothing splines and shows the cutpoints.
@@ -45,10 +48,19 @@ Extract necessary variables from cpobj
 Check variables
 Get quantiles of cpvar
 Get optimal degree of freedom
+Define formula (FML) for Cox-reg. with cpvar and vector of covariates:
+Without covariates splines cannot be adjusted
+If adj_splines == FALSE
+Define formula for Cox-regression with cpvar only
 Define degree of freedom used for termplot
 Define main text for plot
 Visualization: pspline Plot - termplot -----------------------
 Show splines with different degrees of freedom and add legend
+Formula (FML) for Cox-reg. with cpvar and vector of covariates:
+If adj_splines == TRUE
+Formula (FML) for Cox-reg. with cpvar and vector of covariates
+If adj_splines == FALSE
+Define formula for Cox-regression with cpvar only
 Add lines for mean and quantiles of cpvar
 Show cutpoints as legend in plot
 Define title for legend

@@ -14,6 +14,8 @@
 #' @param show_splines logical, if `TRUE`, The plot shows splines with
 #'   different degrees of freedom. This may help determine whether
 #'   misspecification or overfitting occurs.
+#' @param adj_splines logical, if `TRUE`, the splines are adjusted for the
+#'   covariates. Default is `TRUE`.
 #' @returns Plots penalized smoothing splines and shows the cutpoints.
 #' @examples
 #' cpvar <- rnorm(100, mean = 100, sd = 10)
@@ -32,7 +34,7 @@
 #' @seealso \code{\link{cp_est}}
 
 cp_splines_plot <-
-   function(cpobj, show_splines = TRUE) {
+   function(cpobj, show_splines = TRUE, adj_splines = TRUE) {
 
       #' Check if cpobj is a list
       if (!is.list(cpobj)) {
@@ -40,12 +42,12 @@ cp_splines_plot <-
       }
 
       #' Extract necessary variables from cpobj
-      nb_of_cp  <- cpobj$nb_of_cp
-      cp        <- cpobj$cp
-      dp        <- cpobj$dp
-      cpdata    <- cpobj$cpdata
-      cpvarname <- cpobj$cpvarname
-
+      nb_of_cp   <- cpobj$nb_of_cp
+      cp         <- cpobj$cp
+      dp         <- cpobj$dp
+      cpdata     <- cpobj$cpdata
+      cpvarname  <- cpobj$cpvarname
+      covariates <- cpobj$covariates
 
       #' Check variables
 
@@ -66,6 +68,9 @@ cp_splines_plot <-
          stop("dp must be smaller than 20")
 
       if (!is.logical(show_splines))
+         stop("show_splines must be logical (TRUE or FALSE)")
+
+      if (!is.logical(adj_splines))
          stop("show_splines must be logical (TRUE or FALSE)")
 
       if (!("time" %in% names(cpdata))) {
@@ -102,21 +107,51 @@ cp_splines_plot <-
          stop("cpvarname must be a character")
       }
 
+
+      if (!is.null(covariates) & !is.character(covariates)) {
+         stop("covariates must be a character vector or NULL")
+      }
+      if (!all(covariates %in% colnames(cpdata))) {
+         stop("all covariates must be included in cpdata, check the names of the
+              covariates")
+      }
+
       cpvar <- cpdata$cpvar
 
       #' Get quantiles of cpvar
       q <- quantile(cpvar, na.rm = TRUE)
 
       #' Get optimal degree of freedom
-      tfit <- survival::coxph(
-         formula = Surv(time, event) ~ survival::pspline(
-            x = cpvar,
-            df = 0,
-            caic = TRUE,
-            plot = FALSE
-         ) ,
-         data = cpdata
-      )
+      # tfit <- survival::coxph(
+      #    formula = Surv(time, event) ~ survival::pspline(
+      #       x = cpvar,
+      #       df = 0,
+      #       caic = TRUE,
+      #       plot = FALSE
+      #    ) + age + sex,
+      #    data = cpdata
+      # )
+
+
+      #' Define formula (FML) for Cox-reg. with cpvar and vector of covariates:
+
+      #' Without covariates splines cannot be adjusted
+      if(is.null(covariates)) { adj_splines <- FALSE }
+
+      if(adj_splines == TRUE) {
+         FML <- as.formula(paste0(' ~ survival::pspline(x = cpvar, df = 0,
+                                  caic = TRUE, plot = FALSE) +',
+                                  paste(covariates, collapse = "+")))
+      } else {
+         #' If adj_splines == FALSE
+         #' Define formula for Cox-regression with cpvar only
+         FML <- as.formula(paste0(' ~ survival::pspline(x = cpvar, df = 0,
+                                  caic = TRUE, plot = FALSE)'))
+      }
+
+      try(tfit <- survival::coxph(update.formula(Surv(time, event)~., FML),
+                                  data = cpdata))
+
       degfr_optimal <- round(tfit$df, 1)
 
       #' Define degree of freedom used for termplot
@@ -125,26 +160,36 @@ cp_splines_plot <-
       tempcolors <- c("#d7191c", "#fdae61", "#abd9e9", "#2c7bb6","black")
 
       #' Define main text for plot
-      if (show_splines ==  TRUE) {
-         main_text <- "Splines with different degrees of freedom (df)"
+      if(adj_splines == TRUE) {
+         main_text_part1 <- "Covariate-adjusted splines plot with "
       }
       else {
-         main_text <-
-            paste0("Splines with optimal degrees of freedom (df = ",
-                   degfr_optimal,
-                   ")")
+         main_text_part1 <- "Splines plot with "
+      }
+
+      if (show_splines ==  TRUE) {
+         main_text <- paste0(main_text_part1,
+                             "different degrees of freedom (df)"
+                            )
+      }
+      else {
+         main_text <- paste0(main_text_part1,
+                             "optimal degrees of freedom (df = ",
+                             degfr_optimal, ")"
+                            )
       }
 
       #' Visualization: pspline Plot - termplot -----------------------
       termplot(
          tfit,
+         terms = 1,
          se       = TRUE,
          col.term = "black",
          col.se   = "black",
          lwd.term = 2,
          font.lab = 2,
-         xlabs     = paste("Cutpoint variable: ", cpvarname),
-         ylabs     = "log relative hazard",
+         xlabs    = paste("Cutpoint variable: ", cpvarname),
+         ylabs    = "log relative hazard",
          main     = main_text,
          sub      = paste0("Mean: ",
             round(mean(cpvar), 2),
@@ -158,19 +203,44 @@ cp_splines_plot <-
          )
       ) # End: termplot
 
+
       #' Show splines with different degrees of freedom and add legend
       if (show_splines ==  TRUE) {
          for (i in 1:length(degfr)) {
-            try(tfit <- survival::coxph(
-               formula = Surv(time, event) ~ pspline(
-                  x = cpvar,
-                  df = degfr[i],
-                  caic = TRUE
-               ),
-               data = cpdata
-            ))
+            # try(tfit <- survival::coxph(
+            #    formula = Surv(time, event) ~ pspline(
+            #       x = cpvar,
+            #       df = degfr[i],
+            #       caic = TRUE
+            #    ) + age + sex,
+            #    data = cpdata
+            # ))
 
-            temp <- termplot(tfit, se = FALSE, plot = FALSE)
+            #' Formula (FML) for Cox-reg. with cpvar and vector of covariates:
+            if(adj_splines == TRUE) {
+               #' If adj_splines == TRUE
+               #' Formula (FML) for Cox-reg. with cpvar and vector of covariates
+               FML <- as.formula(paste0(' ~ survival::pspline(x = cpvar, df = ',
+                                        degfr[i],', caic = TRUE) +',
+                                        paste(covariates, collapse = "+")
+                                        )
+                                 )
+            } else {
+               #' If adj_splines == FALSE
+               #' Define formula for Cox-regression with cpvar only
+               FML <- as.formula(paste0(' ~ survival::pspline(x = cpvar, df = ',
+                                        degfr[i],', caic = TRUE)'
+                                        )
+                                 )
+            }
+
+            try(tfit <- survival::coxph(update.formula(Surv(time, event)~., FML),
+                                        data = cpdata
+                                        )
+                )
+
+
+            temp <- termplot(tfit, se = FALSE, terms = 1, plot = FALSE)
             lines(temp$cpvar$x,
                   temp$cpvar$y,
                   col = tempcolors[i],
@@ -234,6 +304,9 @@ cp_splines_plot <-
          col = tempcolors[1:(length(degfr)+1)],
          lwd = 2
       )
+
+
+      rm(FML)
 
       return(invisible())
 

@@ -47,9 +47,13 @@ instance in the medical context, not only to estimate a cutpoint based
 on a single biomarker but also to consider other biomarkers or baseline
 characteristics.
 
-The R package `cutpoint` uses either the AIC (Akaike Information
-Criterion) or the LRT (Likelihood-Ratio Test statistic) to estimate the
-cutpoint in the context of Cox-regressions. The Likelihood Ratio Test
+The R packet cutpoint allows for a combined approach to determining
+cutpoints, particularly through numerical calculations and visual
+examination of different plots according to their functional forms.
+
+For the numerical calculation, either the AIC (Akaike Information
+Criterion) or the LRT (Likelihood-Ratio Test) is used to estimate the
+cutpoint in the context of Cox-regression. The Likelihood Ratio Test
 statistic is calculated by taking the scaled difference between the
 log-likelihoods of the model and the null model's log-likelihoods.
 Details on the methods can be found in the article by Govindarajulu, U.,
@@ -175,15 +179,19 @@ cpobj <- cp_est(
 The `cp_value_plot` and `cp_splines_plot` functions are utilised to
 choose the appropriate cutpoints.
 
-The default plot of the function `cp_est` is a splines plot with
-different degrees of freedom. This plot can also be generated with the
-following function:
+The default plot of the function `cp_est` is a covariate-adjusted
+splines plot with different degrees of freedom. This plot can also be
+generated using the function `cp_splines_plot`, which enables the
+creation of covariate-adjusted or non-adjusted splines plots.
 
-```{r}
-cp_splines_plot(cpobj, show_splines = TRUE)
+```{r eval=FALSE}
+cp_splines_plot(cpobj, show_splines = TRUE, adj_splines = TRUE)
 ```
 
-Figure 1. Splines with different degrees of freedom (df)
+ 
+
+![Figure 1. Covariate-adjusted splines with different degrees of freedom
+(df)](man/figures/cutpoint-package_splines_plot_with_different_degrees_of_freedom.png)
 
  
 
@@ -196,11 +204,12 @@ not appear to be one of those. Therefore the function `cp_splines_plot`
 can be used with the argument `show_splines = FALSE` to obtain a clearer
 illustration:
 
-```{r}
-cp_splines_plot(cpobj, show_splines = FALSE)
+```{r eval=FALSE}
+cp_splines_plot(cpobj, show_splines = FALSE, adj_splines = TRUE)
 ```
 
-Figure 2. Splines plot with optimal degrees of freedom
+![Figure 2. Covariate-adjusted splines plot with optimal degrees of
+freedom](man/figures/cutpoint-package_splines_plot_with_optimal_degrees_of_freedom.png)
 
 ------------------------------------------------------------------------
 
@@ -291,19 +300,18 @@ groups with different probabilities of an event occurring.
 
 ## U-shaped relationship of the predictor to hazard ratio
 
-The function `cp_est` has an argument `ushape`, a logical value with two
-possible characteristics: `TRUE` or `FALSE`. If `ushape = TRUE`, the
-cutpoints are estimated based on the assumption of a U-shaped or
-inverted U-shaped relationship between the predictor and the hazard
-ratio.
+The function `cp_est` has the argument `ushape` with two possible
+characteristics: `TRUE` or `FALSE`. If `ushape = TRUE`, the cutpoints
+are estimated based on the assumption of a U-shaped or inverted U-shaped
+relationship between the predictor and the hazard ratio.
 
 `ushape = TRUE` is only achievable when two cutpoints are searched for.
 
 The outer tails belong to the same risk group (lower-, and upper part of
 Group A), while the midsection constitutes a different risk group (Group
-B) (Figure 6). The outer tails must not necessarily be the same size. If
-they are to be of approximately the same size, the argument `symtails`
-has been set to `symtails = TRUE`.
+B) (see Figure 6). The outer tails must not necessarily be the same
+size. If they are to be of approximately the same size, the argument
+`symtails` has been set to `symtails = TRUE`.
 
 ```{r eval=FALSE}
 cpobj <- cp_est(

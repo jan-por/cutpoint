@@ -107,7 +107,8 @@ function(cpvarname,
          symtails     = FALSE,
          dp           = 2,
          plot_splines = TRUE,
-         all_splines  = TRUE) {
+         all_splines  = TRUE
+        ) {
 
 #' Verify that the input is correct
 #' Check if the cutpoint variable is in the data
@@ -204,6 +205,7 @@ function(cpvarname,
    if (!is.logical(all_splines))
       stop("all_splines must be logical (TRUE or FALSE)")
 
+
    # "cpvarname" is used for labelling and "cpvar" for calculations
    cpvar <- cpvarname
 
@@ -269,7 +271,7 @@ function(cpvarname,
    }
 
    #' If there are no covariates, constant_var is defined as a vector of 1
-   if (is.null(covariates)) {constant_var <- rep(1, nrm)}
+   if (is.null(covariates)) { constant_var   <- rep(1, nrm) }
 
 
    # Formula (FML) for Cox-regression from vector of covariates:
@@ -364,6 +366,7 @@ function(cpvarname,
 
    } #' End: for (i in 1:nbr.m.perm)
 
+   rm(FML)
    rm(i)
    rm(timefactor)
    rm(tm)
@@ -527,6 +530,7 @@ function(cpvarname,
       cp = cp,
       cpdata = cpdata,
       cpvarname = cpvarname,
+      covariates = covariates,
       nb_of_cp = nb_of_cp,
       dp = dp,
       AIC_values = AIC_values,
@@ -536,7 +540,7 @@ function(cpvarname,
 
    #' Create splines plot
    if (plot_splines == TRUE) {
-      cp_splines_plot(returnlist, show_splines = all_splines)
+      cp_splines_plot(returnlist, show_splines = all_splines )
    }
 
    return(returnlist)
