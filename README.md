@@ -1,14 +1,28 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# cutpoint: Estimate cutpoints in a multivariable setting for survival data or time-to-event data
+# cutpoint <img src="man/figures/logo.png" align="right" width="91"/>
 
-<img src="man/figures/logo.png" width="91" />
+- Estimate one or two cutpoints of a variable of interest in the
+  multivariable context of survival data or time-to-event data
 
-**Jan Porthun** \| [NTNU: Norwegian University of Science and
-Technology](https://www.ntnu.edu/employees/jan.porthun)
+- Visualise the cutpoint estimation process using contour plots, index
+  plots, and spline plots
 
-------------------------------------------------------------------------
+- Estimate cutpoints based on the assumption of a U-shaped or inverted
+  U-shaped relationship between the predictor and the hazard ratio
+
+## Installation
+
+You can install the development version of cutpoint from
+[GitHub](https://github.com/) with:
+
+``` r
+# install.packages("pak")
+pak::pak("jan-por/cutpoint")
+```
+
+## Description
 
 The R package `cutpoint` is used to determine cutpoints of variables,
 such as biomarkers, in the multivariable context of survival or
@@ -45,19 +59,7 @@ splines plot displays a U-shaped or inverted U-shaped curve. The
 that the two outer tails represent groups of approximately the same
 size.
 
-------------------------------------------------------------------------
-
-## :arrow_double_down: Installation
-
-You can install the development version of cutpoint from
-[GitHub](https://github.com/) with:
-
-``` r
-# install.packages("pak")
-pak::pak("jan-por/cutpoint")
-```
-
-------------------------------------------------------------------------
+## ————————————————————————
 
 ## Example
 
@@ -78,8 +80,8 @@ For the other arguments, their default settings are used:
 
 - Estimation type `est_type = "AIC"`
 
-- Cutpoint variable as strata in Cox model? `cpvar_strata = FALSE`
-  (FALSE: not as strata)
+- Cutpoint variable as strata in Cox model? `cpvar_strata = FALSE` (not
+  as strata)
 
 - Symmetric tails `symtails = FALSE`
 
@@ -129,8 +131,6 @@ to different cutpoint estimates.
 
 ------------------------------------------------------------------------
 
- 
-
 Other cutpoints may be estimated if no covariates (`covariates = NULL`)
 are included in the cutpoint search:
 
@@ -174,8 +174,6 @@ is ≤ 137.
     #>  Group B: n = 71 (71%)
 
 ------------------------------------------------------------------------
-
- 
 
 ### Visual evaluation of possible cutpoints
 
@@ -225,8 +223,6 @@ with optimal degrees of freedom</figcaption>
 </figure>
 
 ------------------------------------------------------------------------
-
- 
 
 ## **Contour plots and Index plots**
 
@@ -321,8 +317,6 @@ groups with different probabilities of an event occurring.
 
 ------------------------------------------------------------------------
 
- 
-
 ## U-shaped relationship of the predictor to hazard ratio
 
 The function `cp_est` has the argument `ushape` with two possible
@@ -401,3 +395,19 @@ predictor (biomarker) to hazard ratio</figcaption>
  
 
 ------------------------------------------------------------------------
+
+### Help
+
+To report a bug please open an
+[issue](https://github.com/jan-por/cutpoint/issues/new/choose)
+
+### Suggested Citations
+
+Porthun, J. (2025). Estimate cutpoints in the multivariable context of
+survival or time-to-event data. cutpoint R package. Retrieved from
+<https://github.com/jan-por/cutpoint>
+
+------------------------------------------------------------------------
+
+**Jan Porthun** \| [NTNU Norwegian University of Science and
+Technology](https://www.ntnu.edu/employees/jan.porthun)

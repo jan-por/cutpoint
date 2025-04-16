@@ -3,10 +3,8 @@ Type: Package
 Title: Estimate cutpoints of metric variables in the context of Cox-regression
 Version: 0.0.0.9000
 Authors@R: c(
-    person(
-      "Jan", "Porthun",
-      email = "jan.porthun@ntnu.no",
-      role = c("aut", "cre")
+      person("Jan", "Porthun", email = "jan.porthun@ntnu.no", 
+      role = c("aut", "cre"), comment = c(ORCID = "0000-0002-4100-4361")
     )
   )
 Description: One or two cutpoints of a metric variable are estimated using
@@ -26,6 +24,7 @@ Description: One or two cutpoints of a metric variable are estimated using
     the two outer tails represent groups of equal size.
 License: CC BY 4.0 + file LICENSE
 Encoding: UTF-8
+Language: en-GB
 LazyData: true
 Imports:
     graphics,

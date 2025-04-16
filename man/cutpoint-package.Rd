@@ -19,7 +19,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Jan Porthun \email{jan.porthun@ntnu.no}
+\strong{Maintainer}: Jan Porthun \email{jan.porthun@ntnu.no} (\href{https://orcid.org/0000-0002-4100-4361}{ORCID})
 
 }
 \keyword{internal}
