@@ -259,7 +259,7 @@ The AIC values differ only slightly (3558.3 vs 3558.2). From a
 statistical point of view, both cutpoint combinations may be acceptable.
 However, perhaps one of the two options is more reasonable from a
 scientific perspective. Therefore, it is beneficial to utilise the
-output in the console and examine the plots.\
+output in the console and examine the plots. \
  
 
 ![Figure 4. Contour plot shows coloured AIC value areas and two
