@@ -386,22 +386,22 @@ cp_est <- function(cpvarname,
 
    if(est_type == "AIC") {
 
-      #' Cutpoint is at position minAIC_row_nb of, all those less than or equal
-      #' ... to Cutpoint (minAIC_row_nb) belong to the first group
+      # Cutpoint is at position minAIC_row_nb of, all those less than or equal
+      # ... to Cutpoint (minAIC_row_nb) belong to the first group
       minAIC_row_nb <- which.min(AIC_values)
       cp1_position  <- sum(m.perm[minAIC_row_nb, ] == 1)
       cp2_position  <- sum(m.perm[minAIC_row_nb, ] <= 2)
 
       } else {
 
-      #' Cutpoint is at position maxLRT_row_nb of , all those less than or equal
-      #' ...to Cutpoint (minLRT_row_nb) belong to the first group
+      # Cutpoint is at position maxLRT_row_nb of , all those less than or equal
+      # ...to Cutpoint (minLRT_row_nb) belong to the first group
       maxLRT_row_nb <- which.max(LRT_values)
       cp1_position  <- sum(m.perm[maxLRT_row_nb, ] == 1)
       cp2_position  <- sum(m.perm[maxLRT_row_nb, ] <= 2)
    }
 
-   #' Generate vector with cutpoints
+   # Generate vector with cutpoints
    cp <- c(NA, NA)
 
    cp[1] <- cpvar[cp1_position]
@@ -423,7 +423,7 @@ cp_est <- function(cpvarname,
    }
 
 
-   #' Get the counts and percentage of groups in relation to the original data
+   # Get the counts and percentage of groups in relation to the original data
    lcpvo <- length(cpvariable_original)
 
    if(nb_of_cp == 1){
@@ -445,7 +445,7 @@ cp_est <- function(cpvarname,
       rm(x)
    }
 
-   #' Output:------------------------------------------------------------------
+   # Output:------------------------------------------------------------------
 
    if (sample_yes == TRUE){
    cat("--------------------------------------------------------------------\n")
@@ -540,7 +540,7 @@ cp_est <- function(cpvarname,
       cpvariable_values = cpvariable_values
    )
 
-   #' Create splines plot
+   # Create splines plot
    if (plot_splines == TRUE) {
       cp_splines_plot(returnlist, show_splines = all_splines )
    }

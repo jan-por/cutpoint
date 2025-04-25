@@ -98,15 +98,6 @@ cutpoints. Cutpoints can also be estimated when the variable of interest
 shows a U-shaped or inverse U-shaped relationship to the hazard ratio of
 time-to-event data. The argument \code{symtail} facilitates the estimation of two
 cutpoints, ensuring that the two outer tails represent groups of equal size.
-
-Cutpoint is at position minAIC_row_nb of, all those less than or equal
-... to Cutpoint (minAIC_row_nb) belong to the first group
-Cutpoint is at position maxLRT_row_nb of , all those less than or equal
-...to Cutpoint (minLRT_row_nb) belong to the first group
-Generate vector with cutpoints
-Get the counts and percentage of groups in relation to the original data
-Output:------------------------------------------------------------------
-Create splines plot
 }
 \examples{
 # Example 1:

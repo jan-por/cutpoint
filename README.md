@@ -59,7 +59,7 @@ splines plot displays a U-shaped or inverted U-shaped curve. The
 that the two outer tails represent groups of approximately the same
 size.
 
-## ————————————————————————
+------------------------------------------------------------------------
 
 ## Example
 
@@ -147,7 +147,7 @@ cpobj <- cp_est(
 #### Output:
 
 With covariates, the cutpoint was ≤ 89; without covariates the cutpoint
-is ≤ 137.
+is ≤ 137:
 
     #> 
     #> Approx. remaining time for estimation: 0 seconds 
@@ -234,7 +234,7 @@ statistic can be used for this.
 #### **Contour plot**
 
 **Example**: Estimate two cutpoints of the variable biomarker under
-consideration of two other covariates.
+consideration of two other covariates:
 
 ``` r
 library(cutpoint) 
@@ -332,6 +332,9 @@ B) (see Figure 6). The outer tails must not necessarily be the same
 size. If they are to be of approximately the same size, the argument
 `symtails` has been set to `symtails = TRUE`.
 
+**Example**: Estimate two cutpoints of the variable biomarker under
+consideration of one covariate:
+
 ``` r
 cpobj <- cp_est(
   cpvarname    = "biomarker",
@@ -348,7 +351,7 @@ cpobj <- cp_est(
 #### Output:
 
     #> 
-    #> Approx. remaining time for estimation: 8 seconds 
+    #> Approx. remaining time for estimation: 9 seconds 
     #> --------------------------------------------------------------------
     #> SETTINGS:
     #>  Cutpoint-variable                    =  biomarker 
