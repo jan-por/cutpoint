@@ -351,7 +351,7 @@ cpobj <- cp_est(
 #### Output:
 
     #> 
-    #> Approx. remaining time for estimation: 8 seconds 
+    #> Approx. remaining time for estimation: 9 seconds 
     #> --------------------------------------------------------------------
     #> SETTINGS:
     #>  Cutpoint-variable                    =  biomarker 
@@ -401,7 +401,7 @@ predictor (biomarker) to hazard ratio</figcaption>
 
 ### Help
 
-To report a bug please open an
+To report a bug, please open an
 [issue](https://github.com/jan-por/cutpoint/issues/new/choose)
 
 ### Suggested Citations
