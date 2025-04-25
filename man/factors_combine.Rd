@@ -25,3 +25,4 @@ All factor combinations of the dichotomized variable.
 Intern function, used for creation of a matrix with all factor
 combinations of the cutpoint-variable
 }
+\keyword{internal}

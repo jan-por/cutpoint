@@ -8,7 +8,7 @@
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
-Estimate one or two cutpoints of a metric or ordinal-scaled variable in the multivariable context of survival data or time-to-event data. Visualise the cutpoint estimation process using contour plots, index plots, and spline plots. It is also possible to estimate cutpoints based on the assumption of a U-shaped or inverted U-shaped relationship between the predictor and the hazard ratio.
+Estimate one or two cutpoints of a metric or ordinal-scaled variable in the multivariable context of survival data or time-to-event data. Visualise the cutpoint estimation process using contour plots, index plots, and spline plots. It is also possible to estimate cutpoints based on the assumption of a U-shaped or inverted U-shaped relationship between the predictor and the hazard ratio. Govindarajulu, U., and Tarpey, T. (2022) \doi{10.1080/02664763.2020.1846690}.
 }
 \seealso{
 Useful links:
@@ -19,7 +19,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Jan Porthun \email{jan.porthun@ntnu.no} (\href{https://orcid.org/0000-0002-4100-4361}{ORCID})
+\strong{Maintainer}: Jan Porthun \email{jan.porthun@ntnu.no} (\href{https://orcid.org/0000-0002-4100-4361}{ORCID}) [copyright holder]
 
 }
 \keyword{internal}

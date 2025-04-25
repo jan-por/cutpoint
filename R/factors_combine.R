@@ -10,6 +10,7 @@
 #'   with missing values in biomarker
 #' @param symtails logical, if TRUE the tails of the dichotomised variable
 #'   are symmetrical
+#' @keywords internal
 #' @returns All factor combinations of the dichotomized variable.
 NULL
 factors_combine <-
