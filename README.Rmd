@@ -73,7 +73,7 @@ between the log-likelihoods of the model and the null model's
 log-likelihoods. Details on the methods can be found in the article by
 Govindarajulu, U., & Tarpey, T. (2022). Optimal partitioning for the
 proportional hazards model. Journal of Applied Statistics, 49(4),
-968–987. <https://doi.org/10.1080/02664763.2020.1846690>
+968–987. <doi:10.1080/02664763.2020.1846690>
 
 The `cp_est` function estimates one or two cutpoints for a biomarker.
 The argument `ushape` enables cutpoints to be estimated assuming the

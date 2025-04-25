@@ -27,6 +27,7 @@
 #'   and meaningful the contour plots can be interpreted.
 #' @returns Plots the AIC- or LRT-values, derived from the estimation procedure.
 #' @examples
+#' \dontrun{
 #' # Example 1
 #' # Plot AIC-values and potential cutpoints of the estimation process
 #'
@@ -69,6 +70,7 @@
 #'    plot_splines = FALSE,
 #' )
 #' cp_value_plot(cpobj, plotvalues = "AIC", plottype2cp = "contour")
+#' }
 #' @importFrom graphics plot title legend
 #' @importFrom utils globalVariables
 #' @importFrom plotly plot_ly

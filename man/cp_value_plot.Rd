@@ -48,6 +48,7 @@ for the estimation procedure. If there are two cutpoints, a Contour-plot
 and an Index-plot can be generated.
 }
 \examples{
+\dontrun{
 # Example 1
 # Plot AIC-values and potential cutpoints of the estimation process
 
@@ -90,6 +91,7 @@ cpobj <- cp_est(
    plot_splines = FALSE,
 )
 cp_value_plot(cpobj, plotvalues = "AIC", plottype2cp = "contour")
+}
 }
 \seealso{
 \code{\link[=cp_est]{cp_est()}} for main function of the package, \code{\link[=cp_splines_plot]{cp_splines_plot()}}

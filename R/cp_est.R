@@ -60,6 +60,7 @@
 #' @returns Returns the `cpobj` object with cutpoints and the characteristics
 #'   of the formed groups.
 #' @examples
+#' \dontrun{
 #' # Example 1:
 #' # Estimate two cutpoints of the variable biomarker.
 #' # The dataset data1 is included in this package and contains
@@ -86,6 +87,7 @@
 #'   ushape     = TRUE,
 #'   plot_splines = FALSE
 #'   )
+#'   }
 #' @importFrom survival coxph
 #' @importFrom survival Surv
 #' @importFrom stats AIC complete.cases median quantile rnorm as.formula

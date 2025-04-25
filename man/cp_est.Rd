@@ -100,6 +100,7 @@ time-to-event data. The argument \code{symtail} facilitates the estimation of tw
 cutpoints, ensuring that the two outer tails represent groups of equal size.
 }
 \examples{
+\dontrun{
 # Example 1:
 # Estimate two cutpoints of the variable biomarker.
 # The dataset data1 is included in this package and contains
@@ -126,6 +127,7 @@ cpobj <- cp_est(
   ushape     = TRUE,
   plot_splines = FALSE
   )
+  }
 }
 \references{
 Govindarajulu, U., & Tarpey, T. (2020). Optimal partitioning for
