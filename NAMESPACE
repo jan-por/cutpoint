@@ -2,6 +2,7 @@
 
 export("%>%")
 export(cp_est)
+export(cp_estsum)
 export(cp_splines_plot)
 export(cp_value_plot)
 importFrom(RcppAlgos,comboGeneral)

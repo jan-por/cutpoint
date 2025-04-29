@@ -27,7 +27,6 @@
 #'   and meaningful the contour plots can be interpreted.
 #' @returns Plots the AIC- or LRT-values, derived from the estimation procedure.
 #' @examples
-#' \dontrun{
 #' # Example 1
 #' # Plot AIC-values and potential cutpoints of the estimation process
 #'
@@ -49,6 +48,7 @@
 #'
 #' cp_value_plot(cpobj, plotvalues = "AIC", dp.plot = 2, show_limit = TRUE)
 #'
+#' \donttest{
 #' # Example 2
 #' # Splines plot based on data1
 #' # The data set data1 is included in this package

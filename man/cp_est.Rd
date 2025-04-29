@@ -18,7 +18,8 @@ cp_est(
   symtails = FALSE,
   dp = 2,
   plot_splines = TRUE,
-  all_splines = TRUE
+  all_splines = TRUE,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -74,6 +75,10 @@ created. Default is \code{TRUE}.}
 \item{all_splines}{logical value: if \code{TRUE}, The plot shows splines with
 different degrees of freedom. This may help determine whether
 misspecification or overfitting occurs. Default is \code{TRUE}.}
+
+\item{verbose}{logical value: if \code{TRUE} the function prints the approximate
+remaining process-time for estimation and the summary of the cutpoint
+estimation. Default is \code{TRUE}.}
 }
 \value{
 Returns the \code{cpobj} object with cutpoints and the characteristics
@@ -100,7 +105,7 @@ time-to-event data. The argument \code{symtail} facilitates the estimation of tw
 cutpoints, ensuring that the two outer tails represent groups of equal size.
 }
 \examples{
-\dontrun{
+\donttest{
 # Example 1:
 # Estimate two cutpoints of the variable biomarker.
 # The dataset data1 is included in this package and contains

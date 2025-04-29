@@ -102,7 +102,7 @@ cpobj <- cp_est(
 The output displays the primary settings and the cutpoint:
 
     #> 
-    #> Approx. remaining time for estimation: 1 seconds 
+    #> Approx. remaining time for estimation: 0 seconds
     #> --------------------------------------------------------------------
     #> SETTINGS:
     #>  Cutpoint-variable                    =  biomarker 
@@ -150,7 +150,7 @@ With covariates, the cutpoint was ≤ 89; without covariates the cutpoint
 is ≤ 137:
 
     #> 
-    #> Approx. remaining time for estimation: 0 seconds 
+    #> Approx. remaining time for estimation: 0 seconds
     #> --------------------------------------------------------------------
     #> SETTINGS:
     #>  Cutpoint-variable                    =  biomarker 
@@ -351,7 +351,7 @@ cpobj <- cp_est(
 #### Output:
 
     #> 
-    #> Approx. remaining time for estimation: 9 seconds 
+    #> Approx. remaining time for estimation: 9 seconds
     #> --------------------------------------------------------------------
     #> SETTINGS:
     #>  Cutpoint-variable                    =  biomarker 
@@ -371,7 +371,7 @@ cpobj <- cp_est(
     #>  1.Cutpoint: biomarker ≤ 1.589527 
     #>  2.Cutpoint: biomarker ≤ 2.445578 
     #> -----------------------------------------------------------------
-    #> Group size in relation to valid data of biomarker in original data set
+    #> Group size in relation to valid data of biomarker in original data set:
     #>  Total:                N = 200 (100%)
     #>  Group A (lower part): n = 59 (29.5%)
     #>  Group B:              n = 65 (32.5%)

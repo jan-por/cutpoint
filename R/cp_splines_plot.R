@@ -206,19 +206,12 @@ cp_splines_plot <- function(cpobj, show_splines = TRUE, adj_splines = TRUE) {
 
       #' Show splines with different degrees of freedom and add legend
       if (show_splines ==  TRUE) {
-         for (i in 1:length(degfr)) {
-            # try(tfit <- survival::coxph(
-            #    formula = Surv(time, event) ~ pspline(
-            #       x = cpvar,
-            #       df = degfr[i],
-            #       caic = TRUE
-            #    ) + age + sex,
-            #    data = cpdata
-            # ))
 
+         for (i in 1:length(degfr)) {
             #' Formula (FML) for Cox-reg. with cpvar and vector of covariates:
+
             if(adj_splines == TRUE) {
-               #' If adj_splines == TRUE
+
                #' Formula (FML) for Cox-reg. with cpvar and vector of covariates
                FML <- as.formula(paste0(' ~ survival::pspline(x = cpvar, df = ',
                                         degfr[i],', caic = TRUE) +',

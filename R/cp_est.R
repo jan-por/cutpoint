@@ -54,13 +54,16 @@
 #' @param all_splines logical value: if `TRUE`, The plot shows splines with
 #'   different degrees of freedom. This may help determine whether
 #'   misspecification or overfitting occurs. Default is `TRUE`.
+#' @param verbose logical value: if `TRUE` the function prints the approximate
+#'   remaining process-time for estimation and the summary of the cutpoint
+#'   estimation. Default is `TRUE`.
 #' @references Govindarajulu, U., & Tarpey, T. (2020). Optimal partitioning for
 #'   the proportional hazards model. Journal of Applied Statistics, 49(4),
 #'   968–987. https://doi.org/10.1080/02664763.2020.1846690
 #' @returns Returns the `cpobj` object with cutpoints and the characteristics
 #'   of the formed groups.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Example 1:
 #' # Estimate two cutpoints of the variable biomarker.
 #' # The dataset data1 is included in this package and contains
@@ -111,7 +114,8 @@ cp_est <- function(cpvarname,
             symtails     = FALSE,
             dp           = 2,
             plot_splines = TRUE,
-            all_splines  = TRUE
+            all_splines  = TRUE,
+            verbose      = TRUE
            ) {
 
 #' Verify that the input is correct
@@ -144,9 +148,8 @@ cp_est <- function(cpvarname,
    }
 
    if (any(data[ ,time] <= 0)){
-      cat("\nPlease note: For at least one observation the follow-up time is",
-          "\u2264","0\n")
-      cat("this can lead to an error message of the Cox regression\n")
+       message("\nPlease note: For at least one observation the follow-up time is ",
+       "\u2264"," 0\n this can lead to an error message of the Cox regression\n")
    }
 
    if (!is.character(event)) {
@@ -209,6 +212,9 @@ cp_est <- function(cpvarname,
    if (!is.logical(all_splines))
       stop("all_splines must be logical (TRUE or FALSE)")
 
+   if (!is.logical(verbose))
+      stop("verbose must be logical (TRUE or FALSE)")
+
 
    # "cpvarname" is used for labelling and "cpvar" for calculations
    cpvar <- cpvarname
@@ -241,24 +247,10 @@ cp_est <- function(cpvarname,
    cpdata <- cpdata[order(cpdata$cpvar), ]
    cpvar <- cpdata$cpvar
 
-   #cov_ <- cbind(cpdata)
-
-   #' Remove elements from cov_ (time, event, cpvar)
-   #cov_ <- cov_[!names(cov_) %in% c("time", "event", "cpvar")]
-
-  # cov_ <- as.matrix(cov_)
 
    #' nrm = Number of rows in cpdata after removing observations with
    #'     missing values in cpvar
    nrm  <- nrow(cpdata)
-
-   #if (is.null(covariates) && nrm < 200 && ushape == TRUE) {
-   #   cat(" \n")
-   #   cat("! With few observations and without the use of covariates, a warning \n")
-   #   cat("may occur: - Loglik converges before ... may be infinite. - \n")
-   #   cat("The test that is triggered to generate this warning is very sensitive.")
-   #   cat(" \n")
-   #}
 
 
       #' If only one cutpoint is estimated, symtails and ushape is set to FALSE
@@ -267,7 +259,8 @@ cp_est <- function(cpvarname,
       ushape   <- FALSE
    }
 
-   #' If ushape is TRUE and bandwith < 0.1, then bandwith is set to 0.1
+   #' If ushape is TRUE and bandwith < 0.1, then bandwith is set to 0.1 and
+   #' change_bw is set to TRUE
    change_bw <- FALSE
    if (ushape == TRUE && bandwith < 0.1) {
       bandwith <- 0.1
@@ -338,7 +331,6 @@ cp_est <- function(cpvarname,
 
       loop_nr <- loop_nr + 1
 
-      #cpvariable_dicho <- as.factor(m.perm[i, ])
       cpvariable_dicho <- m.perm[i, ]
 
       result.cox <- survival::coxph(update.formula(Surv(time, event)~., FML),
@@ -359,14 +351,20 @@ cp_est <- function(cpvarname,
 
       rm(result.cox)
 
-      #' Show the user the approx. remaining time for estimation
+      # Show the user the approx. remaining time for estimation if verbose==TRUE
+
       if (nbr.m.perm.time == loop_nr) {
          tm <- proc.time() - ptm
-         cat("\nApprox. remaining time for estimation:",
-             round((tm[3] * (1 / timefactor)
-         ), 0), "seconds \n")
+
+         if (verbose == TRUE) {
+            message("\nApprox. remaining time for estimation: ",
+                round((tm[3] * (1 / timefactor)
+            ), 0), " seconds \n")
+         }
+
          ptm <- proc.time()
       }
+
 
    } #' End: for (i in 1:nbr.m.perm)
 
@@ -404,143 +402,57 @@ cp_est <- function(cpvarname,
    }
 
    # Generate vector with cutpoints
-   cp <- c(NA, NA)
 
-   cp[1] <- cpvar[cp1_position]
-   names(cp[1]) <- "CP1"
+   if(nb_of_cp == 1){
+      cp <- c(NA)
+      cp[1] <- cpvar[cp1_position]
+      names(cp[1]) <- "CP1"
 
-   cp[2] <- cpvar[cp2_position]
-   names(cp[2]) <- "CP2"
+   } else {
+      cp <- c(NA, NA)
+      cp[1] <- cpvar[cp1_position]
+      names(cp[1]) <- "CP1"
+      cp[2] <- cpvar[cp2_position]
+      names(cp[2]) <- "CP2"
 
 
-   # check if cp[1] and cp[2] are not NA
-   if (!is.na(cp[1]) && (!is.na(cp[2]))) {
+      # check if cp[1] and cp[2] are not NA
+      if (!is.na(cp[1]) && (!is.na(cp[2]))) {
 
-      # check if cp[1] is smaller than cp[2], if yes, switch the values
-      if(cp[2] < cp[1]){ cpx   <- cp[1]
-                         cp[1] <- cp[2]
-                         cp[2] <- cpx
-                         rm(cpx)
+         # check if cp[1] is smaller than cp[2], if yes, switch the values
+         if(cp[2] < cp[1]){ cpx   <- cp[1]
+                            cp[1] <- cp[2]
+                            cp[2] <- cpx
+                            rm(cpx)
+         }
       }
    }
 
 
-   # Get the counts and percentage of groups in relation to the original data
-   lcpvo <- length(cpvariable_original)
-
-   if(nb_of_cp == 1){
-      x <- which(cpvariable_original == cp[1])
-      nbbygroup1 <- x[length(x)]
-      percbygroup1 <- nbbygroup1 / lcpvo
-      nbbygroup2 <- lcpvo - nbbygroup1
-      percbygroup2 <- nbbygroup2 / lcpvo
-      rm(x)
-   } else {
-      x <- which(cpvariable_original == cp[1])
-      nbbygroup1 <- x[length(x)]
-      percbygroup1 <- nbbygroup1 / lcpvo
-      x <- which(cpvariable_original == cp[2])
-      nbbygroup2 <- x[length(x)] - nbbygroup1
-      percbygroup2 <- nbbygroup2 / lcpvo
-      nbbygroup3 <- lcpvo - nbbygroup1 - nbbygroup2
-      percbygroup3 <- nbbygroup3 / lcpvo
-      rm(x)
-   }
-
-   # Output:------------------------------------------------------------------
-
-   if (sample_yes == TRUE){
-   cat("--------------------------------------------------------------------\n")
-   cat("! Because the number of observations in the original dataset is >1000\n")
-   cat("  a random sample of 1000 observations is used for estimating the cutpoints\n")
-   }
-   cat("--------------------------------------------------------------------\n")
-   cat("SETTINGS:\n")
-   cat(" Cutpoint-variable                    = ", cpvarname, "\n")
-   cat(" Number of cutpoints   (nb_of_cp)     = ", nb_of_cp, "\n")
-   if (change_bw == TRUE) {
-      cat(" Min. group size in %  (bandwith) = ", bandwith,
-          " (was set to 0.1 because ushape is TRUE)\n")
-      } else {
-   cat(" Min. group size in %  (bandwith)     = ", bandwith, "\n")}
-   cat(" Estimation type       (est_type)     = ", est_type, "\n")
-   cat(" CP-variable as strata (cpvar_strata) = ", cpvar_strata, "\n")
-   cat(" Symmetric tails       (symtails)     = ", symtails,
-       "  (is set to FALSE if nb_of_cp = 1)\n")
-   cat(" Cutpoints for u-shape (ushape)       = ", ushape,
-       "  (is set to FALSE if nb_of_cp = 1)\n")
-   cat("--------------------------------------------------------------------\n")
-   if (is.null(covariates)) {
-      cat("No covariates were selected\n")
-   } else {
-      cat("Covariates or factors are:\n")
-      cat(" ",covariates, "\n") }
-   cat("--------------------------------------------------------------------\n")
-   cat("Minimum group size is ", round((nrm_start * bandwith), 0),
-     " (", bandwith * 100, "% of sample size in original dataset, N = ",
-     nrm_start,  ")\n", sep = "")
-   cat("--------------------------------------------------------------------\n")
-   cat("Number of cutpoints searching for:", nb_of_cp, "\n")
-
-   if (nb_of_cp == 1) {
-
-      cat("Cutpoint:", cpvarname, "\u2264", cp[1], "\n")
-      cat("-----------------------------------------------------------------\n")
-      cat("Group size in relation to valid data of",cpvarname ,
-          "in original data set\n")
-      cat(" Total:   N = ", lcpvo, " (100%)\n", sep = "")
-      cat(" Group A: n = ", nbbygroup1, " (", round(percbygroup1*100,1),
-          "%)\n", sep = "")
-      cat(" Group B: n = ", nbbygroup2, " (", round(percbygroup2*100,1),
-          "%)\n", sep = "")
-
-      cp <- cp[-2]
-   }
-
-   if (nb_of_cp == 2) {
-
-      cat(" 1.Cutpoint:", cpvarname, "\u2264", cp[1], "\n")
-      cat(" 2.Cutpoint:", cpvarname, "\u2264", cp[2], "\n")
-      cat("-----------------------------------------------------------------\n")
-      cat("Group size in relation to valid data of", cpvarname ,
-          "in original data set\n")
-
-      if(ushape == FALSE) {
-
-         cat(" Total:   N = ", lcpvo, " (100%)\n", sep = "")
-         cat(" Group A: n = ", nbbygroup1, " (",
-             round(percbygroup1*100,1), "%)\n", sep = "")
-         cat(" Group B: n = ", nbbygroup2, " (",
-             round(percbygroup2*100,1), "%)\n", sep = "")
-         cat(" Group C: n = ", nbbygroup3, " (",
-             round(percbygroup3*100,1), "%)\n", sep = "")
-
-         } else {
-
-         cat(" Total:                N = ", lcpvo, " (100%)\n", sep = "")
-         cat(" Group A (lower part): n = ", nbbygroup1, " (",
-             round(percbygroup1*100,1), "%)\n", sep = "")
-         cat(" Group B:              n = ", nbbygroup2, " (",
-             round(percbygroup2*100,1), "%)\n", sep = "")
-         cat(" Group A (upper part): n = ", nbbygroup3, " (",
-             round(percbygroup3*100,1), "%)\n", sep = "")
-         }
-   }
-
-   # End: Output --------------------------------------------------------------
-
-
    returnlist <- list(
-      cp = cp,
-      cpdata = cpdata,
-      cpvarname = cpvarname,
-      covariates = covariates,
-      nb_of_cp = nb_of_cp,
-      dp = dp,
-      AIC_values = AIC_values,
-      LRT_values = LRT_values,
-      cpvariable_values = cpvariable_values
+      bandwith            = bandwith,
+      change_bw           = change_bw,
+      cp                  = cp,
+      cpdata              = cpdata,
+      cpvarname           = cpvarname,
+      cpvariable_original = cpvariable_original,
+      cpvariable_values   = cpvariable_values,
+      cpvar_strata        = cpvar_strata,
+      covariates          = covariates,
+      est_type            = est_type,
+      nb_of_cp            = nb_of_cp,
+      nrm_start           = nrm_start,
+      dp                  = dp,
+      sample_yes          = sample_yes,
+      symtails            = symtails,
+      ushape              = ushape,
+      AIC_values          = AIC_values,
+      LRT_values          = LRT_values
    )
+
+
+   # Print summary of estimation process if verbose == TRUE:--------------------
+   if (verbose == TRUE) { cp_estsum (returnlist, verbose = TRUE)}
 
    # Create splines plot
    if (plot_splines == TRUE) {
