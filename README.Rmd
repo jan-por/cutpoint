@@ -242,7 +242,8 @@ cp_value_plot(cpobj, plotvalues = "AIC", plottype2cp = "contour")
  \
 
 ![Figure 3. Contour plot shows coloured AIC value areas and potential
-cutpoints](man/figures/cutpoint-package_value_plot_two_cutpoints.png){width="1000"
+cutpoints
+](man/figures/cutpoint-package_value_plot_two_cutpoints.png){width="1000"
 height="500"}
 
  

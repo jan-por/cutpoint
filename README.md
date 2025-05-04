@@ -102,7 +102,7 @@ cpobj <- cp_est(
 The output displays the primary settings and the cutpoint:
 
     #> 
-    #> Approx. remaining time for estimation: 1 seconds
+    #> Approx. remaining time for estimation: 0 seconds
     #> --------------------------------------------------------------------
     #> SETTINGS:
     #>  Cutpoint-variable                    =  biomarker 
@@ -351,7 +351,7 @@ cpobj <- cp_est(
 #### Output:
 
     #> 
-    #> Approx. remaining time for estimation: 15 seconds
+    #> Approx. remaining time for estimation: 8 seconds
     #> --------------------------------------------------------------------
     #> SETTINGS:
     #>  Cutpoint-variable                    =  biomarker 
