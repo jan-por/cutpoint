@@ -44,7 +44,7 @@ examination of different plots according to their functional forms.
 
 For the numerical calculation, either the AIC (Akaike Information
 Criterion) or the LRT (Likelihood-Ratio Test statistic) is used to
-estimate the cutpoint in the context of Cox-regression. The Likelihood
+estimate the cutpoint in the context of Cox regression. The Likelihood
 Ratio Test statistic is calculated by taking the scaled difference
 between the log-likelihoods of the model and the null model’s
 log-likelihoods. Details on the methods can be found in the article by
@@ -102,7 +102,7 @@ cpobj <- cp_est(
 The output displays the primary settings and the cutpoint:
 
     #> 
-    #> Approx. remaining time for estimation: 0 seconds
+    #> Approx. remaining time for estimation: 1 seconds
     #> --------------------------------------------------------------------
     #> SETTINGS:
     #>  Cutpoint-variable                    =  biomarker 
@@ -217,8 +217,8 @@ cp_splines_plot(cpobj, show_splines = FALSE, adj_splines = TRUE)
 <figure>
 <img
 src="man/figures/cutpoint-package_splines_plot_with_optimal_degrees_of_freedom.png"
-alt="Figure 2. Covariate-adjusted splines plot with optimal degrees of freedom" />
-<figcaption aria-hidden="true">Figure 2. Covariate-adjusted splines plot
+alt="Figure 2. Covariate-adjusted spline plot with optimal degrees of freedom" />
+<figcaption aria-hidden="true">Figure 2. Covariate-adjusted spline plot
 with optimal degrees of freedom</figcaption>
 </figure>
 
@@ -351,7 +351,7 @@ cpobj <- cp_est(
 #### Output:
 
     #> 
-    #> Approx. remaining time for estimation: 9 seconds
+    #> Approx. remaining time for estimation: 15 seconds
     #> --------------------------------------------------------------------
     #> SETTINGS:
     #>  Cutpoint-variable                    =  biomarker 

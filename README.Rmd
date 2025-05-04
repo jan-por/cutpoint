@@ -67,7 +67,7 @@ examination of different plots according to their functional forms.
 
 For the numerical calculation, either the AIC (Akaike Information
 Criterion) or the LRT (Likelihood-Ratio Test statistic) is used to
-estimate the cutpoint in the context of Cox-regression. The Likelihood
+estimate the cutpoint in the context of Cox regression. The Likelihood
 Ratio Test statistic is calculated by taking the scaled difference
 between the log-likelihoods of the model and the null model's
 log-likelihoods. Details on the methods can be found in the article by
@@ -206,7 +206,7 @@ illustration:
 cp_splines_plot(cpobj, show_splines = FALSE, adj_splines = TRUE)
 ```
 
-![Figure 2. Covariate-adjusted splines plot with optimal degrees of
+![Figure 2. Covariate-adjusted spline plot with optimal degrees of
 freedom](man/figures/cutpoint-package_splines_plot_with_optimal_degrees_of_freedom.png)
 
 ------------------------------------------------------------------------

@@ -1,5 +1,5 @@
-#' @title Summarise Cutpoint Estimation
-#' @description Writes the summary to the console.
+#' @title Summarise cutpoint estimation
+#' @description Writes the summary of the cutpoint estimation to the console.
 #' @name cp_estsum
 #' @param cpobj list, contains variables for `cp_estsum` function
 #' @param verbose logical value: if `TRUE` the summary of the cutpoint
@@ -25,6 +25,7 @@ NULL
 cp_estsum <- function( cpobj,
                        verbose = TRUE){
 
+
    #' Check if cpobj is a list
    if (!is.list(cpobj)) {
       stop("Cutpoint object (cpobj) for function cp_estsum must be a list")
@@ -32,10 +33,6 @@ cp_estsum <- function( cpobj,
 
    if (!is.logical(verbose))
       stop("verbose for function cp_estsum must be logical (TRUE or FALSE)")
-
-   if ((verbose==FALSE))
-      stop("verbose is FALSE for function cp_estsum. No summary is printed.")
-
 
    #' Check cpobj - variables
 
@@ -141,8 +138,9 @@ cp_estsum <- function( cpobj,
    min_gr_size   <- round((nrm_start * bandwith), 0)
    bandwith_perc <- bandwith * 100
 
+   #' Writing summary to the console if verbose == TRUE ------------------------
 
-   #' Writing summary to the console--------------------------------------------
+   if (verbose == TRUE){
 
    if (sample_yes == TRUE){
       cat("--------------------------------------------------------------------\n")
@@ -220,5 +218,8 @@ cp_estsum <- function( cpobj,
 
    # End: Writing summary to console--------------------------------------------
 
+} # End: if (verbose == TRUE)
+
    return(invisible())
-}
+
+} # End: cp_estsum

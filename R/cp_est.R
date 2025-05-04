@@ -6,7 +6,7 @@
 #'   hazards model. These cutpoints are used to create two or three groups with
 #'   different survival probabilities.
 #' @description The cutpoints are estimated by dichotomising the variable of
-#'   interest, which is then incorporated into the Cox-regression model. The
+#'   interest, which is then incorporated into the Cox regression model. The
 #'   cutpoint of this variable is the value at which the AIC reaches its lowest
 #'   value or the LRT statistic achieves its maximum for the corresponding
 #'   Cox-regression model.

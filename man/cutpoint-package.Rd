@@ -4,7 +4,7 @@
 \name{cutpoint-package}
 \alias{cutpoint}
 \alias{cutpoint-package}
-\title{cutpoint: Estimate Cutpoints of Metric Variables in the Context of Cox-Regression}
+\title{cutpoint: Estimate Cutpoints of Metric Variables in the Context of Cox Regression}
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 

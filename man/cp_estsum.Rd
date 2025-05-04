@@ -2,7 +2,7 @@
 % Please edit documentation in R/cp_estsum.R
 \name{cp_estsum}
 \alias{cp_estsum}
-\title{Summarise Cutpoint Estimation}
+\title{Summarise cutpoint estimation}
 \usage{
 cp_estsum(cpobj, verbose = TRUE)
 }
@@ -16,7 +16,7 @@ estimation is writing to the console. Default is \code{TRUE}.}
 Summary of the cutpoint estimation.
 }
 \description{
-Writes the summary to the console.
+Writes the summary of the cutpoint estimation to the console.
 }
 \examples{
 # Example

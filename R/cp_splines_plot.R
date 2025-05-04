@@ -1,4 +1,4 @@
-#' @title Plot penalized smoothing splines and shows cutpoints from `cpobj` object
+#' @title Plot penalized smoothing splines from `cpobj` object
 #'
 #' @description Create penalized smoothing splines plot with different degrees
 #'    of freedom and shows the cutpoints of the dichotomised variable.

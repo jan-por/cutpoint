@@ -2,7 +2,7 @@
 % Please edit documentation in R/cp_splines_plot.R
 \name{cp_splines_plot}
 \alias{cp_splines_plot}
-\title{Plot penalized smoothing splines and shows cutpoints from \code{cpobj} object}
+\title{Plot penalized smoothing splines from \code{cpobj} object}
 \usage{
 cp_splines_plot(cpobj, show_splines = TRUE, adj_splines = TRUE)
 }
