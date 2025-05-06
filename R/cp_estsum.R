@@ -14,8 +14,7 @@
 #'   covariates   = c("covariate_1", "covariate_2"),
 #'   data         = data1,
 #'   nb_of_cp     = 2,
-#'   plot_splines = FALSE,
-#'   verbose      = FALSE
+#'   plot_splines = FALSE
 #' )
 #' cp_estsum <- function(cpobj, verbose = TRUE)
 #' @export
