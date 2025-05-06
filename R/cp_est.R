@@ -54,9 +54,12 @@
 #' @param all_splines logical value: if `TRUE`, The plot shows splines with
 #'   different degrees of freedom. This may help determine whether
 #'   misspecification or overfitting occurs. Default is `TRUE`.
+#' @param print_res logical value: if `TRUE` the function prints the summary
+#'   of the cutpoint estimation to the console. Default is `TRUE`.
 #' @param verbose logical value: if `TRUE` the function prints the approximate
-#'   remaining process-time for estimation and the summary of the cutpoint
-#'   estimation. Default is `TRUE`.
+#'   remaining process-time and other information to the console. If `FALSE`, no
+#'   information will be printed to the console, including the summary of the
+#'   cutpoint estimation. Default is `TRUE`.
 #' @references Govindarajulu, U., & Tarpey, T. (2020). Optimal partitioning for
 #'   the proportional hazards model. Journal of Applied Statistics, 49(4),
 #'   968–987. https://doi.org/10.1080/02664763.2020.1846690
@@ -115,6 +118,7 @@ cp_est <- function(cpvarname,
             dp           = 2,
             plot_splines = TRUE,
             all_splines  = TRUE,
+            print_res    = TRUE,
             verbose      = TRUE
            ) {
 
@@ -211,6 +215,9 @@ cp_est <- function(cpvarname,
 
    if (!is.logical(all_splines))
       stop("all_splines must be logical (TRUE or FALSE)")
+
+   if (!is.logical(print_res))
+         stop("print_res must be logical (TRUE or FALSE)")
 
    if (!is.logical(verbose))
       stop("verbose must be logical (TRUE or FALSE)")
@@ -452,7 +459,9 @@ cp_est <- function(cpvarname,
 
 
    # Print summary of estimation process if verbose == TRUE:--------------------
-   if (verbose == TRUE) { cp_estsum (returnlist, verbose = TRUE)}
+   if (verbose == TRUE & print_res == TRUE) {
+      cp_estsum (returnlist)
+   }
 
    # Create splines plot
    if (plot_splines == TRUE) {

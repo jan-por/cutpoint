@@ -19,6 +19,7 @@ cp_est(
   dp = 2,
   plot_splines = TRUE,
   all_splines = TRUE,
+  print_res = TRUE,
   verbose = TRUE
 )
 }
@@ -76,9 +77,13 @@ created. Default is \code{TRUE}.}
 different degrees of freedom. This may help determine whether
 misspecification or overfitting occurs. Default is \code{TRUE}.}
 
+\item{print_res}{logical value: if \code{TRUE} the function prints the summary
+of the cutpoint estimation to the console. Default is \code{TRUE}.}
+
 \item{verbose}{logical value: if \code{TRUE} the function prints the approximate
-remaining process-time for estimation and the summary of the cutpoint
-estimation. Default is \code{TRUE}.}
+remaining process-time and other information to the console. If \code{FALSE}, no
+information will be printed to the console, including the summary of the
+cutpoint estimation. Default is \code{TRUE}.}
 }
 \value{
 Returns the \code{cpobj} object with cutpoints and the characteristics
