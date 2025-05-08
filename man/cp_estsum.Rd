@@ -19,6 +19,7 @@ Summary of the cutpoint estimation.
 Writes the summary of the cutpoint estimation to the console.
 }
 \examples{
+\donttest{
 # Example
 # Writes the summary to the console
 # The data set data1 is included in this package
@@ -30,7 +31,8 @@ cpobj <- cp_est(
   plot_splines = FALSE,
   print_res    = FALSE
 )
-cp_estsum <- function(cpobj, verbose = TRUE)
+cp_estsum(cpobj, verbose = TRUE)
+}
 }
 \seealso{
 \code{\link[=cp_est]{cp_est()}} for main function of the package.

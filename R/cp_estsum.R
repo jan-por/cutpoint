@@ -6,6 +6,7 @@
 #'   estimation is writing to the console. Default is `TRUE`.
 #' @returns Summary of the cutpoint estimation.
 #' @examples
+#' \donttest{
 #' # Example
 #' # Writes the summary to the console
 #' # The data set data1 is included in this package
@@ -17,7 +18,8 @@
 #'   plot_splines = FALSE,
 #'   print_res    = FALSE
 #' )
-#' cp_estsum <- function(cpobj, verbose = TRUE)
+#' cp_estsum(cpobj, verbose = TRUE)
+#' }
 #' @export
 #'
 #' @seealso [cp_est()] for main function of the package.
