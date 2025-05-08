@@ -122,9 +122,9 @@ The output displays the primary settings and the cutpoint:
     #> Cutpoint: biomarker ≤ 89 
     #> -----------------------------------------------------------------
     #> Group size in relation to valid data of biomarker in original data set
-    #>  Total:   N = 100 (100%)
-    #>  Group A: n = 12 (12%)
-    #>  Group B: n = 88 (88%)
+    #>  Total:                N = 100 (100%)
+    #>  Group A (lower part): n = 12 (12%)
+    #>  Group B (upper part): n = 88 (88%)
 
 The argument `bandwidth` can change the minimum group sizes and may lead
 to different cutpoint estimates.
@@ -169,9 +169,9 @@ is ≤ 137:
     #> Cutpoint: biomarker ≤ 137 
     #> -----------------------------------------------------------------
     #> Group size in relation to valid data of biomarker in original data set
-    #>  Total:   N = 100 (100%)
-    #>  Group A: n = 29 (29%)
-    #>  Group B: n = 71 (71%)
+    #>  Total:                N = 100 (100%)
+    #>  Group A (lower part): n = 29 (29%)
+    #>  Group B (upper part): n = 71 (71%)
 
 ------------------------------------------------------------------------
 
@@ -351,7 +351,7 @@ cpobj <- cp_est(
 #### Output:
 
     #> 
-    #> Approx. remaining time for estimation: 8 seconds
+    #> Approx. remaining time for estimation: 9 seconds
     #> --------------------------------------------------------------------
     #> SETTINGS:
     #>  Cutpoint-variable                    =  biomarker 
@@ -372,10 +372,10 @@ cpobj <- cp_est(
     #>  2.Cutpoint: biomarker ≤ 2.445578 
     #> -----------------------------------------------------------------
     #> Group size in relation to valid data of biomarker in original data set:
-    #>  Total:                N = 200 (100%)
-    #>  Group A (lower part): n = 59 (29.5%)
-    #>  Group B:              n = 65 (32.5%)
-    #>  Group A (upper part): n = 76 (38%)
+    #>  Total:                 N = 200 (100%)
+    #>  Group A (lower part):  n = 59 (29.5%)
+    #>  Group B (middle part): n = 65 (32.5%)
+    #>  Group A (upper part):  n = 76 (38%)
 
  
 

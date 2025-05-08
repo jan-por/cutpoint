@@ -276,7 +276,7 @@ The index plot below is based on the same example used for Figure 4. The
 x-axis represents the index of all possible combinations for the two
 cutpoints being searched for. In this case, there are more than 60.000.
 As Figure 4 already shows, and Figure 5 indicates, two areas have lower
-AIC values (marked).\
+AIC values (marked). \
  
 
 ![Figure 5. Index plot - shows AIC values and the index of all possible

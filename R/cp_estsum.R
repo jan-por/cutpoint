@@ -183,10 +183,10 @@ cp_estsum <- function( cpobj,
       cat("-----------------------------------------------------------------\n")
       cat("Group size in relation to valid data of",cpvarname ,
           "in original data set\n")
-      cat(" Total:   N = ", lcpvo, " (100%)\n", sep = "")
-      cat(" Group A: n = ", nbbygroup1, " (", percbygroup1,
+      cat(" Total:                N = ", lcpvo, " (100%)\n", sep = "")
+      cat(" Group A (lower part): n = ", nbbygroup1, " (", percbygroup1,
           "%)\n", sep = "")
-      cat(" Group B: n = ", nbbygroup2, " (", percbygroup2,
+      cat(" Group B (upper part): n = ", nbbygroup2, " (", percbygroup2,
           "%)\n", sep = "")
    }
 
@@ -200,20 +200,22 @@ cp_estsum <- function( cpobj,
 
       if(ushape == FALSE) {
 
-         cat(" Total:   N = ", lcpvo, " (100%)\n", sep = "")
-         cat(" Group A: n = ", nbbygroup1, " (",
+         cat(" Total:                 N = ", lcpvo, " (100%)\n", sep = "")
+         cat(" Group A (lower part):  n = ", nbbygroup1, " (",
              percbygroup1, "%)\n", sep = "")
-         cat(" Group B: n = ", nbbygroup2, " (", percbygroup2, "%)\n", sep = "")
-         cat(" Group C: n = ", nbbygroup3, " (", percbygroup3, "%)\n", sep = "")
+         cat(" Group B (middle part): n = ", nbbygroup2, " (",
+             percbygroup2, "%)\n", sep = "")
+         cat(" Group C (upper part):  n = ", nbbygroup3, " (",
+             percbygroup3, "%)\n", sep = "")
 
       } else {
 
-         cat(" Total:                N = ", lcpvo, " (100%)\n", sep = "")
-         cat(" Group A (lower part): n = ", nbbygroup1, " (",
+         cat(" Total:                 N = ", lcpvo, " (100%)\n", sep = "")
+         cat(" Group A (lower part):  n = ", nbbygroup1, " (",
              percbygroup1, "%)\n", sep = "")
-         cat(" Group B:              n = ", nbbygroup2, " (",
+         cat(" Group B (middle part): n = ", nbbygroup2, " (",
              percbygroup2, "%)\n", sep = "")
-         cat(" Group A (upper part): n = ", nbbygroup3, " (",
+         cat(" Group A (upper part):  n = ", nbbygroup3, " (",
              percbygroup3, "%)\n", sep = "")
       }
    }
