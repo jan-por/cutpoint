@@ -14,6 +14,13 @@
 
 ## Installation
 
+The easiest way to get cutpoint is to install from CRAN:
+
+``` r
+# install cutpoint
+install.packages("cutpoint")
+```
+
 You can install the development version of cutpoint from
 [GitHub](https://github.com/) with:
 
@@ -59,6 +66,11 @@ splines plot displays a U-shaped or inverted U-shaped curve. The
 that the two outer tails represent groups of approximately the same
 size.
 
+## Reference manual
+
+You can find the reference manual here:
+[cutpoint.pdf](https://cran.r-project.org/web/packages/cutpoint/cutpoint.pdf "R Package Cutpoint - Reference Manual")
+
 ------------------------------------------------------------------------
 
 ## Example
@@ -102,7 +114,7 @@ cpobj <- cp_est(
 The output displays the primary settings and the cutpoint:
 
     #> 
-    #> Approx. remaining time for estimation: 1 seconds
+    #> Approx. remaining time for estimation: 0 seconds
     #> --------------------------------------------------------------------
     #> SETTINGS:
     #>  Cutpoint-variable                    =  biomarker 
@@ -351,7 +363,7 @@ cpobj <- cp_est(
 #### Output:
 
     #> 
-    #> Approx. remaining time for estimation: 9 seconds
+    #> Approx. remaining time for estimation: 8 seconds
     #> --------------------------------------------------------------------
     #> SETTINGS:
     #>  Cutpoint-variable                    =  biomarker 
@@ -404,11 +416,46 @@ predictor (biomarker) to hazard ratio</figcaption>
 To report a bug, please open an
 [issue](https://github.com/jan-por/cutpoint/issues/new/choose)
 
+You can find the reference manual here:
+[cutpoint.pdf](https://cran.r-project.org/web/packages/cutpoint/cutpoint.pdf "R Package Cutpoint - Reference Manual")
+
+------------------------------------------------------------------------
+
 ### Suggested Citations
 
-Porthun, J. (2025). Estimate cutpoints in the multivariable context of
-survival or time-to-event data. cutpoint R package. Retrieved from
-<https://github.com/jan-por/cutpoint>
+Example of an in-text citation: *The cutpoints were estimated using the
+cutpoint R package version 1.0.0.*
+
+**Reference list entry:**
+
+Porthun, J. (2025). Cutpoint: Estimate cutpoints in the multivariable
+context of survival or time-to-event data.
+<https://doi.org/10.32614/CRAN.package.cutpoint>
+
+**RIS:** Reference entry in RIS format. Simply copy it to your favourite
+citation manager:
+
+TY - MISC
+
+AU - Porthun, Jan
+
+TI - cutpoint: Estimate cutpoints in the multivariable context of
+survival or time-to-event data
+
+PY - 2025
+
+DA - 2025
+
+UR -
+<a href="https://cran.r-project.org/web/packages/cutpoint/index.html"
+class="uri"
+title="R Package Cutpoint">https://CRAN.R-project.org/package=cutpoint</a>
+
+DI - <https://doi.org/10.32614/CRAN.package.cutpoint>
+
+DO - <https://doi.org/10.32614/CRAN.package.cutpoint>
+
+ER -
 
 ------------------------------------------------------------------------
 
