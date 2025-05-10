@@ -184,7 +184,7 @@ cpobj <- cp_est(
 
 ------------------------------------------------------------------------
 
-### Visual evaluation of possible cutpoints
+### Visual evaluation of possible cutpoints 
 
 The `cp_value_plot` and `cp_splines_plot` functions are utilised to
 choose the appropriate cutpoints.
