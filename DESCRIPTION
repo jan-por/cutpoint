@@ -1,7 +1,7 @@
 Package: cutpoint
 Type: Package
 Title: Estimate Cutpoints of Metric Variables in the Context of Cox Regression
-Version: 1.0.0
+Version: 1.0.0.9000
 Authors@R: c(
       person("Jan", "Porthun", email = "jan.porthun@ntnu.no", 
       role = c("aut", "cre","cph"), comment = c(ORCID = "0000-0002-4100-4361")
