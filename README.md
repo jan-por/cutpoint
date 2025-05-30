@@ -3,14 +3,15 @@
 
 # cutpoint <img src="man/figures/logo.png" align="right" width="91"/>
 
-- Estimate one or two cutpoints of a variable of interest in the
-  multivariable context of survival data or time-to-event data
+- Estimate one or two thresholds or cutpoints of a variable of interest
+  in the multivariable context of survival data or time-to-event data
 
-- Visualise the cutpoint estimation process using contour plots, index
-  plots, and spline plots
+- Visualise the threshold or cutpoint estimation process using contour
+  plots, index plots, and spline plots
 
-- Estimate cutpoints based on the assumption of a U-shaped or inverted
-  U-shaped relationship between the predictor and the hazard ratio
+- Estimate thresholds or cutpoints based on the assumption of a U-shaped
+  or inverted U-shaped relationship between the predictor and the hazard
+  ratio
 
 ## Installation
 
@@ -31,10 +32,10 @@ pak::pak("jan-por/cutpoint")
 
 ## Description
 
-The R package `cutpoint` is used to determine cutpoints of variables,
-such as biomarkers, in the multivariable context of survival or
-time-to-event analyses. These cutpoints are applied to form groups with
-different probabilities of an event occurring.
+The R package `cutpoint` is used to determine thresholds or cutpoints of
+variables, such as biomarkers, in the multivariable context of survival
+or time-to-event analyses. These thresholds or cutpoints are applied to
+form groups with different probabilities of an event occurring.
 
 For example, in medical research, cutpoints of biomarkers are formed to
 classify patients into different risk groups regarding survival in tumor
@@ -363,7 +364,7 @@ cpobj <- cp_est(
 #### Output:
 
     #> 
-    #> Approx. remaining time for estimation: 9 seconds
+    #> Approx. remaining time for estimation: 8 seconds
     #> --------------------------------------------------------------------
     #> SETTINGS:
     #>  Cutpoint-variable                    =  biomarker 
