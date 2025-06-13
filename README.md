@@ -115,7 +115,7 @@ cpobj <- cp_est(
 The output displays the primary settings and the cutpoint:
 
     #> 
-    #> Approx. remaining time for estimation: 0 seconds
+    #> Approx. time for estimation: 0 seconds
     #> --------------------------------------------------------------------
     #> SETTINGS:
     #>  Cutpoint-variable                    =  biomarker 
@@ -163,7 +163,7 @@ With covariates, the cutpoint was ≤ 89; without covariates the cutpoint
 is ≤ 137:
 
     #> 
-    #> Approx. remaining time for estimation: 0 seconds
+    #> Approx. time for estimation: 0 seconds
     #> --------------------------------------------------------------------
     #> SETTINGS:
     #>  Cutpoint-variable                    =  biomarker 
@@ -364,7 +364,7 @@ cpobj <- cp_est(
 #### Output:
 
     #> 
-    #> Approx. remaining time for estimation: 8 seconds
+    #> Approx. time for estimation: 9 seconds
     #> --------------------------------------------------------------------
     #> SETTINGS:
     #>  Cutpoint-variable                    =  biomarker 

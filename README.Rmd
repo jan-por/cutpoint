@@ -54,7 +54,7 @@ You can install the development version of cutpoint from
 pak::pak("jan-por/cutpoint")
 ```
 
-## Description
+## Description 
 
 The R package `cutpoint` is used to determine thresholds or cutpoints of
 variables, such as biomarkers, in the multivariable context of survival

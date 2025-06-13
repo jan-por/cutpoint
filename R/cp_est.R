@@ -364,7 +364,7 @@ cp_est <- function(cpvarname,
          tm <- proc.time() - ptm
 
          if (verbose == TRUE) {
-            message("\nApprox. remaining time for estimation: ",
+            message("\nApprox. time for estimation: ",
                 round((tm[3] * (1 / timefactor)
             ), 0), " seconds \n")
          }
