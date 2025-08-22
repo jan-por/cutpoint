@@ -298,7 +298,6 @@ cp_est <- function(cpvarname,
       }
    }
 
-
    #' Numbers of observations which should at least remain in row
    m.perm <- factors_combine(bandwith, nb_of_cp, nrm, symtails)
 

@@ -11,9 +11,19 @@
 #' * `cpdata` a data frame, contains the following variables: a variable that is
 #'   dichotomized, `time` (follow-up time), `even`t (status indicator),
 #'   `covariates` (a vector with the names of the covariates and/or factors))
+#' @param show_cp logical, if `TRUE`, The cutpoints are displayed as vertical
+#'   lines. Default is `TRUE`.
+#' @param cp_legend character. Position of the legend for the cutpoint. If
+#'   'no' is chosen, the legend is not displayed. Options include 'bottomright',
+#'   'bottom', 'bottomleft', 'left', 'topleft', 'top', 'topright', 'right',
+#'   'center', 'no'. Default is 'bottomright'.
 #' @param show_splines logical, if `TRUE`, The plot shows splines with
 #'   different degrees of freedom. This may help determine whether
 #'   misspecification or overfitting occurs.
+#' @param splines_legend character. Position of the legend for the splines. If
+#'   'no' is chosen, the legend is not displayed. Options include 'bottomright',
+#'   'bottom', 'bottomleft', 'left', 'topleft', 'top', 'topright', 'right',
+#'   'center', 'no'. Default is 'bottomright'.
 #' @param adj_splines logical, if `TRUE`, the splines are adjusted for the
 #'   covariates. Default is `TRUE`.
 #' @returns Plots penalized smoothing splines and shows the cutpoints.
@@ -34,7 +44,12 @@
 #' @seealso [cp_est()] for main function of the package, [cp_value_plot()]
 #'   for Value plots and Index plots
 NULL
-cp_splines_plot <- function(cpobj, show_splines = TRUE, adj_splines = TRUE) {
+cp_splines_plot <- function(cpobj,
+                            show_cp = TRUE,
+                            cp_legend = "bottomleft",
+                            show_splines = TRUE,
+                            splines_legend = "bottomright",
+                            adj_splines = TRUE) {
 
       #' Check if cpobj is a list
       if (!is.list(cpobj)) {
@@ -67,11 +82,34 @@ cp_splines_plot <- function(cpobj, show_splines = TRUE, adj_splines = TRUE) {
       if (dp > 19)
          stop("dp must be smaller than 20")
 
+      if (!is.logical(show_cp))
+         stop("show_cp must be logical (TRUE or FALSE)")
+
+      if (!is.character(cp_legend))
+         stop("cp_legend must be a character (e.g. 'bottomright')")
+      cp_legend <- tolower(cp_legend)
+      if (!(cp_legend %in% c("bottomright", "bottom", "bottomleft",
+                                  "left", "topleft", "top", "topright",
+                                  "right", "center","no"))
+      )
+         stop("cp_legend must be e.g. 'bottomright' or 'topleft' etc")
+
       if (!is.logical(show_splines))
          stop("show_splines must be logical (TRUE or FALSE)")
 
       if (!is.logical(adj_splines))
          stop("show_splines must be logical (TRUE or FALSE)")
+
+
+      if (!is.character(splines_legend))
+         stop("splines_legend must be a character (e.g. 'bottomright')")
+      splines_legend <- tolower(splines_legend)
+      if (!(splines_legend %in% c("bottomright", "bottom", "bottomleft",
+                                         "left", "topleft", "top", "topright",
+                                         "right", "center", "no"))
+          )
+         stop("splines_legend must be e.g. 'bottomright' or 'topleft' etc")
+
 
       if (!("time" %in% names(cpdata))) {
          stop("time must be a column in cpdata")
@@ -121,17 +159,6 @@ cp_splines_plot <- function(cpobj, show_splines = TRUE, adj_splines = TRUE) {
       #' Get quantiles of cpvar
       q <- quantile(cpvar, na.rm = TRUE)
 
-      #' Get optimal degree of freedom
-      # tfit <- survival::coxph(
-      #    formula = Surv(time, event) ~ survival::pspline(
-      #       x = cpvar,
-      #       df = 0,
-      #       caic = TRUE,
-      #       plot = FALSE
-      #    ) + age + sex,
-      #    data = cpdata
-      # )
-
 
       #' Define formula (FML) for Cox-reg. with cpvar and vector of covariates:
 
@@ -150,7 +177,7 @@ cp_splines_plot <- function(cpobj, show_splines = TRUE, adj_splines = TRUE) {
       }
 
       try(tfit <- survival::coxph(update.formula(Surv(time, event)~., FML),
-                                  data = cpdata))
+                                  data = cpdata, ties='breslow'))
 
       degfr_optimal <- round(tfit$df, 1)
 
@@ -228,7 +255,7 @@ cp_splines_plot <- function(cpobj, show_splines = TRUE, adj_splines = TRUE) {
             }
 
             try(tfit <- survival::coxph(update.formula(Surv(time, event)~., FML),
-                                        data = cpdata
+                                        data = cpdata, ties='breslow'
                                         )
                 )
 
@@ -241,16 +268,18 @@ cp_splines_plot <- function(cpobj, show_splines = TRUE, adj_splines = TRUE) {
             rm(temp)
          }
 
-         legend(
-            "bottomright",
-            cex = 0.8,
-            paste0("df=", c(degfr[1:length(degfr)],
-               paste((degfr_optimal[[length(degfr_optimal)]]), "(optimal)"
-            ))),
-            lty = 1,
-            col = tempcolors[1:(length(degfr)+1)],
-            lwd = 2
-         )
+         if (splines_legend != "no") {
+            legend(
+               splines_legend,
+               cex = 0.8,
+               paste0("df=", c(degfr[1:length(degfr)],
+                  paste((degfr_optimal[[length(degfr_optimal)]]), "(optimal)"
+               ))),
+               lty = 1,
+               col = tempcolors[1:(length(degfr)+1)],
+               lwd = 2
+            )
+         }
 
       } # End: if (show_splines ==  TRUE)
 
@@ -261,43 +290,53 @@ cp_splines_plot <- function(cpobj, show_splines = TRUE, adj_splines = TRUE) {
          lty = c("dotted", "dotted", "dotted", "dashed")
       )
 
-      if (nb_of_cp == 1) {
-         abline(v = cp[1], col = "red", lwd = 2)
-      }
+      #' Add lines for cutpoints
+      #' If show_cp is TRUE, add vertical lines for cutpoints
+      if (show_cp == TRUE) {
 
-      if (nb_of_cp == 2) {
-         abline(v = cp[1], col = "red", lwd = 2)
-         abline(v = cp[2], col = "red", lwd = 2)
-      }
+         if (nb_of_cp == 1) {
+            abline(v = cp[1], col = "red", lwd = 2)
+         }
+
+         if (nb_of_cp == 2) {
+            abline(v = cp[1], col = "red", lwd = 2)
+            abline(v = cp[2], col = "red", lwd = 2)
+         }
+
+      } # End: if (show_cp == TRUE)
+
+
 
       #' Show cutpoints as legend in plot
+      if (cp_legend != "no") {
 
-      #' Define title for legend
-      if (nb_of_cp == 1) { cptext <- "Cutpoint:  " } else {
-         cptext <- "Cutpoints:  " }
+         #' Define title for legend
+         if (nb_of_cp == 1) { cptext <- "Cutpoint:  " } else {
+            cptext <- "Cutpoints:  " }
 
-      legend(
-            "bottomleft",
+         legend(
+               cp_legend,
+               title = cptext,
+               cex = 0.8,
+               paste("\u2264", round((cp[1]), dp)),
+               lty = 1,
+               col = tempcolors[1:(length(degfr)+1)],
+               lwd = 2
+            )
+
+         legend(
+            cp_legend,
             title = cptext,
             cex = 0.8,
-            paste("\u2264", round((cp[1]), dp)),
+            if (nb_of_cp == 1) {paste("\u2264", round((cp[1]), dp))} else {
+               paste("\u2264", round((cp[1]),dp), "and", "\u2264",
+                     round((cp[2]), dp)) },
             lty = 1,
             col = tempcolors[1:(length(degfr)+1)],
             lwd = 2
          )
 
-      legend(
-         "bottomleft",
-         title = cptext,
-         cex = 0.8,
-         if (nb_of_cp == 1) {paste("\u2264", round((cp[1]), dp))} else {
-            paste("\u2264", round((cp[1]),dp), "and", "\u2264",
-                  round((cp[2]), dp)) },
-         lty = 1,
-         col = tempcolors[1:(length(degfr)+1)],
-         lwd = 2
-      )
-
+      } # End: if (cp_legend != "no")
 
       rm(FML)
 

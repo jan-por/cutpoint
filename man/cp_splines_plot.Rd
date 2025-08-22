@@ -4,7 +4,14 @@
 \alias{cp_splines_plot}
 \title{Plot penalized smoothing splines from \code{cpobj} object}
 \usage{
-cp_splines_plot(cpobj, show_splines = TRUE, adj_splines = TRUE)
+cp_splines_plot(
+  cpobj,
+  show_cp = TRUE,
+  cp_legend = "bottomleft",
+  show_splines = TRUE,
+  splines_legend = "bottomright",
+  adj_splines = TRUE
+)
 }
 \arguments{
 \item{cpobj}{list, contains variables for pspline plot:
@@ -18,9 +25,22 @@ dichotomized, \code{time} (follow-up time), \code{even}t (status indicator),
 \code{covariates} (a vector with the names of the covariates and/or factors))
 }}
 
+\item{show_cp}{logical, if \code{TRUE}, The cutpoints are displayed as vertical
+lines. Default is \code{TRUE}.}
+
+\item{cp_legend}{character. Position of the legend for the cutpoint. If
+'no' is chosen, the legend is not displayed. Options include 'bottomright',
+'bottom', 'bottomleft', 'left', 'topleft', 'top', 'topright', 'right',
+'center', 'no'. Default is 'bottomright'.}
+
 \item{show_splines}{logical, if \code{TRUE}, The plot shows splines with
 different degrees of freedom. This may help determine whether
 misspecification or overfitting occurs.}
+
+\item{splines_legend}{character. Position of the legend for the splines. If
+'no' is chosen, the legend is not displayed. Options include 'bottomright',
+'bottom', 'bottomleft', 'left', 'topleft', 'top', 'topright', 'right',
+'center', 'no'. Default is 'bottomright'.}
 
 \item{adj_splines}{logical, if \code{TRUE}, the splines are adjusted for the
 covariates. Default is \code{TRUE}.}
